@@ -19,7 +19,6 @@ public class EnemyCon : GameManager
     Rigidbody _Rb;
     Animator anime;
     NavMeshAgent nav;
-    PlayerCon players;
     private void Awake()
     {
         if (enemy == null)

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Security.Policy;
 using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCon : GameManager
 {
@@ -18,8 +20,11 @@ public class PlayerCon : GameManager
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
     [HideInInspector] public int weponBulllet1, weponBullet2, weponBullet3;
-    float tia = 0;
     public AudioClip SFX1, SFX2;
+    //
+    public Image sight;
+    [HideInInspector] public Vector3 objSize;
+    //
     AudioSource source;
     Animator anime;
     AtackCon atack;
@@ -31,6 +36,7 @@ public class PlayerCon : GameManager
     {
         _rb = GetComponent<Rigidbody>();
         atack = GetComponent<AtackCon>();
+        sight = GetComponent<Image>();
     }
 
     private void FixedUpdate()

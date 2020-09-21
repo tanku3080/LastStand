@@ -13,29 +13,44 @@ public class GameManager : MonoBehaviour
     [Tooltip("プレイヤーの攻撃フラッグ、移動フラッグ")]
     [HideInInspector] public bool playerAtackStop = true, playerMoveFlag = false;
     [HideInInspector] public bool menuFlag = false;
+    [Tooltip("攻撃するための切り替えフラッグ")]
+    [HideInInspector] public bool weponIs1, weponIs2, weponIs3;
     [Tooltip("プレイヤーと敵の種別変更フラッグ")]
     [HideInInspector] public bool PlayerIsTypeChange = false, EnemyIsTypeChange = false;//変更を加えた場合に実装予定
     [HideInInspector] public bool weponChangeFlag;
     [HideInInspector] public int playerHp, enemyHp;
-    EnemyCon enemys;
-    PlayerCon players;
+    public  EnemyCon enemys;
+    public PlayerCon players;
     MenuCon menu;
-    StatusCon status;
+    public StatusCon status;
 
     private void Start()
     {
-        enemys = GetComponent<EnemyCon>();
-        players = GetComponent<PlayerCon>();
         menu = GetComponent<MenuCon>();
         status = GetComponent<StatusCon>();
     }
     private void Update()
     {
+        if (weponIs1 == true)
+        {
+            weponIs2 = false;
+            weponIs3 = false;
+        }
+        else if (weponIs2 == true)
+        {
+            weponIs1 = false;
+            weponIs3 = false;
+        }
+        else if (weponIs3 == true)
+        {
+            weponIs1 = false;
+            weponIs2 = false;
+        }
     }
 
     private void FixedUpdate()
     {
-        if (Input.GetKeyUp(KeyCode.K))
+        if (Input.GetKeyUp(KeyCode.M))
         {
             menuFlag = true;
         }

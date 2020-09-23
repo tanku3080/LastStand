@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyCon : GameManager
 {
     public GameObject enemy;
-    [HideInInspector]public float enemySpd { get; set; }
+    [HideInInspector] public float enemySpd = 1f;
     [SerializeField,NonSerialized] public int bullet;
     public Transform[] searchpoints;
     public float gizmo = 3f;

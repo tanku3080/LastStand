@@ -8,18 +8,8 @@ public class AtackCon : GameManager
     //enumの種類を一種類にしてenumからフィールドでの設定にする
     //intervalは攻撃間隔
     public float interval, time, accuracy, gunAccuracy, hitPercent;
-    private int bulletChange
-    {
-        get
-        {
-            if (weponIs1 == true) return status.bullet;
-            if (weponIs2 == true) return status.bullet2;
-            if (weponIs3 == true) return status.bullet3;
-            return bulletChange;
-        }
-    }
     //何発当たったか格納する
-    int atackCount = 0;
+    System.Collections.Generic.List<int> atackCount;
     float healthM;
     float Health { get { return playerHp; } }
     [Tooltip("マズル位置")]
@@ -43,17 +33,14 @@ public class AtackCon : GameManager
         pos.y = pos.y * players.objSize.y / 2F + sightpos.y;
 
         Ray ray = new Ray(atackPos.transform.position,new Vector2(GunFireCalculation(),GunFireCalculation()));//x,yに計算の答えを入れた
-
         if (weponIs1 == true)
         {
             for (int i = 0; i < status.bullet; i++)
             {
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (hit.collider.tag == "Enemy")
-                    {
-                        atackCount++;//命中回数を記録してその分のダメージを敵に与える
-                    }
+                    if (hit.collider.tag == "Enemy") atackCount.Add(1);
+                    else atackCount.Add(0);
                 }
             }
             StartCoroutine(Fire1());
@@ -64,13 +51,11 @@ public class AtackCon : GameManager
             {
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (hit.collider.tag == "Enemy")
-                    {
-                        atackCount++;//命中回数を記録してその分のダメージを敵に与える
-                    }
+                    if (hit.collider.tag == "Enemy") atackCount.Add(1);
+                    else atackCount.Add(0);
                 }
             }
-            StartCoroutine(Fire1());
+            StartCoroutine(Fire2());
         }
     }
 
@@ -87,21 +72,39 @@ public class AtackCon : GameManager
     {
         for (int i = 0; i < status.bullet; i++)
         {
+            foreach (int t in atackCount)
+            {
+                if(t == 0)
+                {
 
+                }
+                else//命中
+                {
+                    enemyHp -= status.damage1;
+                }
+                yield return new WaitForSeconds(interval);
+
+            }
         }
     }
     IEnumerator Fire2()
     {
         for (int i = 0; i < status.bullet2; i++)
         {
+            foreach (int t in atackCount)
+            {
+                if (t == 0)
+                {
+                    atackCount.Remove(t);
+                }
+                else//命中
+                {
+                    enemyHp -= status.damage2;
+                    atackCount.Remove(t);
+                }
+                yield return new WaitForSeconds(interval);
 
-        }
-    }
-    IEnumerator Fire3()
-    {
-        for (int i = 0; i < status.bullet3; i++)
-        {
-
+            }
         }
     }
 }

@@ -14,15 +14,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool playerAtackStop = true, playerMoveFlag = false;
     [HideInInspector] public bool menuFlag = false;
     [Tooltip("攻撃するための切り替えフラッグ")]
-    [HideInInspector] public bool weponIs1, weponIs2, weponIs3;
+    [HideInInspector] public bool weponIs1, weponIs2;
     [Tooltip("プレイヤーと敵の種別変更フラッグ")]
     [HideInInspector] public bool PlayerIsTypeChange = false, EnemyIsTypeChange = false;//変更を加えた場合に実装予定
     [HideInInspector] public bool weponChangeFlag;
     [HideInInspector] public int playerHp, enemyHp;
-    public  EnemyCon enemys;
-    public PlayerCon players;
+    [HideInInspector] public  EnemyCon enemys;
+    [HideInInspector] public PlayerCon players;
     MenuCon menu;
-    public StatusCon status;
+    [HideInInspector] public StatusCon status;
 
     private void Start()
     {
@@ -31,21 +31,8 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if (weponIs1 == true)
-        {
-            weponIs2 = false;
-            weponIs3 = false;
-        }
-        else if (weponIs2 == true)
-        {
-            weponIs1 = false;
-            weponIs3 = false;
-        }
-        else if (weponIs3 == true)
-        {
-            weponIs1 = false;
-            weponIs2 = false;
-        }
+        if (weponIs1 == true) weponIs2 = false;
+        else if (weponIs2 == true) weponIs1 = false;
     }
 
     private void FixedUpdate()

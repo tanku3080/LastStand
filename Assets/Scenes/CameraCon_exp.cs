@@ -24,10 +24,11 @@ public class CameraCon_exp : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 cameraF = Vector3.Scale(cam.transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 moveF = cameraF * v + cam.transform.right * h;
-        rd.velocity = moveF * moveSpd + new Vector3(0, rd.velocity.y, 0);
+        transform.LookAt(GameObject.Find("Player").transform.position);
+        //Vector3 cameraF = Vector3.Scale(cam.transform.forward, new Vector3(1, 0, 1)).normalized;
+        //Vector3 moveF = cameraF * v + cam.transform.right * h;
+        //rd.velocity = moveF * moveSpd + new Vector3(0, rd.velocity.y, 0);
 
-        if (moveF != Vector3.zero) transform.rotation = Quaternion.LookRotation(moveF);
+        //if (moveF != Vector3.zero) transform.rotation = Quaternion.LookRotation(moveF);
     }
 }

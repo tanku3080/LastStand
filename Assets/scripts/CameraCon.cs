@@ -18,7 +18,7 @@ public class CameraCon : MonoBehaviour
         lookTaget = GameObject.Find("Player").gameObject;
         //タク：「camPosiTarget」このオブジェくとぉ中心に旋回するため、キャラクターの頭の上にオブジェクトを置く。
         //私：カメラの位置情報を入れる
-        PlayerheadTopTaget = lookTaget.transform.Find("Player").gameObject;
+        PlayerheadTopTaget = lookTaget.transform.Find("CamPivot_top").gameObject;
     }
     void Start()
     {

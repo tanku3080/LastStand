@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerCon : GameManager
 {
     public GameObject gunPot1, gunPot2;
+    public Transform cameraRoot;
     [Tooltip("基本情報")]
     public float speed = 2f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
@@ -19,7 +20,6 @@ public class PlayerCon : GameManager
     /// <summary>照準切り替えcamera</summary>
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
-    [HideInInspector] public int weponBulllet1, weponBullet2, weponBullet3;
     public AudioClip SFX1, SFX2;
     //
     public Image sight;
@@ -29,8 +29,6 @@ public class PlayerCon : GameManager
     Animator anime;
     AtackCon atack;
     Rigidbody _rb;
-    Vector3 movingDir = Vector3.zero;
-    Vector3 dirction;
 
     void Start()
     {
@@ -39,18 +37,15 @@ public class PlayerCon : GameManager
         sight = GetComponent<Image>();
     }
 
-    private void FixedUpdate()
-    {
-        _rb.AddForce(movingDir, ForceMode.Force);
-    }
-
     // Update is called once per frame
     void Update()
     {
+        Vector3 cameraF = Vector3.Scale(cameraRoot.forward,new Vector3(1,0,1)).normalized;
+        Vector3 moveDir = (cameraF * v + cameraRoot.right * h).normalized;
         h = Input.GetAxis("Horizontal") * speed;
         v = Input.GetAxis("Vertical") * speed;
 
-        if (h != 0 || v != 0 || h != 0 & v != 0) playerMoveFlag = true;
+        if (h != 0 || v != 0 || h != 0 && v != 0) playerMoveFlag = true;
         else playerMoveFlag = false;
 
         if (Input.GetKey(KeyCode.M))
@@ -59,18 +54,16 @@ public class PlayerCon : GameManager
             Debug.Log("menuが押された");
         }
 
-        if (playerMoveFlag == true) Moving();
+        if (playerMoveFlag == true) Moving(moveDir);
     }
 
-    public void Moving()
+    public void Moving(Vector3 movedre)
     {
-        Debug.Log("移動関数に入った");
-        Vector3 cameraF = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 moveF = cameraF * v + Camera.main.transform.right * h;
-        _rb.velocity = moveF * speed + new Vector3(0, _rb.velocity.y, 0);
-        if (moveF != Vector3.zero) transform.rotation = Quaternion.LookRotation(moveF);
+        Vector3 velo = movedre * speed;
 
-        //anime.SetFloat("Speed", v);//ここでエラーが出たらアニメーターを設定していない
+        velo.y = _rb.velocity.y;
+        _rb.velocity = velo;
+        //anime.SetFloat("Speed",speed);
 
         //左クリックの入力を受け付ける(エイム)
         if (Input.GetMouseButton(2))

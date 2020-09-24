@@ -4,72 +4,42 @@ using UnityEngine;
 
 public class CameraCon : MonoBehaviour
 {
-    public float sensitivity = 1.0f;
-    public float clampAngle = 60;
-    public float camMoveSpd = 5f;
-    public float rotateSpeed = 3f;
-    private GameObject target,PlayerheadTopTaget,lookTaget;
-    Vector3 offset;
+    public LayerMask raycastMask;
+    public float sensitivity = 3f;
+    Transform m_rootTrans = null;
+    float mouseY, lookDistance;
+    Vector3 cameraLocalOffset;
 
     private void Awake()
     {
-        //タク：「lookTarget」はカメラの位置決めオブジェクト、空のオブジェクト。
-        //私：Playerの起点となる位置を入れる
-        lookTaget = GameObject.Find("Player").gameObject;
-        //タク：「camPosiTarget」このオブジェくとぉ中心に旋回するため、キャラクターの頭の上にオブジェクトを置く。
-        //私：カメラの位置情報を入れる
-        PlayerheadTopTaget = lookTaget.transform.Find("CamPivot_top").gameObject;
+        cameraLocalOffset = transform.localPosition;
+        m_rootTrans = GameObject.Find("Main Camera").transform;
+        transform.LookAt(m_rootTrans);
+        lookDistance = Vector3.Distance(transform.position,m_rootTrans.transform.position);
     }
-    void Start()
+    private void Update()
     {
-        if (target == null) target = GameObject.Find("Player");
-        offset = this.transform.position - target.transform.position;
-    }
-
-    private void LateUpdate()
-    {
-        var nowPos = this.transform.position;
-        var targetPos = target.transform.position + offset;
-        var newPos = Vector3.Lerp(nowPos, targetPos, camMoveSpd * Time.deltaTime);
-        this.transform.position = newPos;
-    }
-
-    private void FixedUpdate()
-    {
-        var nowPos = this.transform.position;
-        var targetPos = PlayerheadTopTaget.transform.position;
-
-        //以下は障害物対策
-        RaycastHit hit;
-        var from = lookTaget.transform.position;
-        var dir = targetPos - from;
-        var dis = Vector3.Distance(targetPos,from);
-        if (Physics.Raycast(from, dir, out hit, dis, ~(1 << LayerMask.NameToLayer("Player"))))
+        mouseY = -Input.GetAxis("Mouse Y");
+        float mouseX = Input.GetAxis("Mouse X");
+        if (Mathf.Abs(mouseX) > 0.2f)
         {
-            var avoidpos = hit.point - dir.normalized / 0.1f;
-            this.transform.position = avoidpos;
+            transform.Rotate(0, mouseX * sensitivity, 0);
         }
-        else this.transform.position = Vector3.Lerp(nowPos, targetPos, camMoveSpd * Time.deltaTime);
-        //以上
+        Vector3 cameraPos = m_rootTrans.position;
 
-        var thisPos = this.transform.position;
-        var followtargetPos = lookTaget.transform.position;
-        var vectargetPos = followtargetPos - thisPos;
-        var thisRotate = this.transform.rotation;
-        var targetRotate = Quaternion.LookRotation(vectargetPos);
-        var newRotate = Quaternion.Lerp(thisRotate, targetRotate, rotateSpeed * Time.deltaTime).eulerAngles;
-        this.transform.eulerAngles = new Vector3(newRotate.x, newRotate.y, newRotate.z);
-    }
+        Vector3 camPos = cameraPos - (transform.forward * lookDistance).normalized;
+        float targetDis = lookDistance + 0.5f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        var mouseY = Input.GetAxis("Mouse Y") * sensitivity;
-        //mouseX = Input.GetAxis("Mouse X") * sensitivity;
-        Vector3 newRote = this.transform.eulerAngles;
-        var newX = newRote.x + mouseY;
-        newX -= newX > 180 ? 360 : 0;
-        newX = Mathf.Abs(newX) > clampAngle ? clampAngle * Mathf.Sign(newX) : newX;
-        this.transform.eulerAngles = new Vector3(newX, target.transform.eulerAngles.y, 0);
+        bool hit = Physics.Raycast(cameraPos,camPos, out RaycastHit rayHit,raycastMask);
+
+        if (hit) cameraPos = rayHit.point;
+        transform.position = cameraPos;
+
+        if (transform.forward.y > 0.6f && mouseY < 0 || transform.forward.y < -0.6f && mouseY > 0) mouseY = 0;
+
+        if (Mathf.Abs(mouseY) > 0.2f)
+        {
+            transform.RotateAround(cameraPos,m_rootTrans.right,mouseY * sensitivity);
+        }
     }
 }

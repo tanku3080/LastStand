@@ -12,7 +12,7 @@ public class AtackCon : GameManager
     System.Collections.Generic.List<int> atackCount;
     float healthM;
     float Health { get { return playerHp; } }
-    [Tooltip("マズル位置")]
+    [Tooltip("マズルフラッシュ")]
     public Transform atackPos;
 
     private void Start()
@@ -31,8 +31,7 @@ public class AtackCon : GameManager
         Vector2 pos = Random.insideUnitCircle;
         pos.x = pos.x * players.objSize.x / 2f + sightpos.x;
         pos.y = pos.y * players.objSize.y / 2F + sightpos.y;
-
-        Ray ray = new Ray(atackPos.transform.position,new Vector2(GunFireCalculation(),GunFireCalculation()));//x,yに計算の答えを入れた
+        Ray ray = new Ray(players.sight.transform.position,new Vector2(GunFireCalculation(),GunFireCalculation()));//x,yに計算の答えを入れた
         if (weponIs1 == true)
         {
             for (int i = 0; i < status.bullet; i++)

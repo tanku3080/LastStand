@@ -297,7 +297,8 @@ MonoBehaviour:
   status: {fileID: 0}
   gunPot1: {fileID: 0}
   gunPot2: {fileID: 0}
-  speed: 8
+  cameraRoot: {fileID: 450560887}
+  speed: 8.92
   hpM: 1000
   limitDistance: 0
   SFX1: {fileID: 0}
@@ -466,7 +467,7 @@ GameObject:
   - component: {fileID: 299814780}
   - component: {fileID: 299814779}
   - component: {fileID: 299814778}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,15 +568,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 450560886}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14cfd6018ad39a1448bfae4159c42d6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 1
-  clampAngle: 60
-  camMoveSpd: 5
-  rotateSpeed: 3
+  raycastMask:
+    serializedVersion: 2
+    m_Bits: 512
+  sensitivity: 4.49
 --- !u!1 &458850426
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +589,7 @@ GameObject:
   - component: {fileID: 458850430}
   - component: {fileID: 458850429}
   - component: {fileID: 458850428}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -688,7 +689,7 @@ GameObject:
   - component: {fileID: 539909994}
   - component: {fileID: 539909993}
   - component: {fileID: 539909992}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -782,7 +783,7 @@ GameObject:
   - component: {fileID: 649120917}
   - component: {fileID: 649120916}
   - component: {fileID: 649120915}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -876,7 +877,7 @@ GameObject:
   - component: {fileID: 699722002}
   - component: {fileID: 699722001}
   - component: {fileID: 699722000}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -970,7 +971,7 @@ GameObject:
   - component: {fileID: 819851709}
   - component: {fileID: 819851708}
   - component: {fileID: 819851707}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1107,6 +1108,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 95302132483740286, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4414940419001469681, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -1162,13 +1168,17 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 6548399586154751628, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8878896394436383311, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7114582075129382937, guid: 077155289d2e14247bd0864b560f74ac, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 077155289d2e14247bd0864b560f74ac, type: 3}
 --- !u!1 &948248313
 GameObject:
@@ -1182,7 +1192,7 @@ GameObject:
   - component: {fileID: 948248316}
   - component: {fileID: 948248315}
   - component: {fileID: 948248314}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1453,7 +1463,7 @@ GameObject:
   - component: {fileID: 1268096635}
   - component: {fileID: 1268096634}
   - component: {fileID: 1268096633}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1547,7 +1557,7 @@ GameObject:
   - component: {fileID: 1341351244}
   - component: {fileID: 1341351243}
   - component: {fileID: 1341351242}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1641,7 +1651,7 @@ GameObject:
   - component: {fileID: 1383449610}
   - component: {fileID: 1383449609}
   - component: {fileID: 1383449608}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2068,7 +2078,7 @@ GameObject:
   - component: {fileID: 1988270745}
   - component: {fileID: 1988270744}
   - component: {fileID: 1988270743}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

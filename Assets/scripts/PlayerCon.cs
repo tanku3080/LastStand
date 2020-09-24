@@ -4,9 +4,14 @@ using System.Security.Policy;
 using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.UI;
-
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerCon : GameManager
 {
+    public enum PlayerState
+    {
+        MoveF,MoveB
+    }
+    PlayerState playerStatus;
     public GameObject gunPot1, gunPot2;
     public Transform cameraRoot;
     [Tooltip("基本情報")]
@@ -17,6 +22,7 @@ public class PlayerCon : GameManager
     /// <summary>移動制限</summary>
     public float limitDistance;
     float h, v;
+    Vector3 velo;
     /// <summary>照準切り替えcamera</summary>
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
@@ -27,6 +33,7 @@ public class PlayerCon : GameManager
     //
     AudioSource source;
     Animator anime;
+    CameraCon cameras;
     AtackCon atack;
     Rigidbody _rb;
 
@@ -34,10 +41,10 @@ public class PlayerCon : GameManager
     {
         _rb = GetComponent<Rigidbody>();
         atack = GetComponent<AtackCon>();
+        cameras = GetComponent<CameraCon>();
         sight = GetComponent<Image>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector3 cameraF = Vector3.Scale(cameraRoot.forward,new Vector3(1,0,1)).normalized;
@@ -54,15 +61,32 @@ public class PlayerCon : GameManager
             Debug.Log("menuが押された");
         }
 
-        if (playerMoveFlag == true) Moving(moveDir);
+        if (playerMoveFlag == true) Moving();
     }
 
-    public void Moving(Vector3 movedre)
+    public void Moving()
     {
-        Vector3 velo = movedre * speed;
+        Debug.Log("入った");
+        velo = Vector3.zero;
+        if (h > 0)
+        {
+            velo.x += 1;
+        }
+        else if (h < 0)
+        {
+            velo.x -= 1;
+        }
 
-        velo.y = _rb.velocity.y;
-        _rb.velocity = velo;
+        if (v > 0)
+        {
+            velo.z += 1;
+            StateSet(PlayerState.MoveF);
+        }
+        else if (v < 0)
+        {
+            velo.z -= 1;
+            StateSet(PlayerState.MoveB);
+        }
         //anime.SetFloat("Speed",speed);
 
         //左クリックの入力を受け付ける(エイム)
@@ -78,6 +102,23 @@ public class PlayerCon : GameManager
         if (Input.GetButtonDown("Fire1"))
         {
             atack.Atacks();
+        }
+    }
+
+    void StateSet(PlayerState temp)
+    {
+        playerStatus = temp;
+        switch (playerStatus)
+        {
+            case PlayerState.MoveF:
+                velo = velo.normalized * speed * Time.deltaTime;
+                anime.SetFloat("Speed",2);
+                break;
+            case PlayerState.MoveB:
+                velo = velo.normalized * speed * Time.deltaTime;
+                anime.SetFloat("Speed",velo.magnitude);
+                anime.SetBool("BackFlag",true);
+                break;
         }
     }
 }

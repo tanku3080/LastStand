@@ -21,7 +21,7 @@ public class PlayerCon : GameManager
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
     public AudioClip SFX1, SFX2;
-    //
+    //攻撃
     public Image sight;
     [HideInInspector] public Vector3 objSize;
     //

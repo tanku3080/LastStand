@@ -6,7 +6,6 @@ using UnityEngine.UIElements;
 
 public class Test : MonoBehaviour
 {
-
     public Transform img;
     List<bool> count;
     Vector2 uni;
@@ -17,8 +16,8 @@ public class Test : MonoBehaviour
     {
         uni.x = img.position.x;
         uni.y = img.position.y;
-        origin = uni;
-        uni = UnityEngine.Random.insideUnitCircle;
+        origin.x = img.position.x;
+        origin.y = img.position.y;
     }
     // Update is called once per frame
     void Update()
@@ -29,13 +28,19 @@ public class Test : MonoBehaviour
 
             for (int i = 0; i < 5; i++)
             {
-                hits = Physics2D.Raycast(origin,uni);
-                if (hits.collider.gameObject.tag == "Enemy")
+                uni = UnityEngine.Random.insideUnitCircle;
+                uni *= GunFireCalculation();
+                //hits = Physics2D.Raycast(origin,uni);
+                Ray ray = Camera.main.ScreenPointToRay(uni);
+                RaycastHit2D hits = Physics2D.Raycast(uni,ray.direction);//この行はコルーチンでは使えない
+                if (hits.collider != null)
                 {
-                    count.Add(true);
+                    Debug.Log("当たった");
+                    if(hits.collider.tag == "Enemy") count.Add(true);
                 }
                 else
                 {
+                    Debug.Log("外れた");
                     count.Add(false);
                 }
             }
@@ -43,6 +48,7 @@ public class Test : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.U))
         {
+
         }
     }
 
@@ -77,7 +83,11 @@ public class Test : MonoBehaviour
             {
                 Debug.Log("当たった");
             }
-            else Debug.Log("外れた");
+            else
+            {
+                var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                obj.transform.position = uni;
+            }
             yield return new WaitForSeconds(2);
         }
         yield break;

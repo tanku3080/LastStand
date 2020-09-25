@@ -8,7 +8,10 @@ public class Test : MonoBehaviour
 {
 
     public Transform img;
+    List<bool> count;
     Vector2 uni;
+    Ray ray;
+    RaycastHit2D hits;
     private void Start()
     {
         uni.x = img.position.x;
@@ -20,6 +23,20 @@ public class Test : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.L))
         {
+            count = new List<bool>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                hits = Physics2D.Raycast(ray.origin,ray.direction);
+                if (hits.collider.gameObject.tag == "Enemy")
+                {
+                    count.Add(true);
+                }
+                else
+                {
+                    count.Add(false);
+                }
+            }
             StartCoroutine(Set());
         }
         if (Input.GetKeyUp(KeyCode.U))
@@ -39,13 +56,26 @@ public class Test : MonoBehaviour
     IEnumerator Set()
     {
 
-        for (int i = 0; i < 5; i++)
+        //for (int i = 0; i < 5; i++)
+        //{
+
+        //    uni *= GunFireCalculation();
+        //    //Ray ray = Camera.main.ScreenPointToRay(uni);
+        //    //RaycastHit2D hits = Physics2D.Raycast(ray.origin,ray.direction);//この行はコルーチンでは使えない
+
+        //    //var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //    //obj.transform.position = uni;
+
+        //    yield return new WaitForSeconds(2);
+        //}
+
+        foreach ( bool unit in count)
         {
-            uni *= GunFireCalculation();
-            //Vector2 pos2 = (UnityEngine.Random.insideUnitCircle * img.image.height) * GunFireCalculation();
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            obj.transform.position = uni;
-            //img.transform.position = obj.transform.position = pos;
+            if (unit)
+            {
+                Debug.Log("当たった");
+            }
+            else Debug.Log("外れた");
             yield return new WaitForSeconds(2);
         }
         yield break;

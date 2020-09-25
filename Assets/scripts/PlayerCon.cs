@@ -7,11 +7,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerCon : GameManager
 {
-    public enum PlayerState
-    {
-        MoveF,MoveB
-    }
-    PlayerState playerStatus;
     public GameObject gunPot1, gunPot2;
     public Transform cameraRoot;
     [Tooltip("基本情報")]
@@ -22,7 +17,6 @@ public class PlayerCon : GameManager
     /// <summary>移動制限</summary>
     public float limitDistance;
     float h, v;
-    Vector3 velo;
     /// <summary>照準切り替えcamera</summary>
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
@@ -36,10 +30,10 @@ public class PlayerCon : GameManager
     CameraCon cameras;
     AtackCon atack;
     Rigidbody _rb;
-
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        anime = GetComponent<Animator>();
         atack = GetComponent<AtackCon>();
         cameras = GetComponent<CameraCon>();
         sight = GetComponent<Image>();
@@ -49,10 +43,14 @@ public class PlayerCon : GameManager
     {
         Vector3 cameraF = Vector3.Scale(cameraRoot.forward,new Vector3(1,0,1)).normalized;
         Vector3 moveDir = (cameraF * v + cameraRoot.right * h).normalized;
-        h = Input.GetAxis("Horizontal") * speed;
-        v = Input.GetAxis("Vertical") * speed;
+        h = Input.GetAxis("Horizontal");
+        v = Input.GetAxis("Vertical");
 
-        if (h != 0 || v != 0 || h != 0 && v != 0) playerMoveFlag = true;
+        if (h != 0 || v != 0 || h != 0 && v != 0) 
+        {
+            Debug.Log("フラグ起動");
+            playerMoveFlag = true;
+        }
         else playerMoveFlag = false;
 
         if (Input.GetKey(KeyCode.M))
@@ -66,28 +64,37 @@ public class PlayerCon : GameManager
 
     public void Moving()
     {
-        Debug.Log("入った");
-        velo = Vector3.zero;
-        if (h > 0)
-        {
-            velo.x += 1;
-        }
-        else if (h < 0)
-        {
-            velo.x -= 1;
-        }
 
-        if (v > 0)
+        if (Input.GetKey(KeyCode.W))
         {
-            velo.z += 1;
-            StateSet(PlayerState.MoveF);
+            transform.position += (transform.forward * speed).normalized;
+            anime.SetBool("WalkF", true);
+            anime.speed = speed;
         }
-        else if (v < 0)
+        else anime.SetBool("WalkF",false);
+
+        if (Input.GetKey(KeyCode.S))
         {
-            velo.z -= 1;
-            StateSet(PlayerState.MoveB);
+            transform.position -= (transform.forward * speed).normalized;
+            anime.SetBool("Back", true);
+
         }
-        //anime.SetFloat("Speed",speed);
+        else anime.SetBool("Black",false);
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.position -= (transform.right * speed).normalized;
+            anime.SetBool("Left", true);
+        }
+        else anime.SetBool("Left",false);
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position -= (transform.right * speed).normalized;
+            anime.SetBool("Right", true);
+        }
+        else anime.SetBool("Right",false);
+        Debug.Log("入った");
 
         //左クリックの入力を受け付ける(エイム)
         if (Input.GetMouseButton(2))
@@ -102,23 +109,6 @@ public class PlayerCon : GameManager
         if (Input.GetButtonDown("Fire1"))
         {
             atack.Atacks();
-        }
-    }
-
-    void StateSet(PlayerState temp)
-    {
-        playerStatus = temp;
-        switch (playerStatus)
-        {
-            case PlayerState.MoveF:
-                velo = velo.normalized * speed * Time.deltaTime;
-                anime.SetFloat("Speed",2);
-                break;
-            case PlayerState.MoveB:
-                velo = velo.normalized * speed * Time.deltaTime;
-                anime.SetFloat("Speed",velo.magnitude);
-                anime.SetBool("BackFlag",true);
-                break;
         }
     }
 }

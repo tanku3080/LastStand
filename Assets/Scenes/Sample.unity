@@ -250,24 +250,6 @@ MonoBehaviour:
   destroySFX: {fileID: 0}
   weponDis: 100
   muzzle: {fileID: 0}
---- !u!143 &193796117
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193796115}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &193796118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,7 +280,7 @@ MonoBehaviour:
   gunPot1: {fileID: 0}
   gunPot2: {fileID: 0}
   cameraRoot: {fileID: 450560887}
-  speed: 8.92
+  speed: 3
   hpM: 1000
   limitDistance: 0
   SFX1: {fileID: 0}
@@ -1171,7 +1153,17 @@ PrefabInstance:
     - target: {fileID: 6548399586154751628, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}
       propertyPath: m_UseGravity
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6548399586154751628, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 6548399586154751628, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8878896394436383311, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}

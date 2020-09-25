@@ -10,12 +10,14 @@ public class Test : MonoBehaviour
     public Transform img;
     List<bool> count;
     Vector2 uni;
+    Vector2 origin;
     Ray ray;
     RaycastHit2D hits;
     private void Start()
     {
         uni.x = img.position.x;
         uni.y = img.position.y;
+        origin = uni;
         uni = UnityEngine.Random.insideUnitCircle;
     }
     // Update is called once per frame
@@ -27,7 +29,7 @@ public class Test : MonoBehaviour
 
             for (int i = 0; i < 5; i++)
             {
-                hits = Physics2D.Raycast(ray.origin,ray.direction);
+                hits = Physics2D.Raycast(origin,uni);
                 if (hits.collider.gameObject.tag == "Enemy")
                 {
                     count.Add(true);

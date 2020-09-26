@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AtackCon : GameManager
 {
@@ -14,11 +15,13 @@ public class AtackCon : GameManager
     float Health { get { return playerHp; } }
     [Tooltip("マズルフラッシュ")]
     public Transform atackPos;
+    Slider hp;
 
     private void Start()
     {
         status = GetComponent<StatusCon>();
         players = GetComponent<PlayerCon>();
+        hp = GameObject.Find("HpBer").GetComponent<Slider>();
     }
     private void Update()
     {
@@ -80,6 +83,7 @@ public class AtackCon : GameManager
                 else//命中
                 {
                     enemyHp -= status.damage1;
+                    hp.value = playerHp / players.hpM;
                 }
                 yield return new WaitForSeconds(interval);
 
@@ -100,6 +104,7 @@ public class AtackCon : GameManager
                 {
                     enemyHp -= status.damage2;
                     atackCount.Remove(t);
+                    hp.value = playerHp / players.hpM;
                 }
                 yield return new WaitForSeconds(interval);
 

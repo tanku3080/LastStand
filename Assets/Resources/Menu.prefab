@@ -582,4 +582,14 @@ MonoBehaviour:
   playerAtackStop: 0
   playerMoveFlag: 0
   menuFlag: 0
-  time: 0.15
+  weponIs1: 0
+  weponIs2: 0
+  PlayerIsTypeChange: 0
+  EnemyIsTypeChange: 0
+  weponChangeFlag: 0
+  playerHp: 0
+  enemyHp: 0
+  enemys: {fileID: 0}
+  players: {fileID: 0}
+  status: {fileID: 0}
+  speed: 0.15

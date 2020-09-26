@@ -27,7 +27,7 @@ public class PlayerCon : GameManager
     AudioSource source;
     Animator anime;
     AtackCon atack;
-    public LimitCon limited;
+    GameObject limited;
     Rigidbody _rb;
     void Start()
     {
@@ -35,8 +35,8 @@ public class PlayerCon : GameManager
         anime = GetComponent<Animator>();
         source = GetComponent<AudioSource>();
         atack = GetComponent<AtackCon>();
-        limited = GetComponent<LimitCon>();
         sight = GetComponent<Image>();
+        limited = GameObject.Find("Limit");
     }
     private void FixedUpdate()
     {
@@ -44,23 +44,27 @@ public class PlayerCon : GameManager
     }
     void Update()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
-
-        if (h != 0 || v != 0 || h != 0 && v != 0) 
+        if (playerSide)
         {
-            Debug.Log("フラグ起動");
-            playerMoveFlag = true;
-        }
-        else playerMoveFlag = false;
+            h = Input.GetAxis("Horizontal");
+            v = Input.GetAxis("Vertical");
 
-        if (Input.GetKey(KeyCode.M))
-        {
-            //メニューbutton処理
-            Debug.Log("menuが押された");
-        }
+            if (h != 0 || v != 0 || h != 0 && v != 0)
+            {
+                Debug.Log("フラグ起動");
+                playerMoveFlag = true;
+            }
+            else playerMoveFlag = false;
 
-        if (playerMoveFlag == true) Moving();
+            if (Input.GetKey(KeyCode.M))
+            {
+                //メニューbutton処理
+                Debug.Log("menuが押された");
+            }
+
+            if (playerMoveFlag == true) Moving();
+        }
+        else return;
     }
 
     public void Moving()
@@ -72,7 +76,7 @@ public class PlayerCon : GameManager
             anime.SetBool("WalkF", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.Avoid();
+            limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("WalkF",false);
 
@@ -82,7 +86,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Back", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.Avoid();
+            limited.GetComponent<LimitCon>().Avoid();
 
         }
         else anime.SetBool("Back",false);
@@ -93,7 +97,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Left", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.Avoid();
+            limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Left",false);
 
@@ -103,7 +107,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Right", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.Avoid();
+            limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Right",false);
 
@@ -113,6 +117,10 @@ public class PlayerCon : GameManager
             if (mouseInIt > 2) mouseInIt = 0;
             mouseInIt++;
         }
+    }
+
+    void Limited()
+    {
     }
 
     void Fire()

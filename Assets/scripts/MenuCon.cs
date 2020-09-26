@@ -19,9 +19,8 @@ public class MenuCon : GameManager
         }
     }
 
-    int HpStart()
+    void TurnEnd()
     {
-        //enumかswitchで決められたダメージ処理を行う
-        return 0;
+        playerSide = false;
     }
 }

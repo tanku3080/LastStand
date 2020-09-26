@@ -34,11 +34,15 @@ public class EnemyCon : GameManager
 
     void Update()
     {
-        if (Physics.Raycast(gameObject.transform.position,gameObject.transform.forward,rayDir))
+        if (enemySide)
         {
-            distance = enemy.transform.position.z - players.transform.position.z;
+            if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, rayDir))
+            {
+                distance = enemy.transform.position.z - players.transform.position.z;
+            }
+            else Search();
         }
-        else Search();
+        else return;
     }
 
     void Search()

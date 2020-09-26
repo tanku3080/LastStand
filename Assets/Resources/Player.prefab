@@ -2193,6 +2193,7 @@ GameObject:
   - component: {fileID: 4414940419001469681}
   - component: {fileID: 5292688702419958238}
   - component: {fileID: 3134998639630080100}
+  - component: {fileID: 6169140544708917251}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -2265,3 +2266,32 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8878896394436383311}
   m_Enabled: 1
+--- !u!114 &6169140544708917251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878896394436383311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cfd6018ad39a1448bfae4159c42d6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyAtackStop: 0
+  enemyMoveFlag: 0
+  playerAtackStop: 1
+  playerMoveFlag: 0
+  menuFlag: 0
+  weponIs1: 0
+  weponIs2: 0
+  PlayerIsTypeChange: 0
+  EnemyIsTypeChange: 0
+  weponChangeFlag: 0
+  playerHp: 0
+  enemyHp: 0
+  enemys: {fileID: 0}
+  players: {fileID: 0}
+  status: {fileID: 0}
+  maxYAngle: -0.5
+  minYAngle: 0.5

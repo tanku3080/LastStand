@@ -12,13 +12,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool enemyAtackStop, enemyMoveFlag = false;
     [Tooltip("プレイヤーの攻撃フラッグ、移動フラッグ")]
     [HideInInspector] public bool playerAtackStop = true, playerMoveFlag = false;
-    [HideInInspector] public bool menuFlag = false;
     [Tooltip("攻撃するための切り替えフラッグ")]
     [HideInInspector] public bool weponIs1, weponIs2;
-    [Tooltip("プレイヤーと敵の種別変更フラッグ")]
+    [Tooltip("プレイヤーと敵の変更フラッグ")]
+    [HideInInspector] public bool menuFlag = false;
     [HideInInspector] public bool PlayerIsTypeChange = false, EnemyIsTypeChange = false;//変更を加えた場合に実装予定
     [HideInInspector] public bool weponChangeFlag;
-    [HideInInspector] public int playerHp, enemyHp;
+    [HideInInspector] public float playerHp, enemyHp;
+    [HideInInspector] public bool playerUnitDie = false,enemyUnitDie = false;
+    [HideInInspector] public bool playerSide, enemySide;//敵と味方のターン
     [HideInInspector] public  EnemyCon enemys;
     [HideInInspector] public PlayerCon players;
     MenuCon menu;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     {
         menu = GetComponent<MenuCon>();
         status = GetComponent<StatusCon>();
+        playerHp = players.hpM;
     }
     private void Update()
     {
@@ -55,5 +58,8 @@ public class GameManager : MonoBehaviour
             //敵の攻撃を止める
             //プレイヤーが移動できないようにする
         }
+
+        if (playerHp >= 0) playerUnitDie = true;
+        else if (enemyHp >= 0) enemyUnitDie = true;
     }
 }

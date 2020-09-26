@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public PlayerCon players;
     MenuCon menu;
     [HideInInspector] public StatusCon status;
+    //[HideInInspector] public LimitCon limited;
 
     private void Start()
     {

@@ -4,38 +4,33 @@ using UnityEngine;
 
 public class LimitCon : GameManager
 {
-    public float maxRudius,minRudius;
-    float dis,disMax;
-    SphereCollider sphere;
-    Vector3 playerStartPos;
+    CapsuleCollider capsule;
+    float unit;
+    float unitCount = 0.06f;
+    float playerDistance;
+    public int moveLimit = 700;
+    int count = 0;
+    Transform player;
 
     void Start()
     {
-        playerStartPos = transform.root.gameObject.transform.position;
-        sphere.radius = maxRudius;
-    }
-    void Update()
-    {
-        dis = Vector3.Distance(playerStartPos, sphere.transform.position);
-        if (sphere.radius >= minRudius)
-        {
-            if (dis >= disMax)
-            {
-                disMax = dis;
-            }
-            else
-            {
-                disMax += dis;
-            }
-        }
+        capsule = GetComponent<CapsuleCollider>();
+        unit = capsule.radius * 10;//playerに予め設定されていた大きさを整数に変換して代入する
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void Avoid()
     {
-        if (collision.transform.parent.tag == "Limit")
+        capsule.radius -= 0.06f;
+        capsule.radius.ToString();
+        count++;
+        Debug.Log("カウントは" + count);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.transform.parent)
         {
-            //ゲームmanagerのmovingFlagをfalseにする。
-            playerMoveFlag = false;
+            playerMoveFlag = true;
         }
     }
 }

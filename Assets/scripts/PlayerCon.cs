@@ -26,8 +26,8 @@ public class PlayerCon : GameManager
     //
     AudioSource source;
     Animator anime;
-    CameraCon cameras;
     AtackCon atack;
+    public LimitCon limited;
     Rigidbody _rb;
     void Start()
     {
@@ -35,7 +35,7 @@ public class PlayerCon : GameManager
         anime = GetComponent<Animator>();
         source = GetComponent<AudioSource>();
         atack = GetComponent<AtackCon>();
-        cameras = GetComponent<CameraCon>();
+        limited = GetComponent<LimitCon>();
         sight = GetComponent<Image>();
     }
     private void FixedUpdate()
@@ -72,6 +72,7 @@ public class PlayerCon : GameManager
             anime.SetBool("WalkF", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
+            limited.Avoid();
         }
         else anime.SetBool("WalkF",false);
 
@@ -81,6 +82,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Back", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
+            limited.Avoid();
 
         }
         else anime.SetBool("Back",false);
@@ -91,6 +93,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Left", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
+            limited.Avoid();
         }
         else anime.SetBool("Left",false);
 
@@ -100,9 +103,9 @@ public class PlayerCon : GameManager
             anime.SetBool("Right", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
+            limited.Avoid();
         }
         else anime.SetBool("Right",false);
-        Debug.Log("入った");
 
         //左クリックの入力を受け付ける(エイム)
         if (Input.GetMouseButton(2))

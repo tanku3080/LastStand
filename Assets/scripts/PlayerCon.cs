@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class PlayerCon : GameManager
 {
     public GameObject gunPot1, gunPot2;
-    public Transform cameraRoot;
     [Tooltip("基本情報")]
     public float speed = 2f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
@@ -20,7 +19,7 @@ public class PlayerCon : GameManager
     /// <summary>照準切り替えcamera</summary>
     //public GameObject cam1, cam2;
     /// <summary>メイン武器,サブ武器弾数</summary>
-    public AudioClip SFX1, SFX2;
+    public AudioClip footSound,SFX1, SFX2;
     //攻撃
     public Image sight;
     [HideInInspector] public Vector3 objSize;
@@ -34,15 +33,17 @@ public class PlayerCon : GameManager
     {
         _rb = GetComponent<Rigidbody>();
         anime = GetComponent<Animator>();
+        source = GetComponent<AudioSource>();
         atack = GetComponent<AtackCon>();
         cameras = GetComponent<CameraCon>();
         sight = GetComponent<Image>();
     }
-
+    private void FixedUpdate()
+    {
+        _rb.AddForce(100 * Physics.gravity,ForceMode.Force);
+    }
     void Update()
     {
-        Vector3 cameraF = Vector3.Scale(cameraRoot.forward,new Vector3(1,0,1)).normalized;
-        Vector3 moveDir = (cameraF * v + cameraRoot.right * h).normalized;
         h = Input.GetAxis("Horizontal");
         v = Input.GetAxis("Vertical");
 
@@ -70,6 +71,7 @@ public class PlayerCon : GameManager
             transform.position += (transform.forward * speed).normalized;
             anime.SetBool("WalkF", true);
             anime.speed = speed;
+            source.PlayOneShot(footSound);
         }
         else anime.SetBool("WalkF",false);
 
@@ -77,21 +79,27 @@ public class PlayerCon : GameManager
         {
             transform.position -= (transform.forward * speed).normalized;
             anime.SetBool("Back", true);
+            anime.speed = speed;
+            source.PlayOneShot(footSound);
 
         }
-        else anime.SetBool("Black",false);
+        else anime.SetBool("Back",false);
 
         if (Input.GetKey(KeyCode.A))
         {
             transform.position -= (transform.right * speed).normalized;
             anime.SetBool("Left", true);
+            anime.speed = speed;
+            source.PlayOneShot(footSound);
         }
         else anime.SetBool("Left",false);
 
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position -= (transform.right * speed).normalized;
+            transform.position += (transform.right * speed).normalized;
             anime.SetBool("Right", true);
+            anime.speed = speed;
+            source.PlayOneShot(footSound);
         }
         else anime.SetBool("Right",false);
         Debug.Log("入った");

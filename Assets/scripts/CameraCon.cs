@@ -2,44 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraCon : MonoBehaviour
+public class CameraCon : GameManager
 {
-    public LayerMask raycastMask;
-    public float sensitivity = 3f;
-    Transform m_rootTrans = null;
-    float mouseY, lookDistance;
-    Vector3 cameraLocalOffset;
-
+    Transform playerPos, pivot;
+    [Range(-0.999f, -0.5f)] public float maxYAngle = -0.5f;
+    [Range(0.5f, 0.999f)] public float minYAngle = 0.5f;
     private void Awake()
     {
-        cameraLocalOffset = transform.localPosition;
-        m_rootTrans = GameObject.Find("Main Camera").transform;
-        transform.LookAt(m_rootTrans);
-        lookDistance = Vector3.Distance(transform.position,m_rootTrans.transform.position);
+        if (playerPos == null) playerPos = transform.parent;
+        if (pivot == null) pivot = GameObject.Find("Pivot").transform;
     }
     private void Update()
     {
-        mouseY = -Input.GetAxis("Mouse Y");
         float mouseX = Input.GetAxis("Mouse X");
-        if (Mathf.Abs(mouseX) > 0.2f)
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        playerPos.Rotate(0, mouseX, 0);
+        float nowAngle = pivot.localRotation.x;
+
+        if (-mouseY != 0)
         {
-            transform.Rotate(0, mouseX * sensitivity, 0);
+            if (minYAngle <= nowAngle) pivot.Rotate(-mouseY, 0, 0);
         }
-        Vector3 cameraPos = m_rootTrans.position;
-
-        Vector3 camPos = cameraPos - (transform.forward * lookDistance).normalized;
-        float targetDis = lookDistance + 0.5f;
-
-        bool hit = Physics.Raycast(cameraPos,camPos, out RaycastHit rayHit,raycastMask);
-
-        if (hit) cameraPos = rayHit.point;
-        transform.position = cameraPos;
-
-        if (transform.forward.y > 0.6f && mouseY < 0 || transform.forward.y < -0.6f && mouseY > 0) mouseY = 0;
-
-        if (Mathf.Abs(mouseY) > 0.2f)
+        else
         {
-            transform.RotateAround(cameraPos,m_rootTrans.right,mouseY * sensitivity);
+            if ((nowAngle <= maxYAngle))
+            {
+                if (nowAngle <= maxYAngle)
+                {
+                    pivot.Rotate(-mouseY, 0, 0);
+                }
+            }
+
         }
     }
 }

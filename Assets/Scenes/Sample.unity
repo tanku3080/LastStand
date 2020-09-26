@@ -211,6 +211,99 @@ MonoBehaviour:
   bullet2: 10
   damage1: 20
   damage2: 100
+--- !u!1 &193714393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 193714397}
+  - component: {fileID: 193714396}
+  - component: {fileID: 193714395}
+  - component: {fileID: 193714394}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &193714394
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193714393}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &193714395
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193714393}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &193714396
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193714393}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &193714397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193714393}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.96, y: 9.1, z: 17.03}
+  m_LocalScale: {x: 24.34, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &193796115 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1762146786600250, guid: 077155289d2e14247bd0864b560f74ac,
@@ -555,10 +648,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14cfd6018ad39a1448bfae4159c42d6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raycastMask:
-    serializedVersion: 2
-    m_Bits: 512
-  sensitivity: 4.49
+  enemyAtackStop: 0
+  enemyMoveFlag: 0
+  playerAtackStop: 1
+  playerMoveFlag: 0
+  menuFlag: 0
+  weponIs1: 0
+  weponIs2: 0
+  PlayerIsTypeChange: 0
+  EnemyIsTypeChange: 0
+  weponChangeFlag: 0
+  playerHp: 0
+  enemyHp: 0
+  enemys: {fileID: 0}
+  players: {fileID: 0}
+  status: {fileID: 0}
+  maxYAngle: -0.5
+  minYAngle: 0.5
 --- !u!1 &458850426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1094,6 +1200,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933258343827037531, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
       objectReference: {fileID: 0}
     - target: {fileID: 4414940419001469681, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}
@@ -1960,7 +2071,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891272675}
   m_LocalRotation: {x: 0.082480535, y: 0, z: 0, w: 0.9965927}
-  m_LocalPosition: {x: 0, y: 3.43, z: -3}
+  m_LocalPosition: {x: -1.12, y: 23.2, z: -35.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

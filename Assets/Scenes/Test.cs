@@ -32,7 +32,7 @@ public class Test : MonoBehaviour
                 uni *= GunFireCalculation();
                 //hits = Physics2D.Raycast(origin,uni);
                 Ray ray = Camera.main.ScreenPointToRay(uni);
-                RaycastHit2D hits = Physics2D.Raycast(uni,ray.direction);//この行はコルーチンでは使えない
+                RaycastHit2D hits = Physics2D.Raycast(ray.origin,ray.direction);//この行はコルーチンでは使えない
                 if (hits.collider != null)
                 {
                     Debug.Log("当たった");

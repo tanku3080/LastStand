@@ -182,7 +182,7 @@ RectTransform:
   m_LocalScale: {x: 0.29999998, y: 0.29999998, z: 1}
   m_Children: []
   m_Father: {fileID: 8518885960178380324}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -557,7 +557,7 @@ RectTransform:
   - {fileID: 1925222021604211085}
   - {fileID: 2488797880070934974}
   m_Father: {fileID: 8518885960178380324}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -683,7 +683,7 @@ RectTransform:
   - {fileID: 6940416897826474289}
   - {fileID: 3421417635243242955}
   m_Father: {fileID: 8518885960178380324}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1042,10 +1042,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 8518885960611748488}
-  - {fileID: 8327514948063991751}
   - {fileID: 6397498497151328535}
   - {fileID: 6337283648745310751}
+  - {fileID: 8518885960611748488}
+  - {fileID: 8327514948063991751}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1265,7 +1265,7 @@ RectTransform:
   - {fileID: 8518885960438930453}
   - {fileID: 8518885959709201805}
   m_Father: {fileID: 8518885960178380324}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1320,6 +1320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542d8b64bd3956c468881860d8a80531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerUnitCount: []
   enemyAtackStop: 0
   enemyMoveFlag: 0
   playerAtackStop: 0
@@ -1334,10 +1335,11 @@ MonoBehaviour:
   enemyHp: 0
   playerUnitDie: 0
   enemyUnitDie: 0
-  playerSide: 0
-  enemySide: 0
+  voiceModeOn: 0
   enemys: {fileID: 0}
   players: {fileID: 0}
+  menu: {fileID: 0}
+  atack: {fileID: 0}
   status: {fileID: 0}
   speed: 0.15
 --- !u!1 &8660283241043412261

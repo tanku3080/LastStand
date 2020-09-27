@@ -9,46 +9,60 @@ public class Test : MonoBehaviour
     public Transform img;
     List<bool> count;
     Vector2 uni;
+    Vector2 senter;
     Vector2 origin;
     Ray ray;
     RaycastHit2D hits;
     private void Start()
     {
-        uni.x = img.position.x;
-        uni.y = img.position.y;
-        origin.x = img.position.x;
-        origin.y = img.position.y;
+        //uni.x = img.position.x;
+        //uni.y = img.position.y;
+        //origin.x = img.position.x;
+        //origin.y = img.position.y;
+        uni = GameObject.Find("center").transform.localPosition;
+        uni = img.localPosition;
+        origin = img.localPosition;
+
     }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.L))
+        //if (Input.GetKeyUp(KeyCode.L))
+        //{
+        //    //やり方１
+        //    count = new List<bool>();
+
+        //    for (int i = 0; i < 5; i++)
+        //    {
+        //        uni = UnityEngine.Random.insideUnitCircle;
+        //        uni *= GunFireCalculation();
+        //        //hits = Physics2D.Raycast(origin,uni);
+        //        Ray ray = Camera.main.ScreenPointToRay(uni);
+        //        RaycastHit2D hits = Physics2D.Raycast(ray.origin,ray.direction);//この行はコルーチンでは使えない
+        //        if (hits.collider != null)
+        //        {
+        //            Debug.Log("当たった");
+        //            if(hits.collider.tag == "Enemy") count.Add(true);
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("外れた");
+        //            count.Add(false);
+        //        }
+        //    }
+        //    StartCoroutine(Set());
+        //}
+        if (Input.GetKeyUp(KeyCode.U))
         {
+            //やり方２
             count = new List<bool>();
 
             for (int i = 0; i < 5; i++)
             {
                 uni = UnityEngine.Random.insideUnitCircle;
                 uni *= GunFireCalculation();
-                //hits = Physics2D.Raycast(origin,uni);
-                Ray ray = Camera.main.ScreenPointToRay(uni);
-                RaycastHit2D hits = Physics2D.Raycast(ray.origin,ray.direction);//この行はコルーチンでは使えない
-                if (hits.collider != null)
-                {
-                    Debug.Log("当たった");
-                    if(hits.collider.tag == "Enemy") count.Add(true);
-                }
-                else
-                {
-                    Debug.Log("外れた");
-                    count.Add(false);
-                }
+                ray = Camera.main.ScreenPointToRay(uni);
             }
-            StartCoroutine(Set());
-        }
-        if (Input.GetKeyUp(KeyCode.U))
-        {
-
         }
     }
 

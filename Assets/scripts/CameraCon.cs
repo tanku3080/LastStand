@@ -14,7 +14,7 @@ public class CameraCon : GameManager
     }
     private void Update()
     {
-        if (playerMoveFlag ||enemySide)
+        if (playerMoveFlag)
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");

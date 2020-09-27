@@ -43,8 +43,6 @@ public class PlayerCon : GameManager
     }
     void Update()
     {
-        if (playerSide)
-        {
             if (Input.GetKeyDown(KeyCode.Space)) voiceModeOn = true;
             h = Input.GetAxis("Horizontal");
             v = Input.GetAxis("Vertical");
@@ -63,20 +61,21 @@ public class PlayerCon : GameManager
             }
 
             if (playerMoveFlag) Moving();
-        }
-        else return;
     }
 
     public void Moving()
     {
-
+        if (Input.GetButtonDown("Fire1"))
+        {
+            atack.Atacks();
+        }
         if (Input.GetKey(KeyCode.W))
         {
             transform.position += (transform.forward * speed).normalized;
             anime.SetBool("WalkF", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.GetComponent<LimitCon>().Avoid();
+            //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("WalkF",false);
 
@@ -86,7 +85,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Back", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.GetComponent<LimitCon>().Avoid();
+            //limited.GetComponent<LimitCon>().Avoid();
 
         }
         else anime.SetBool("Back",false);
@@ -97,7 +96,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Left", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.GetComponent<LimitCon>().Avoid();
+            //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Left",false);
 
@@ -107,7 +106,7 @@ public class PlayerCon : GameManager
             anime.SetBool("Right", true);
             anime.speed = speed;
             source.PlayOneShot(footSound);
-            limited.GetComponent<LimitCon>().Avoid();
+            //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Right",false);
 
@@ -121,13 +120,5 @@ public class PlayerCon : GameManager
 
     void Limited()
     {
-    }
-
-    void Fire()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            atack.Atacks();
-        }
     }
 }

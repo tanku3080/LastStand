@@ -1,26 +1,45 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 ///このスクリプトではポーズ画面の作成とUIの操作を行う
 public class MenuCon : GameManager
 {
-    GameObject panelObj { get { return menuObj; }}
     float start;
     public float speed = 0.15f;
+    private GameObject panel1,panel2;
 
+    private void Start()
+    {
+        menu = GameObject.Find("Menu");
+        menu.GetComponent<MenuCon>();
+        panel1 = GameObject.Find("End");
+        panel1.GetComponent<Button>();
+        panel2 = GameObject.Find("Cancel");
+        panel2.GetComponent<Button>();
+        panel1.SetActive(false);
+        panel2.SetActive(false);
+    }
     public void MenuStart()
     {
-        if (menuFlag)
+        if (menu.transform.localScale.y >= 0.3f)
         {
-            if (start >= 1) return;
-            start += Time.deltaTime * speed;
-            panelObj.transform.localScale = Vector2.Lerp(new Vector2(1,0),new Vector2(1,0.3f),start);
+            panel1.SetActive(true);
+            panel2.SetActive(true);
+            return;
         }
+        if (start >= 1) return;
+        start += Time.deltaTime * speed;
+        menu.transform.localScale = Vector2.Lerp(new Vector2(1, 0), new Vector2(1, 0.3f), start);
     }
 
-    void TurnEnd()
+    public void TurnEnd()
     {
-        playerSide = false;
+        Debug.Log("turnend");
+    }
+
+    public void Cancel()
+    {
+        menuFlag = false;
     }
 }

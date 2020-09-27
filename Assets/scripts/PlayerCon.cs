@@ -3,6 +3,7 @@ using System.Collections;
 using System.Security.Policy;
 using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerCon : GameManager
@@ -74,7 +75,7 @@ public class PlayerCon : GameManager
             transform.position += (transform.forward * speed).normalized;
             anime.SetBool("WalkF", true);
             anime.speed = speed;
-            source.PlayOneShot(footSound);
+            //source.PlayOneShot(footSound);
             //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("WalkF",false);
@@ -84,7 +85,7 @@ public class PlayerCon : GameManager
             transform.position -= (transform.forward * speed).normalized;
             anime.SetBool("Back", true);
             anime.speed = speed;
-            source.PlayOneShot(footSound);
+            //source.PlayOneShot(footSound);
             //limited.GetComponent<LimitCon>().Avoid();
 
         }
@@ -95,7 +96,7 @@ public class PlayerCon : GameManager
             transform.position -= (transform.right * speed).normalized;
             anime.SetBool("Left", true);
             anime.speed = speed;
-            source.PlayOneShot(footSound);
+            //source.PlayOneShot(footSound);
             //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Left",false);
@@ -105,7 +106,7 @@ public class PlayerCon : GameManager
             transform.position += (transform.right * speed).normalized;
             anime.SetBool("Right", true);
             anime.speed = speed;
-            source.PlayOneShot(footSound);
+            //source.PlayOneShot(footSound);
             //limited.GetComponent<LimitCon>().Avoid();
         }
         else anime.SetBool("Right",false);
@@ -116,6 +117,12 @@ public class PlayerCon : GameManager
             if (mouseInIt > 2) mouseInIt = 0;
             mouseInIt++;
         }
+    }
+
+    void Foot()
+    {
+        source.PlayOneShot(footSound);
+        return;
     }
 
     void Limited()

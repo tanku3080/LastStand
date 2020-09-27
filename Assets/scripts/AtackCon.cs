@@ -8,13 +8,11 @@ public class AtackCon : GameManager
     //射撃システムの構築中。攻撃ボタンを押したら射撃を繰り返すスクリプトをコルーチンで行う。
     //enumの種類を一種類にしてenumからフィールドでの設定にする
     //intervalは攻撃間隔
-    public float interval, time, accuracy, gunAccuracy, hitPercent;
+    public float interval, accuracy, gunAccuracy, hitPercent;
     //何発当たったか格納する
-    System.Collections.Generic.List<int> atackCount;
+    System.Collections.Generic.List<int> atackCount = null;
     float healthM;
     float Health { get { return playerHp; } }
-    [Tooltip("マズルフラッシュ")]
-    public Transform atackPos;
     Slider hp;
 
     private void Start()
@@ -22,10 +20,6 @@ public class AtackCon : GameManager
         status = GetComponent<StatusCon>();
         players = GetComponent<PlayerCon>();
         hp = GameObject.Find("HpBer").GetComponent<Slider>();
-    }
-    private void Update()
-    {
-        time = Time.deltaTime;
     }
     public void Atacks()
     {
@@ -76,6 +70,7 @@ public class AtackCon : GameManager
         {
             foreach (int t in atackCount)
             {
+                //以下の分岐で射撃アニメーションを記載する
                 if(t == 0)
                 {
 

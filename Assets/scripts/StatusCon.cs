@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StatusCon : GameManager
 {
@@ -9,25 +11,31 @@ public class StatusCon : GameManager
     {
         mWepon1, mWepon2, End,
     }
-    Weponchenge wepons;
+    Weponchenge wepons = Weponchenge.mWepon1;
     float _accuracy { set { atack.accuracy = value; } }
     float _gunAccuracy { set { atack.gunAccuracy = value; } }
     float gunInterval { set { atack.interval = value; } }
     int keeping;
-    AtackCon atack;
     public int bullet = 20, bullet2 = 10;
     public int damage1 = 20, damage2 = 100;
+    public GameObject WeponNemeObj;
     float mouse;
 
-    private void Update()
+    private void Start()
     {
-        if(weponChangeFlag == true)
+        WeponNemeObj = GameObject.Find("WeponText");
+        atack = GameObject.Find("Gm").AddComponent<AtackCon>();//gamemanagerがあるオブジェクトに追加する
+    }
+    private void FixedUpdate()
+    {
+        mouse = Input.GetAxis("Mouse ScrollWheel") * 10;
+        if (weponChangeFlag) 
         {
-            mouse = Input.GetAxis("Mouse ScrollWheel") * 10;
             Weponchenger(Mouse());
         }
 
     }
+    
 
     int Mouse()
     {
@@ -47,6 +55,7 @@ public class StatusCon : GameManager
     }
     void Weponchenger(int _keep)
     {
+        Text weponNeme = WeponNemeObj.GetComponent<Text>();
         Weponchenge t = (Weponchenge)_keep;
         switch (t)
         {
@@ -57,6 +66,7 @@ public class StatusCon : GameManager
                 _accuracy = 0.80f;
                 _gunAccuracy = 0.6f;
                 weponIs1 = true;
+                weponNeme.text = "MachineGun";
                 Debug.Log("メイン");
                 break;
             //MR
@@ -65,6 +75,7 @@ public class StatusCon : GameManager
                 _accuracy = 0.75f;
                 _gunAccuracy = 0.4f;
                 weponIs2 = true;
+                weponNeme.text = "Missile";
                 Debug.Log("メイン２");
                 break;
         }

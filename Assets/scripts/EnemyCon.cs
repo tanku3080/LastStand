@@ -7,7 +7,7 @@ public class EnemyCon : GameManager
 {
     public GameObject enemy;
     [HideInInspector] public float enemySpd = 1f;
-    [SerializeField,NonSerialized] public int bullet;
+    [SerializeField, NonSerialized] public int bullet;
     public Transform[] searchpoints;
     public float gizmo = 3f;
     /// <summary>移動制限 </summary>
@@ -36,6 +36,8 @@ public class EnemyCon : GameManager
     {
         if (enemySide)
         {
+            if (enemyMoveFlag) Move();
+
             if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, rayDir))
             {
                 distance = enemy.transform.position.z - players.transform.position.z;
@@ -48,7 +50,7 @@ public class EnemyCon : GameManager
     void Search()
     {
         int i = 0;
-        for ( ; i < searchpoints.Length; i++)
+        for (; i < searchpoints.Length; i++)
         {
             if (i > searchpoints.Length) i = 0;
             nav.SetDestination(searchpoints[i].position);
@@ -56,24 +58,17 @@ public class EnemyCon : GameManager
     }
     public void Move()
     {
-        if (enemyMoveFlag == true)
+        float gizmos = this.transform.position.normalized.z * gizmo;
+        if (distance <= gizmos)
         {
-            float gizmos = this.transform.position.normalized.z * gizmo;
-            if (distance <= gizmos)
+            if (enemyAtackStop == true)
             {
-                if (enemyAtackStop == true)
-                {
-                    Fire();
-                }
-                else
-                {
-                    anime.SetBool("Wait", true);
-                }
+                Fire();
             }
-        }
-        else
-        {
-            return;
+            else
+            {
+                anime.SetBool("Wait", true);
+            }
         }
     }
 
@@ -82,7 +77,7 @@ public class EnemyCon : GameManager
         ///<summary>Playerとだけ衝突させる</summary>
         int layer = 1 << 8;
         //下に弾の管理を書く
-       bool ray = Physics.Raycast(enemy.transform.position,this.transform.forward,gizmo,layer);
+        bool ray = Physics.Raycast(enemy.transform.position, this.transform.forward, gizmo, layer);
         if (ray)
         {
 

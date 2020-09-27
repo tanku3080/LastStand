@@ -14,26 +14,29 @@ public class CameraCon : GameManager
     }
     private void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-
-        playerPos.Rotate(0, mouseX, 0);
-        float nowAngle = pivot.localRotation.x;
-
-        if (-mouseY != 0)
+        if (playerMoveFlag ||enemySide)
         {
-            if (minYAngle <= nowAngle) pivot.Rotate(-mouseY, 0, 0);
-        }
-        else
-        {
-            if ((nowAngle <= maxYAngle))
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+
+            playerPos.Rotate(0, mouseX, 0);
+            float nowAngle = pivot.localRotation.x;
+
+            if (-mouseY != 0)
             {
-                if (nowAngle <= maxYAngle)
-                {
-                    pivot.Rotate(-mouseY, 0, 0);
-                }
+                if (minYAngle <= nowAngle) pivot.Rotate(-mouseY, 0, 0);
             }
+            else
+            {
+                if ((nowAngle <= maxYAngle))
+                {
+                    if (nowAngle <= maxYAngle)
+                    {
+                        pivot.Rotate(-mouseY, 0, 0);
+                    }
+                }
 
+            }
         }
     }
 }

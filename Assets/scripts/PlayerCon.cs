@@ -11,7 +11,7 @@ public class PlayerCon : GameManager
     [Tooltip("基本情報")]
     public float speed = 2f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
-    public float hpM = 1000f;
+    public float hpM { get { return status.playerHp; } }
     int mouseInIt = 0;
     /// <summary>移動制限</summary>
     public float limitDistance;
@@ -26,7 +26,6 @@ public class PlayerCon : GameManager
     //
     AudioSource source;
     Animator anime;
-    AtackCon atack;
     GameObject limited;
     Rigidbody _rb;
     void Start()
@@ -46,6 +45,7 @@ public class PlayerCon : GameManager
     {
         if (playerSide)
         {
+            if (Input.GetKeyDown(KeyCode.Space)) voiceModeOn = true;
             h = Input.GetAxis("Horizontal");
             v = Input.GetAxis("Vertical");
 
@@ -62,7 +62,7 @@ public class PlayerCon : GameManager
                 Debug.Log("menuが押された");
             }
 
-            if (playerMoveFlag == true) Moving();
+            if (playerMoveFlag) Moving();
         }
         else return;
     }

@@ -8,6 +8,7 @@ using UnityEngine.Networking.Match;
 public class GameManager : MonoBehaviour
 {
     readonly public GameObject menuObj;
+    public GameObject[] playerUnitCount;
     [Tooltip("敵の攻撃を止める,移動キー")]
     [HideInInspector] public bool enemyAtackStop, enemyMoveFlag = false;
     [Tooltip("プレイヤーの攻撃フラッグ、移動フラッグ")]
@@ -17,13 +18,17 @@ public class GameManager : MonoBehaviour
     [Tooltip("プレイヤーと敵の変更フラッグ")]
     [HideInInspector] public bool menuFlag = false;
     [HideInInspector] public bool PlayerIsTypeChange = false, EnemyIsTypeChange = false;//変更を加えた場合に実装予定
-    [HideInInspector] public bool weponChangeFlag;
+    [HideInInspector] public bool weponChangeFlag = true;
+    //ゲッターセッターで値を取得しているはず
     [HideInInspector] public float playerHp, enemyHp;
     [HideInInspector] public bool playerUnitDie = false,enemyUnitDie = false;
-    [HideInInspector] public bool playerSide, enemySide;//敵と味方のターン
+    [HideInInspector] public bool playerSide = true, enemySide;//敵と味方のターン
+    [Tooltip("音声認識")]
+    [HideInInspector] public bool voiceModeOn = false;
     [HideInInspector] public  EnemyCon enemys;
     [HideInInspector] public PlayerCon players;
     MenuCon menu;
+    [HideInInspector] public AtackCon atack;
     [HideInInspector] public StatusCon status;
     //[HideInInspector] public LimitCon limited;
 
@@ -31,12 +36,11 @@ public class GameManager : MonoBehaviour
     {
         menu = GetComponent<MenuCon>();
         status = GetComponent<StatusCon>();
-        playerHp = players.hpM;
     }
     private void Update()
     {
-        if (weponIs1 == true) weponIs2 = false;
-        else if (weponIs2 == true) weponIs1 = false;
+        if (weponIs1) weponIs2 = false;
+        else weponIs2 = true;
     }
 
     private void FixedUpdate()
@@ -45,9 +49,19 @@ public class GameManager : MonoBehaviour
         {
             menuFlag = true;
         }
-        if (enemyMoveFlag)
+        if (enemySide)
         {
-            enemys.Move();
+            enemyMoveFlag = true;
+        }
+
+        if (playerSide)
+        {
+            weponChangeFlag = true;
+            playerMoveFlag = true;
+        }
+        else if(playerSide && voiceModeOn)
+        {
+            //フラグ管理が上手くいったら何らかの手を打つ
         }
 
         if (menuFlag)

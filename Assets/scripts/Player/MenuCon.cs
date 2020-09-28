@@ -14,9 +14,9 @@ public class MenuCon : GameManager
         menu = GameObject.Find("Menu");
         menu.GetComponent<MenuCon>();
         panel1 = GameObject.Find("End");
-        panel1.GetComponent<GameObject>();
+        panel1.GetComponent<Button>();
         panel2 = GameObject.Find("Cancel");
-        panel2.GetComponent<GameObject>();
+        panel2.GetComponent<Button>();
         panel1.SetActive(false);
         panel2.SetActive(false);
     }

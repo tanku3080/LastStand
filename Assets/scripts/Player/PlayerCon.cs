@@ -3,19 +3,17 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerCon : GameManager
 {
-    public GameObject gunPot1, gunPot2;
     [Tooltip("基本情報")]
-    [HideInInspector] public Transform playernow;
-    public float speed = 2f;
+    [HideInInspector] public float speed = 2f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
-    public float hpM { get { return status.playerHp; } }
+    [HideInInspector] public float hpM { get { return status.playerHp; } }
     /// <summary>移動制限</summary>
-    public float limitDistance;
+    [HideInInspector]  public float limitDistance;
     float h, v;
     /// <summary>メイン武器,サブ武器弾数</summary>
-    public AudioClip footSound, SFX1, SFX2;
+    [HideInInspector] AudioClip footSound;
     //攻撃
-    public Image sight;
+    [HideInInspector] public Image sight;
     [HideInInspector] public Vector3 objSize;
     //
     AudioSource source;

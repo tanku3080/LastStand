@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking.Match;
 using UnityEngine.UI;
 /// <summary>
 /// 常木先生のinterFaceを使ったスクリプティングを行えはもしかしたら・・・
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] playerUnitCount;
+    [HideInInspector]  public GameObject[] playerUnitCount;
     [Tooltip("敵の攻撃を止める,移動キー")]
     [HideInInspector] public bool enemyAtackStop, enemyMoveFlag = false;
     [Tooltip("攻撃するための切り替えフラッグ")]

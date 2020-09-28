@@ -12,33 +12,25 @@ public class SceneLoder : GameManager
     public Scene sceneList;
     string sceneName;
     float timer;
+    bool flag = false;
     CanvasGroup group;
     private void Start()
     {
-        DontDestroyOnLoad(this);
-    }
-    public void FadeIn()
-    {
-        timer = Time.deltaTime;
+        DontDestroyOnLoad(this.gameObject);
         group = GetComponent<CanvasGroup>();
-        if (group.alpha == 1)
+    }
+    public void Update()
+    {
+        if (flag)
         {
-            SceneAcsept();
-            while (group.alpha < timer)
-            {
-                group.alpha -= timer;
-            }
-        }
-        else
-        {
-            while (group.alpha > timer)
-            {
-                group.alpha += timer;
-            }
+            group.alpha = 1;
+            timer = Time.deltaTime * 0.01f;
+            group.alpha -= timer;
         }
     }
 
-    void SceneAcsept()
+
+    public void SceneAcsept()
     {
         Scene scene;
         scene = sceneList;
@@ -47,14 +39,17 @@ public class SceneLoder : GameManager
             case Scene.Start:
                 sceneName = "Start";
                 SceneManager.LoadScene(sceneName);
+                flag = true;
                 break;
             case Scene.Select:
                 sceneName = "PlayerSelect";
                 SceneManager.LoadScene(sceneName);
+                flag = true;
                 break;
             case Scene.Game:
                 sceneName = "Game map2";
                 SceneManager.LoadScene(sceneName);
+                flag = true;
                 break;
         }
     }

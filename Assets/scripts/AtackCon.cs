@@ -66,6 +66,7 @@ public class AtackCon : GameManager
 
     IEnumerator Fire1()
     {
+        //players.playernow.LookAt(players.transform.forward);
         for (int i = 0; i < status.bullet; i++)
         {
             foreach (int t in atackCount)

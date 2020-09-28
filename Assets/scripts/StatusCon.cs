@@ -19,7 +19,7 @@ public class StatusCon : GameManager
     public int bullet = 20, bullet2 = 10;
     public int damage1 = 20, damage2 = 100;
     public GameObject WeponNemeObj;
-    float mouse;
+    [HideInInspector] public float mouse;
 
     private void Start()
     {
@@ -29,13 +29,13 @@ public class StatusCon : GameManager
     private void FixedUpdate()
     {
         mouse = Input.GetAxis("Mouse ScrollWheel") * 10;
-        if (weponChangeFlag) 
-        {
-            Weponchenger(Mouse());
-        }
-
     }
-    
+
+    public void ChangeStart()
+    {
+        Weponchenger(Mouse());
+    }
+
 
     int Mouse()
     {

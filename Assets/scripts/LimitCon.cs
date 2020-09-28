@@ -34,7 +34,7 @@ public class LimitCon : GameManager
     {
         if (other.gameObject.transform.parent)
         {
-            playerMoveFlag = true;
+            limitUnit = true;
         }
     }
 }

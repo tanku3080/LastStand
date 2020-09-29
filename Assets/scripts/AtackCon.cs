@@ -13,7 +13,10 @@ public class AtackCon : GameManager
     System.Collections.Generic.List<int> atackCount = null;
     float healthM;
     float Health { get { return playerHp; } }
+    public Transform sight,objSize;
     Slider hp;
+    StatusCon status;
+    PlayerCon players;
 
     private void Start()
     {
@@ -24,11 +27,11 @@ public class AtackCon : GameManager
     public void Atacks()
     {
         //以下のコードはプレイヤーの照準を同期する
-        Vector2 sightpos = players.sight.transform.localPosition;
+        Vector2 sightpos = sight.localPosition;
         Vector2 pos = Random.insideUnitCircle;
-        pos.x = pos.x * players.objSize.x / 2f + sightpos.x;
-        pos.y = pos.y * players.objSize.y / 2F + sightpos.y;
-        Ray ray = new Ray(players.sight.transform.position,new Vector2(GunFireCalculation(),GunFireCalculation()));//x,yに計算の答えを入れた
+        pos.x = pos.x * objSize.transform.localPosition.x / 2f + sightpos.x;
+        pos.y = pos.y * objSize.transform.localPosition.y / 2F + sightpos.y;
+        Ray ray = new Ray(sight.position,new Vector2(GunFireCalculation(),GunFireCalculation()));//x,yに計算の答えを入れた
         if (weponIs1 == true)
         {
             for (int i = 0; i < status.bullet; i++)

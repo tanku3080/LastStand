@@ -1779,7 +1779,6 @@ GameObject:
   - component: {fileID: 4587756876036610}
   - component: {fileID: 95302132483740286}
   - component: {fileID: 136775077585159954}
-  - component: {fileID: -7065655904126248840}
   - component: {fileID: 6548399586154751628}
   - component: {fileID: 8905351066012617799}
   m_Layer: 0
@@ -1842,40 +1841,6 @@ CapsuleCollider:
   m_Height: 14
   m_Direction: 1
   m_Center: {x: 0, y: 7.01, z: 0}
---- !u!114 &-7065655904126248840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762146786600250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 542d8b64bd3956c468881860d8a80531, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerUnitCount: []
-  enemyAtackStop: 0
-  enemyMoveFlag: 0
-  playerAtackStop: 1
-  playerMoveFlag: 0
-  weponIs1: 0
-  weponIs2: 0
-  menuFlag: 0
-  PlayerIsTypeChange: 0
-  EnemyIsTypeChange: 0
-  weponChangeFlag: 0
-  playerHp: 0
-  enemyHp: 0
-  playerUnitDie: 0
-  enemyUnitDie: 0
-  voiceModeOn: 0
-  enemys: {fileID: 0}
-  players: {fileID: 0}
-  menu: {fileID: 0}
-  atack: {fileID: 0}
-  status: {fileID: 0}
-  speed: 0.15
 --- !u!54 &6548399586154751628
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1907,31 +1872,24 @@ MonoBehaviour:
   playerUnitCount: []
   enemyAtackStop: 0
   enemyMoveFlag: 0
-  playerAtackStop: 1
-  playerMoveFlag: 0
   weponIs1: 0
   weponIs2: 0
-  menuFlag: 0
-  PlayerIsTypeChange: 0
-  EnemyIsTypeChange: 0
   weponChangeFlag: 1
+  limitUnit: 0
   playerHp: 0
   enemyHp: 0
   playerUnitDie: 0
   enemyUnitDie: 0
+  playerSide: 0
+  enemySide: 0
   voiceModeOn: 0
   enemys: {fileID: 0}
   players: {fileID: 0}
   menu: {fileID: 0}
   atack: {fileID: 0}
   status: {fileID: 0}
-  gunPot1: {fileID: 0}
-  gunPot2: {fileID: 0}
   speed: 2
   limitDistance: 0
-  footSound: {fileID: 8300000, guid: 3601028ad4d432747a5985dc74435d10, type: 3}
-  SFX1: {fileID: 0}
-  SFX2: {fileID: 0}
   sight: {fileID: 0}
   objSize: {x: 0, y: 0, z: 0}
 --- !u!1 &1858714439182666
@@ -2330,18 +2288,16 @@ MonoBehaviour:
   playerUnitCount: []
   enemyAtackStop: 0
   enemyMoveFlag: 0
-  playerAtackStop: 1
-  playerMoveFlag: 0
   weponIs1: 0
   weponIs2: 0
-  menuFlag: 0
-  PlayerIsTypeChange: 0
-  EnemyIsTypeChange: 0
   weponChangeFlag: 0
+  limitUnit: 0
   playerHp: 0
   enemyHp: 0
   playerUnitDie: 0
   enemyUnitDie: 0
+  playerSide: 0
+  enemySide: 0
   voiceModeOn: 0
   enemys: {fileID: 0}
   players: {fileID: 0}

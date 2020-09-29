@@ -19,6 +19,7 @@ public class EnemyCon : GameManager
     Rigidbody _Rb;
     Animator anime;
     NavMeshAgent nav;
+    PlayerCon players;
     private void Awake()
     {
         if (enemy == null)
@@ -34,17 +35,17 @@ public class EnemyCon : GameManager
 
     void Update()
     {
-        //if (enemySide)
-        //{
-        //    if (enemyMoveFlag) Move();
+        if (enemySide)
+        {
+            if (enemyMoveFlag) Move();
 
-        //    if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, rayDir))
-        //    {
-        //        distance = enemy.transform.position.z - players.transform.position.z;
-        //    }
-        //    else Search();
-        //}
-        //else return;
+            if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, rayDir))
+            {
+                distance = enemy.transform.position.z - players.transform.position.z;
+            }
+            else Search();
+        }
+        else return;
     }
 
     void Search()

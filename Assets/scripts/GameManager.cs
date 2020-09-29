@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("攻撃するための切り替えフラッグ")]
     [HideInInspector] public bool weponIs1, weponIs2;
     [Tooltip("プレイヤーと敵の変更フラッグ")]
-    [HideInInspector] public bool weponChangeFlag = true;//消す
     [HideInInspector] public bool limitUnit;
     //ゲッターセッターで値を取得しているはず
     [HideInInspector] public float playerHp, enemyHp;
@@ -22,18 +21,13 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool playerSide, enemySide = false;
     [Tooltip("音声認識")]
     [HideInInspector] public bool voiceModeOn = false;
-    [HideInInspector] public  EnemyCon enemys;
-    [HideInInspector] public PlayerCon players;
-    [HideInInspector] public GameObject menu;
-    [HideInInspector] public AtackCon atack;
-    [HideInInspector] public StatusCon status;
-    //[HideInInspector] public LimitCon limited;
+    private StatusCon status;
+    private AtackCon atack;
 
-    private void Start()
+    private void Awake()
     {
-        menu = GameObject.Find("Menu");
-        menu.GetComponent<MenuCon>();
-        status = GetComponent<StatusCon>();
+        status = this.gameObject.GetComponent<StatusCon>();
+        atack = this.gameObject.GetComponent<AtackCon>();
     }
     private void Update()
     {
@@ -43,6 +37,10 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            playerSide = true;
+        }
         if (playerHp >= 0) playerUnitDie = true;
         else if (enemyHp >= 0) enemyUnitDie = true;
     }

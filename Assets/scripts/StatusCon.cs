@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StatusCon : GameManager
+public class StatusCon :MonoBehaviour
 {
 
     [HideInInspector] public enum Weponchenge
@@ -20,18 +20,21 @@ public class StatusCon : GameManager
     public int damage1 = 20, damage2 = 100;
     public GameObject WeponNemeObj;
     [HideInInspector] public float mouse;
+    AtackCon atack;
+    GameManager manager;
 
     private void Start()
     {
+        manager = GetComponent<GameManager>();
         WeponNemeObj = GameObject.Find("WeponText");
-        atack = GameObject.Find("Gm").AddComponent<AtackCon>();//gamemanagerがあるオブジェクトに追加する
+        atack = GameObject.Find("GameManager").GetComponent<AtackCon>();//gamemanagerがあるオブジェクトに追加する
     }
     private void FixedUpdate()
     {
         mouse = Input.GetAxis("Mouse ScrollWheel") * 10;
     }
 
-    public void ChangeStart()
+    public void ChangeStart()//敵味方使用武器共通化
     {
         Weponchenger(Mouse());
     }
@@ -65,7 +68,7 @@ public class StatusCon : GameManager
                 gunInterval = 0.2f;
                 _accuracy = 0.80f;
                 _gunAccuracy = 0.6f;
-                weponIs1 = true;
+                manager.weponIs1 = true;
                 weponNeme.text = "MachineGun";
                 Debug.Log("メイン");
                 break;
@@ -74,7 +77,7 @@ public class StatusCon : GameManager
                 gunInterval = 0.6f;
                 _accuracy = 0.75f;
                 _gunAccuracy = 0.4f;
-                weponIs2 = true;
+                manager.weponIs2 = true;
                 weponNeme.text = "Missile";
                 Debug.Log("メイン２");
                 break;

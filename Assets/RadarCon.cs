@@ -2,59 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class RadarCon : MonoBehaviour
 {
     public Image image;
-    private float spd = 1f;
-    float timer;
-    //プレイヤーの位置情報
-    public GameObject pla;
     PlayerCon _player;
+    public AudioClip radarSound;
+    AudioSource Audio;
     void Start()
     {
-        image = GetComponent<Image>();
+        Audio = GetComponent<AudioSource>();
+        image = GameObject.Find("EnemyPointer").GetComponent<Image>();
         _player = GameObject.Find("Player").GetComponent<PlayerCon>();
-        pla = GameObject.Find("Player");
     }
 
     private void Update()
     {
-        timer = Time.deltaTime;
-        //Transform enemyUnit = RederStart().transform;
-        //float dis = Vector3.Distance(pla.transform.position, enemyUnit.position);
-
-        //if (dis <= 5)
-        //{
-        //    spd = 1.6f;
-        //}
-        //else
-        //{
-        //    spd = 1.2f;
-        //}
-        //if (spd <= 0)
-        //{
-        //    image.color = new Color(255, 0, 0, 255);
-        //}
-        //spd -= timer;
-        //enemyUnit.GetComponent<Image>();
-        //enemyUnit.position = image.transform.position;
-        //image.color = new Color(255, 0, 0, spd);
+        float imegeAlfa = image.color.a;
+        float pos = _player.PlayerForwardRadar();
+        if (pos == 0)
+        {
+            Debug.Log($"0以下。Enemy検知なし{pos}");
+        }
+        else if (pos < 100)
+        {
+            Debug.Log($"100以下{pos}");
+            imegeAlfa += Time.deltaTime * 0.5f;
+            Audio.Play();
+        }
+        else if (pos < 300)
+        {
+            Debug.Log($"300以下{pos}");
+            imegeAlfa += Time.deltaTime * 0.05f;
+            Audio.Play();
+        }
+        else if (pos < 500)
+        {
+            Debug.Log($"500以下{pos}");
+            imegeAlfa += Time.deltaTime * 0.005f;
+            Audio.Play();
+        }
+        else
+        {
+            Debug.Log($"あり得ない値です{pos}");
+        }
     }
-
-    //public GameObject RederStart()
-    //{
-    //    float nearDis = 0;
-    //    GameObject[] target = GameObject.FindGameObjectsWithTag("Enemy");
-    //    GameObject resultObj;
-    //    foreach (GameObject obj in target)
-    //    {
-    //        float dis = Vector3.Distance(pla.transform.position,obj.transform.position);
-    //        if (nearDis > dis || dis == 0)
-    //        {
-    //            nearDis = dis;
-    //        }
-    //    }
-    //    return resultObj.transform;
-    //}
 }

@@ -6,7 +6,7 @@ public class PlayerCon : MonoBehaviour
     [Tooltip("基本情報")]
     [HideInInspector] public float speed = 2f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
-    [HideInInspector] public float hpM { get { return manager.playerHp; } }
+    [HideInInspector] public float HpM { get { return manager.playerHp; } set { HpM = 1000f; } }
     /// <summary>移動制限</summary>
     [HideInInspector]  public float limitDistance;
     float h, v,radarDir;
@@ -27,7 +27,7 @@ public class PlayerCon : MonoBehaviour
         source = GetComponent<AudioSource>();
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerPos = this.gameObject.transform;
-        atack = GetComponent<AtackCon>();
+        atack = GameObject.Find("GameManager").GetComponent<AtackCon>();
         status = GameObject.Find("GameManager").GetComponent<StatusCon>();
         limited = GameObject.Find("Limit");//？
 

@@ -185,7 +185,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &363070468
 PrefabInstance:
@@ -566,6 +566,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d75bdf48ffba7428c0a67edc3bd309, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _accuracy: 0
+  _gunAccuracy: 0
+  gunInterval: 0
   bullet: 20
   bullet2: 10
   damage1: 20
@@ -584,25 +587,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 856fd1ddb4a5c214cab3c9f6ab78aa18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUnitCount: []
-  enemyAtackStop: 0
-  enemyMoveFlag: 0
-  weponIs1: 0
-  weponIs2: 0
-  limitUnit: 0
-  playerHp: 0
-  enemyHp: 0
-  playerUnitDie: 0
-  enemyUnitDie: 0
-  playerSide: 0
-  enemySide: 0
-  voiceModeOn: 0
-  interval: 0
-  accuracy: 0
-  gunAccuracy: 0
-  hitPercent: 0
-  sight: {fileID: 0}
-  objSize: {fileID: 0}
+  sight: {fileID: 2896968505761649835}
+  objSize: {fileID: 8141491616534513992}
+  _enemy: {fileID: 1615314985}
 --- !u!1 &882488009 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100044, guid: fec746e46c2fd354fa0bc92720075dbd,
@@ -1108,8 +1095,8 @@ RectTransform:
   m_Children:
   - {fileID: 246895080193532539}
   - {fileID: 2814449170918490019}
-  m_Father: {fileID: 1405431412}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1233,9 +1220,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 487878427703548824}
-  - {fileID: 1379373879}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1439379246 stripped
 GameObject:
@@ -1345,6 +1331,12 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1615314985 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100046, guid: fec746e46c2fd354fa0bc92720075dbd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1008024647}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2106187073
 GameObject:
   m_ObjectHideFlags: 0

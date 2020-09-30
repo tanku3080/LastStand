@@ -13,7 +13,7 @@ public class MenuCon : MonoBehaviour
 
     private void Start()
     {
-        manager = GetComponent<GameManager>();
+        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         group = this.gameObject.GetComponent<CanvasGroup>();
         button = GameObject.Find("Cancel").GetComponent<Button>();
         button2 = GameObject.Find("End").GetComponent<Button>();
@@ -24,7 +24,11 @@ public class MenuCon : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M) && isCancel == false)
         {
-            if (Input.GetKeyDown(KeyCode.M)) isCancel = true;
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                isCancel = true;
+                return;
+            }
             manager.playerSide = false;
             button.interactable = true;
             button.interactable = true;
@@ -35,6 +39,7 @@ public class MenuCon : MonoBehaviour
         {
             manager.enemySide = true;
             group.alpha = 0;
+            isCancel = false;
         }
     }
 

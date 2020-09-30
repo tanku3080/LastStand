@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("プレイヤーと敵の変更フラッグ")]
     [HideInInspector] public bool limitUnit;
     //ゲッターセッターで値を取得しているはず
-    [HideInInspector] public float playerHp, enemyHp;
+    [HideInInspector] public float playerHp = 1000f, enemyHp;
     [HideInInspector] public bool playerUnitDie = false,enemyUnitDie = false;
     //敵と味方のターン味方：これ一つで移動、攻撃の可否を判定
     [HideInInspector] public bool playerSide, enemySide = false;
@@ -23,11 +23,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool voiceModeOn = false;
     private StatusCon status;
     private AtackCon atack;
-
     private void Awake()
     {
-        status = this.gameObject.GetComponent<StatusCon>();
-        atack = this.gameObject.GetComponent<AtackCon>();
+        status = this.gameObject.AddComponent<StatusCon>();
+        atack = this.gameObject.AddComponent<AtackCon>();
     }
     private void Update()
     {

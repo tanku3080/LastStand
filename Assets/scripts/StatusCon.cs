@@ -12,9 +12,9 @@ public class StatusCon :MonoBehaviour
         mWepon1, mWepon2, End,
     }
     Weponchenge wepons = Weponchenge.mWepon1;
-    float _accuracy { set { atack.accuracy = value; } }
-    float _gunAccuracy { set { atack.gunAccuracy = value; } }
-    float gunInterval { set { atack.interval = value; } }
+    [HideInInspector] public float _accuracy;
+    [HideInInspector] public float _gunAccuracy;
+    [HideInInspector] public float gunInterval;
     int keeping;
     public int bullet = 20, bullet2 = 10;
     public int damage1 = 20, damage2 = 100;
@@ -22,10 +22,13 @@ public class StatusCon :MonoBehaviour
     [HideInInspector] public float mouse;
     AtackCon atack;
     GameManager manager;
+    PlayerCon player;
 
     private void Start()
     {
-        manager = GetComponent<GameManager>();
+        player = GameObject.Find("Player").GetComponent<PlayerCon>();
+        WeponNemeObj = GameObject.Find("WeponText");
+        manager = this.gameObject.GetComponent<GameManager>();
         WeponNemeObj = GameObject.Find("WeponText");
         atack = GameObject.Find("GameManager").GetComponent<AtackCon>();//gamemanagerがあるオブジェクトに追加する
     }

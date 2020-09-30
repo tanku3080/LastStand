@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class GameStartCon : MonoBehaviour
 {
-    Animator aime;
+    public AudioSource source;
+    public AudioClip se;
     void Start()
     {
-        aime = GetComponent<Animator>();
+        source = this.gameObject.GetComponent<AudioSource>();
+        //source.PlayOneShot(se);
     }
 }

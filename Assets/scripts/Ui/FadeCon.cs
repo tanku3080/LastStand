@@ -11,22 +11,22 @@ public class FadeCon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        group = GetComponent<CanvasGroup>();
+        group = gameObject.GetComponent<CanvasGroup>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (flag)
+        if (!flag)
         {
             group.alpha = 0;
-            timer = Time.deltaTime * 0.01f;
+            timer = Time.timeScale * 0.01f;
             group.alpha += timer;
         }
         else
         {
             group.alpha = 1;
-            timer = Time.deltaTime * 0.01f;
+            timer = Time.timeScale * 0.01f;
             group.alpha -= timer;
         }
     }

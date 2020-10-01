@@ -21,6 +21,7 @@ public class GameOverCon : MonoBehaviour
         title.interactable = false;
         source = gameObject.GetComponent<AudioSource>();
         loder.GetComponent<SceneLoder>();
+        source.Play();
     }
 
     // Update is called once per frame

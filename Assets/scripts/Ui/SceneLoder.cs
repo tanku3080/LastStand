@@ -16,6 +16,7 @@ public class SceneLoder : MonoBehaviour
 
     private void Start()
     {
+        fade = GameObject.Find("GameStatus").AddComponent<FadeCon>();
         fade = GameObject.Find("GameStatus").GetComponent<FadeCon>();
     }
 
@@ -27,17 +28,17 @@ public class SceneLoder : MonoBehaviour
         switch (scene)
         {
             case Scene.Start:
-                fade.flag = false;
+                fade.flag = true;
                 sceneName = "Start";
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.Select:
-                fade.flag = false;
+                fade.flag = true;
                 sceneName = "PlayerSelect";
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.Game:
-                fade.flag = false;
+                fade.flag = true;
                 sceneName = "Game map2";
                 SceneManager.LoadScene(sceneName);
                 break;

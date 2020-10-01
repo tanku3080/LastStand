@@ -22,11 +22,9 @@ public class StatusCon :MonoBehaviour
     [HideInInspector] public float mouse;
     AtackCon atack;
     GameManager manager;
-    PlayerCon player;
 
     private void Start()
     {
-        player = GameObject.Find("Player").GetComponent<PlayerCon>();
         WeponNemeObj = GameObject.Find("WeponText");
         manager = this.gameObject.GetComponent<GameManager>();
         WeponNemeObj = GameObject.Find("WeponText");

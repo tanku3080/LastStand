@@ -7,9 +7,9 @@ public class EnemyCon : GameManager
 {
     public enum EnemyState
     {
-        Stop,Move,Searching,Atack
+        Stop,Move,Atack
     }
-    EnemyState State = EnemyState.Stop;
+    EnemyState Estate = EnemyState.Stop;
     public GameObject enemy;
     [HideInInspector] public float enemySpd = 1f;
     [SerializeField, NonSerialized] public int bullet;
@@ -19,7 +19,7 @@ public class EnemyCon : GameManager
     public float limitdistance;
     float distance;
     public float rayDir = 4f;
-    public AudioClip SFX1, SFX2;
+    public AudioClip SFX1;
 
     Rigidbody _Rb;
     Animator anime;
@@ -42,12 +42,8 @@ public class EnemyCon : GameManager
     {
         if (enemySide)
         {
-            if (enemyMoveFlag) Move();
-
-            if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, rayDir))
-            {
-                distance = enemy.transform.position.z - players.transform.position.z;
-            }
+            distance = Vector3.Distance(this.gameObject.transform.position,players.gameObject.transform.position);
+            if (enemyMoveFlag) Status(EnemyState.Move);
             else Search();
         }
         else return;
@@ -90,6 +86,23 @@ public class EnemyCon : GameManager
         }
 
         //自信の状態を参照して、一定値以下なら逃げながら攻撃する
+    }
+
+    void Status(EnemyState _state)
+    {
+        _state = Estate;
+        switch (_state)
+        {
+            case EnemyState.Stop:
+                break;
+            case EnemyState.Move:
+                transform.position += (transform.forward * enemySpd).normalized;
+                anime.SetBool("WalkF", true);
+                anime.speed = enemySpd;
+                break;
+            case EnemyState.Atack:
+                break;
+        }
     }
 
 

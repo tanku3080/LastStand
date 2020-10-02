@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerCon : MonoBehaviour
 {
     [Tooltip("基本情報")]
-    [HideInInspector] public float speed = 0.00005f;
+    [HideInInspector] public float speed = 0.05f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
     [HideInInspector] public float HpM { get { return manager.playerHp; } set { HpM = 1000f; } }
     /// <summary>移動制限</summary>
@@ -15,23 +15,29 @@ public class PlayerCon : MonoBehaviour
     private float searchTime = 0;
     /// <summary>メイン武器,サブ武器弾数</summary>
     [SerializeField] private AudioClip footSound,RadarSound;
+    public Slider move;
     AudioSource source;
     Animator anime;
     GameManager manager;
-    GameObject limited;
+    LimitCon limited;
+    GameObject lites;
     AtackCon atack;
     StatusCon status;
+    SphereCollider sphere;
     Rigidbody _rb;
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         anime = GetComponent<Animator>();
         source = GetComponent<AudioSource>();
+        sphere = this.gameObject.GetComponent<SphereCollider>();
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         atack = GameObject.Find("GameManager").GetComponent<AtackCon>();
         status = GameObject.Find("GameManager").GetComponent<StatusCon>();
+        move = GameObject.Find("MoveBer").GetComponent<Slider>();
         Test = SerchTag(gameObject);
-        limited = GameObject.Find("Limit");//？
+        limited = this.gameObject.GetComponent<LimitCon>();
+
 
     }
     private void FixedUpdate()
@@ -69,6 +75,16 @@ public class PlayerCon : MonoBehaviour
             }
         }
     }
+    int count = 0;
+    public int moveLimit = 700;
+    public void Avoid()
+    {
+        if (sphere.radius < 0)
+        {
+            manager.playerSide = false;
+        }
+        sphere.radius -= 0.5f;
+    }
     public void Moving()
     {
         if (Input.GetKey(KeyCode.W))
@@ -76,7 +92,7 @@ public class PlayerCon : MonoBehaviour
             transform.position += (transform.forward * speed).normalized;
             anime.SetBool("WalkF", true);
             anime.speed = speed;
-            //limited.GetComponent<LimitCon>().Avoid();
+            Avoid();
         }
         else anime.SetBool("WalkF", false);
 
@@ -85,8 +101,8 @@ public class PlayerCon : MonoBehaviour
             transform.position -= (transform.forward * speed).normalized;
             anime.SetBool("Back", true);
             anime.speed = speed;
-            //limited.GetComponent<LimitCon>().Avoid();
-
+            limited.Restriction();
+            Avoid();
         }
         else anime.SetBool("Back", false);
 
@@ -95,7 +111,7 @@ public class PlayerCon : MonoBehaviour
             transform.position -= (transform.right * speed).normalized;
             anime.SetBool("Left", true);
             anime.speed = speed;
-            //limited.GetComponent<LimitCon>().Avoid();
+            Avoid();
         }
         else anime.SetBool("Left", false);
 
@@ -104,7 +120,7 @@ public class PlayerCon : MonoBehaviour
             transform.position += (transform.right * speed).normalized;
             anime.SetBool("Right", true);
             anime.speed = speed;
-            //limited.GetComponent<LimitCon>().Avoid();
+            Avoid();
         }
         else anime.SetBool("Right", false);
     }
@@ -128,5 +144,13 @@ public class PlayerCon : MonoBehaviour
     void Foot()
     {
         source.PlayOneShot(footSound);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject == sphere)
+        {
+            manager.playerSide = false;
+        }
     }
 }

@@ -32,14 +32,14 @@ public class GameManager : MonoBehaviour
     {
         if (weponIs1) weponIs2 = false;
         else weponIs2 = true;
-    }
-
-    private void FixedUpdate()
-    {
         if (Input.GetKeyDown(KeyCode.P))
         {
             playerSide = true;
         }
+    }
+
+    private void FixedUpdate()
+    {
         if (playerHp >= 0) playerUnitDie = true;
         else if (enemyHp >= 0) enemyUnitDie = true;
     }

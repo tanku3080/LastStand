@@ -8,7 +8,7 @@ public class SceneLoder : MonoBehaviour
 {
     public enum Scene
     {
-        Start,Select,Game,GameOver,NULL
+        Start,Select,Game,GameOver,GameClear,NULL
     }
     [Header("スタートシーン")]
     public Scene sceneList1 = Scene.Select;
@@ -18,6 +18,8 @@ public class SceneLoder : MonoBehaviour
     public Scene sceneList3 = Scene.GameOver;
     [Header("ゲームオーバー")]
     public Scene sceneList4 = Scene.Start;
+    [Header("ゲームクリア")]
+    public Scene sceneList5 = Scene.GameClear;
     FadeCon fade;
     string sceneName;
 
@@ -58,6 +60,10 @@ public class SceneLoder : MonoBehaviour
                 sceneName = "GameOver";
                 SceneManager.LoadScene(sceneName);
                 break;
+            case Scene.GameClear:
+                sceneName = "GameClear";
+                SceneManager.LoadScene(sceneName);
+                break;
             case Scene.NULL:
                 return;
         }
@@ -91,6 +97,10 @@ public class SceneLoder : MonoBehaviour
             case Scene.GameOver:
                 fade.fadeInFlag = true;
                 sceneName = "GameOver";
+                SceneManager.LoadScene(sceneName);
+                break;
+            case Scene.GameClear:
+                sceneName = "GameClear";
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:
@@ -127,6 +137,10 @@ public class SceneLoder : MonoBehaviour
                 sceneName = "GameOver";
                 SceneManager.LoadScene(sceneName);
                 break;
+            case Scene.GameClear:
+                sceneName = "GameClear";
+                SceneManager.LoadScene(sceneName);
+                break;
             case Scene.NULL:
                 return;
         }
@@ -159,6 +173,48 @@ public class SceneLoder : MonoBehaviour
             case Scene.GameOver:
                 fade.fadeInFlag = true;
                 sceneName = "GameOver";
+                SceneManager.LoadScene(sceneName);
+                break;
+            case Scene.GameClear:
+                sceneName = "GameClear";
+                SceneManager.LoadScene(sceneName);
+                break;
+            case Scene.NULL:
+                return;
+        }
+    }
+    /// <summary>ゲームクリア</summary>
+    public void SceneAcsept5()
+    {
+        Scene scene;
+        scene = sceneList5;
+        switch (scene)
+        {
+            case Scene.Start:
+                fade.fadeInFlag = true;
+                sceneName = "Start";
+                SceneManager.LoadScene(sceneName);
+                fade.fadeInFlag = false;
+                break;
+            case Scene.Select:
+                fade.fadeInFlag = true;
+                sceneName = "PlayerSelect";
+                SceneManager.LoadScene(sceneName);
+                fade.fadeInFlag = false;
+                break;
+            case Scene.Game:
+                fade.fadeInFlag = true;
+                sceneName = "Game map2";
+                SceneManager.LoadScene(sceneName);
+                fade.fadeInFlag = false;
+                break;
+            case Scene.GameOver:
+                fade.fadeInFlag = true;
+                sceneName = "GameOver";
+                SceneManager.LoadScene(sceneName);
+                break;
+            case Scene.GameClear:
+                sceneName = "GameClear";
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:

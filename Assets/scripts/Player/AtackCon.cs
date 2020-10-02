@@ -16,7 +16,6 @@ public class AtackCon : MonoBehaviour
     System.Collections.Generic.List<int> atackCount = null;
     float healthM { get { return players.HpM; } }
     float Health { get { return manager.playerHp; } }
-    public Transform sight, objSize;
     public GameObject _enemy;
     Slider hp;
     GameManager manager;
@@ -25,8 +24,6 @@ public class AtackCon : MonoBehaviour
 
     private void Start()
     {
-        sight = GameObject.Find("Aim").transform;
-        objSize = GameObject.Find("center").transform;
         hp = GameObject.Find("HpBer").GetComponent<Slider>();
         players = GameObject.Find("Player").GetComponent<PlayerCon>();
         manager = this.gameObject.GetComponent<GameManager>();
@@ -34,30 +31,12 @@ public class AtackCon : MonoBehaviour
     }
     public void Atacks()
     {
-        //以下のコードはプレイヤーの照準を同期する
-        Vector2 sightpos = RectTransformUtility.WorldToScreenPoint(Camera.main,sight.position);
-        sightpos.x = sightpos.x - ((Screen.width / 2) * Random.insideUnitSphere.x * GunFireCalculation());
-        sightpos.y = sightpos.y - ((Screen.height / 2) * Random.insideUnitSphere.y * GunFireCalculation());
-        //Ray ray = sightpos;//x,yに計算の答えを入れた
         if (manager.weponIs1 == true)
         {
             for (int i = 0; i < status.bullet; i++)
             {
-                //if (Physics.Raycast(ray, out RaycastHit hit))
-                //{
-                //    if (hit.collider.tag == "Enemy") atackCount.Add(1);
-                //    else atackCount.Add(0);
-                //}
-                if (Physics2D.Raycast(sightpos,sightpos))
-                {
-                    Debug.Log("命中");
-                    atackCount.Add(1);
-                }
-                else
-                {
-                    Debug.Log("外れ");
-                    atackCount.Add(0);
-                }
+                //当たったらatack.count.Add(1);
+                //当たらなかったらatack.count.Add(0);
             }
             StartCoroutine(Fire1());
         }
@@ -65,21 +44,8 @@ public class AtackCon : MonoBehaviour
         {
             for (int i = 0; i < status.bullet2; i++)
             {
-                //if (Physics.Raycast(ray, out RaycastHit hit))
-                //{
-                //    if (hit.collider.tag == "Enemy") atackCount.Add(1);
-                //    else atackCount.Add(0);
-                //}
-                if (Physics2D.Raycast(sightpos, sightpos))
-                {
-                    Debug.Log("命中");
-                    atackCount.Add(1);
-                }
-                else
-                {
-                    Debug.Log("外れ");
-                    atackCount.Add(0);
-                }
+                //当たったらatack.count.Add(1);
+                //当たらなかったらatack.count.Add(0);
             }
             StartCoroutine(Fire2());
         }
@@ -100,7 +66,7 @@ public class AtackCon : MonoBehaviour
             //以下の分岐で射撃アニメーションを記載する
             if (t == 0)
             {
-
+                atackCount.Remove(t);//戻す
             }
             else//命中
             {

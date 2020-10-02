@@ -9,7 +9,10 @@ public class PlayerCon : MonoBehaviour
     [HideInInspector] public float HpM { get { return manager.playerHp; } set { HpM = 1000f; } }
     /// <summary>移動制限</summary>
     [HideInInspector]  public float limitDistance;
-    float h, v,radarDir;
+    float h, v;
+    //以下はエネミー
+    public float EnemyDis,nearEnemyDis;
+    GameObject objDis = null;
     /// <summary>メイン武器,サブ武器弾数</summary>
     [SerializeField] private AudioClip footSound;
     Transform playerPos;
@@ -53,7 +56,11 @@ public class PlayerCon : MonoBehaviour
             {
                 atack.Atacks();
             }
-            if (h != 0 || v != 0 || h != 0 && v != 0) Moving();
+            if (h != 0 || v != 0 || h != 0 && v != 0)
+            {
+                Moving();
+            }
+            objDis = NearObj();
         }
     }
     public void Moving()
@@ -96,24 +103,30 @@ public class PlayerCon : MonoBehaviour
         else anime.SetBool("Right", false);
     }
 
+    GameObject NearObj()
+    {
+        GameObject targetObj = null;
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            EnemyDis = Vector3.Distance(obj.transform.position, transform.position);
+            if (nearEnemyDis > EnemyDis || EnemyDis == 0)
+            {
+                nearEnemyDis = EnemyDis;
+                targetObj = obj;
+            }
+
+        }
+        return targetObj;
+    }
+
+
     //Radarscriptで使いたい
     public float PlayerForwardRadar()
     {
-        float unitDis = 0;
-        Ray ray = Camera.main.ScreenPointToRay(playerPos.forward);
-        Debug.DrawRay(ray.origin,Vector3.forward);
-        if (Physics.Raycast(ray,out RaycastHit hit))
-        {
-            float unitDis2;
-            if (hit.collider.tag == "Enemy")
-            {
-                unitDis2 = Vector3.Distance(transform.position, hit.point);
-            }
-            else unitDis2 = 0;
-            return unitDis2;
-        }
-        unitDis.ToString();
-        return unitDis;
+        float unit = 0;
+        float dis = Vector3.Distance(this.gameObject.transform.position,NearObj().transform.position);
+        unit = dis;
+        return unit;
     }
 
     void Foot()

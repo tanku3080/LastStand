@@ -1896,7 +1896,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   limitDistance: 0
+  Test: {fileID: 0}
   footSound: {fileID: 8300000, guid: 3601028ad4d432747a5985dc74435d10, type: 3}
+  RadarSound: {fileID: 8300000, guid: 1219e8aa13fb04f538c35b8d080bbc0a, type: 3}
 --- !u!1 &1858714439182666
 GameObject:
   m_ObjectHideFlags: 0

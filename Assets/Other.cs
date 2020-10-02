@@ -13,8 +13,16 @@ public class Other : MonoBehaviour
     void Start()
     {
         source = gameObject.GetComponent<AudioSource>();
-        loder.GetComponent<SceneLoder>();
+        loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
         source.Play();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GameStart();
+        }
     }
 
     public void GameStart()

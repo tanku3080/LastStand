@@ -45,6 +45,6 @@ public class GameOverCon : MonoBehaviour
     public void Title()
     {
         source.PlayOneShot(sfx);
-        loder.SceneAcsept();
+        loder.SceneAcsept4();
     }
 }

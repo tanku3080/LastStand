@@ -5,45 +5,52 @@ using UnityEngine.UI;
 public class RadarCon : MonoBehaviour
 {
     public Image image;
+    float time = 0;
+    float speed;
     PlayerCon _player;
-    public AudioClip radarSound;
-    AudioSource Audio;
     void Start()
     {
-        Audio = GetComponent<AudioSource>();
         image = GameObject.Find("EnemyPointer").GetComponent<Image>();
         _player = GameObject.Find("Player").GetComponent<PlayerCon>();
     }
 
     private void Update()
     {
-        float imegeAlfa = image.color.a;
-        float pos = _player.PlayerForwardRadar();
-        if (pos == 0)
+        GameObject poss = _player.Test;
+        float pos = Vector3.Distance(_player.transform.position,poss.transform.position);
+        if (pos < 500)
         {
-            Debug.Log($"0以下。Enemy検知なし{pos}");
-        }
-        else if (pos < 100)
-        {
-            Debug.Log($"100以下{pos}");
-            imegeAlfa += Time.deltaTime * 0.5f;
-            Audio.Play();
-        }
-        else if (pos < 300)
-        {
-            Debug.Log($"300以下{pos}");
-            imegeAlfa += Time.deltaTime * 0.05f;
-            Audio.Play();
-        }
-        else if (pos < 500)
-        {
-            Debug.Log($"500以下{pos}");
-            imegeAlfa += Time.deltaTime * 0.005f;
-            Audio.Play();
-        }
-        else
-        {
-            Debug.Log($"あり得ない値です{pos}");
+            if (pos < 300)
+            {
+                if (pos < 100)
+                {
+                    if (pos < 50)
+                    {
+                        if (pos <= 0)
+                        {
+                            Debug.Log("0又はそれ以下");
+                            speed = 2f;
+                            image.color = GetAlphaColor(image.color);
+                        }
+                        speed = 1.5f;
+                        image.color = GetAlphaColor(image.color);
+                    }
+                    speed = 1f;
+                    image.color = GetAlphaColor(image.color);
+                }
+                speed = 0.5f;
+                image.color = GetAlphaColor(image.color);
+            }
+            speed = 0.5f;
+            image.color = GetAlphaColor(image.color);
         }
     }
+    Color GetAlphaColor(Color color)
+    {
+        time += Time.deltaTime * 5.0f * speed;
+        color.a = Mathf.Sin(time) * 0.5f + 0.5f;
+
+        return color;
+    }
+
 }

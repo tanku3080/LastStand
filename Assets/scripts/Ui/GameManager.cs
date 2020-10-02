@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
     private AtackCon atack;
     private void Awake()
     {
-        status = this.gameObject.AddComponent<StatusCon>();
-        atack = this.gameObject.AddComponent<AtackCon>();
+        status = this.gameObject.GetComponent<StatusCon>();
+        atack = this.gameObject.GetComponent<AtackCon>();
     }
     private void Update()
     {

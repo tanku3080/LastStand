@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 
-public class SpeechSauce : MonoBehaviour
-{
+
+public class SpeechSauce : MonoBehaviour{
+
     public string[][] keywords;//認識したい単語を二次元配列で記録
     public bool[] hasRecognized;
     public KeywordRecognizer[] m_Recognizer;
     public bool ConsoleKeyword;//認識された単語をコンソールで表示するかしないか
 
-    //public KeywordController(string[][] keywords, bool ConsoleKeyword)
-    //{
-    //   this.ConsoleKeyword = ConsoleKeyword;
-    //   this.keywords = keywords;
-    //}
+    public SpeechSauce(string[][] keywords,bool ConsoleKeyword)
+    {
+        this.ConsoleKeyword = ConsoleKeyword;
+        this.keywords = keywords;
+    }
 
     public void SetKeywords()
     {

@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyCon : GameManager
 {
+    public enum EnemyState
+    {
+        Stop,Move,Searching,Atack
+    }
+    EnemyState State = EnemyState.Stop;
     public GameObject enemy;
     [HideInInspector] public float enemySpd = 1f;
     [SerializeField, NonSerialized] public int bullet;

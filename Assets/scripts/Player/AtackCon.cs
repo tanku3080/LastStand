@@ -8,10 +8,15 @@ public class AtackCon : MonoBehaviour
     //射撃システムの構築中。攻撃ボタンを押したら射撃を繰り返すスクリプトをコルーチンで行う。
     //enumの種類を一種類にしてenumからフィールドでの設定にする
     //intervalは攻撃間隔
+
+    [HideInInspector]public GameObject inPrefab;
+    public GameObject plafab;
+    public Transform jukou;
     public float interval { get { return status.gunInterval; } }
     float accuracy { get { return status._accuracy; } }
     float gunAccuracy { get { return status._gunAccuracy; } }
     float hitPercent;
+    float counter = 0;
     //何発当たったか格納する
     System.Collections.Generic.List<int> atackCount = null;
     float healthM { get { return players.HpM; } }
@@ -35,10 +40,8 @@ public class AtackCon : MonoBehaviour
         {
             for (int i = 0; i < status.bullet; i++)
             {
-                //当たったらatack.count.Add(1);
-                //当たらなかったらatack.count.Add(0);
+               InvokeRepeating("Fire1", 2, 0.3f);
             }
-            StartCoroutine(Fire1());
         }
         if (manager.weponIs2 == true)
         {
@@ -61,6 +64,11 @@ public class AtackCon : MonoBehaviour
 
     IEnumerator Fire1()
     {
+        inPrefab = Instantiate(plafab);
+        Vector3 foce = this.gameObject.transform.forward * 4f;
+        inPrefab.GetComponent<Rigidbody>().AddForce(foce * 1500f);
+        inPrefab.transform.position = jukou.position;
+        counter++;
         foreach (int t in atackCount)
         {
             //以下の分岐で射撃アニメーションを記載する

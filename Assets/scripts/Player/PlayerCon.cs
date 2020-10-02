@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerCon : MonoBehaviour
 {
     [Tooltip("基本情報")]
-    [HideInInspector] public float speed = 0.00005f;
+    [HideInInspector] public float speed = 0.05f;
     //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
     [HideInInspector] public float HpM { get { return manager.playerHp; } set { HpM = 1000f; } }
     /// <summary>移動制限</summary>

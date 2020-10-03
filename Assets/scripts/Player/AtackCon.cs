@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +22,8 @@ public class AtackCon : MonoBehaviour
     System.Collections.Generic.List<int> atackCount = null;
     float healthM { get { return players.HpM; } }
     float Health { get { return manager.playerHp; } }
-    public GameObject _enemy;
+    AudioSource source;
+    public AudioClip mg, mr;
     Slider hp;
     GameManager manager;
     StatusCon status;
@@ -29,28 +31,41 @@ public class AtackCon : MonoBehaviour
 
     private void Start()
     {
+        source = gameObject.GetComponent<AudioSource>();
+        jukou = GameObject.Find("Gun").transform;
         hp = GameObject.Find("HpBer").GetComponent<Slider>();
         players = GameObject.Find("Player").GetComponent<PlayerCon>();
         manager = this.gameObject.GetComponent<GameManager>();
         status = GameObject.Find("GameManager").GetComponent<StatusCon>();
     }
+
+    private void Update()
+    {
+    }
     public void Atacks()
     {
         if (manager.weponIs1 == true)
         {
-            for (int i = 0; i < status.bullet; i++)
+            if (counter >= status.bullet)
             {
-               InvokeRepeating("Fire1", 2, 0.3f);
+                Debug.Log("北");
+                CancelInvoke();
+            }
+            else
+            {
+                InvokeRepeating("Shot", 2, interval);
             }
         }
         if (manager.weponIs2 == true)
         {
-            for (int i = 0; i < status.bullet2; i++)
+            if (counter >= status.bullet2)
             {
-                //当たったらatack.count.Add(1);
-                //当たらなかったらatack.count.Add(0);
+                CancelInvoke();
             }
-            StartCoroutine(Fire2());
+            else
+            {
+                InvokeRepeating("Shot2", 2, interval);
+            }
         }
     }
 
@@ -62,47 +77,33 @@ public class AtackCon : MonoBehaviour
         return hitPercent = 0.87f;
     }
 
-    IEnumerator Fire1()
+    void Shot()
     {
-        inPrefab = Instantiate(plafab);
-        Vector3 foce = this.gameObject.transform.forward * 4f;
-        inPrefab.GetComponent<Rigidbody>().AddForce(foce * 1500f);
-        inPrefab.transform.position = jukou.position;
-        counter++;
-        foreach (int t in atackCount)
+        for (int i = 0; i < 1; i++)
         {
-            //以下の分岐で射撃アニメーションを記載する
-            if (t == 0)
-            {
-                atackCount.Remove(t);//戻す
-            }
-            else//命中
-            {
-                manager.enemyHp -= status.damage1;
-                hp.value = manager.playerHp / players.HpM;
-            }
-            yield return new WaitForSeconds(interval);
+            source.clip = mg;
+            source.Play();
 
+            inPrefab = Instantiate(plafab);
+            Vector3 foce = this.gameObject.transform.forward * 4f;
+            inPrefab.GetComponent<Rigidbody>().AddForce(foce * 1500f);
+            inPrefab.transform.position = jukou.position;
+            counter++;
         }
     }
-    IEnumerator Fire2()
-    {
-        foreach (int t in atackCount)
-        {
-            if (t == 0)
-            {
-                Debug.Log("外れ");
-                atackCount.Remove(t);
-            }
-            else//命中
-            {
-                Debug.Log("命中");
-                manager.enemyHp -= status.damage2;
-                atackCount.Remove(t);
-                hp.value = manager.playerHp / players.HpM;
-            }
-            yield return new WaitForSeconds(interval);
 
+    void Shot2()
+    {
+        for (int i = 0; i < 1; i++)
+        {
+            source.clip = mr;
+            source.Play();
+
+            inPrefab = Instantiate(plafab);
+            Vector3 foce = this.gameObject.transform.forward * 4f;
+            inPrefab.GetComponent<Rigidbody>().AddForce(foce * 1000f);
+            inPrefab.transform.position = jukou.position;
+            counter++;
         }
     }
 }

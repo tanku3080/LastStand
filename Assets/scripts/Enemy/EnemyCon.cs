@@ -5,105 +5,53 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyCon : GameManager
 {
-    public enum EnemyState
-    {
-        Stop,Move,Atack
-    }
-    EnemyState Estate = EnemyState.Stop;
-    public GameObject enemy;
-    [HideInInspector] public float enemySpd = 1f;
-    [SerializeField, NonSerialized] public int bullet;
-    public Transform[] searchpoints;
-    public float gizmo = 3f;
-    /// <summary>移動制限 </summary>
-    public float limitdistance;
-    float distance;
-    public float rayDir = 4f;
-    public AudioClip SFX1;
+	public Vector3[] wayPoints = new Vector3[3];//徘徊するポイントの座標を代入するVector3型の変数を配列で作る
+	private int currentRoot;//現在目指すポイントを代入する変数
+	private int Mode;//敵の行動パターンを分けるための変数
+	public Transform player;//プレイヤーの位置を取得するためのTransform型の変数
+	public Transform enemypos;//敵の位置を取得するためのTransform型の変数
+	private NavMeshAgent agent;//NavMeshAgentの情報を取得するためのNavmeshagent型の変数
 
-    Rigidbody _Rb;
-    Animator anime;
-    NavMeshAgent nav;
-    PlayerCon players;
-    private void Awake()
-    {
-        if (enemy == null)
-            enemy = this.gameObject;
-    }
-    void Start()
-    {
-        _Rb = GetComponent<Rigidbody>();
-        anime = GetComponent<Animator>();
-        players = GetComponent<PlayerCon>();
-        nav = GetComponent<NavMeshAgent>();
-    }
+	void Start()
+	{
+		agent = GetComponent<NavMeshAgent>();//NavMeshAgentの情報をagentに代入
+	}
 
-    void Update()
-    {
-        if (enemySide)
-        {
-            distance = Vector3.Distance(this.gameObject.transform.position,players.gameObject.transform.position);
-            if (enemyMoveFlag) Status(EnemyState.Move);
-            else Search();
-        }
-        else return;
-    }
+	void Update()
+	{
+		Vector3 pos = wayPoints[currentRoot];//Vector3型のposに現在の目的地の座標を代入
+		float distance = Vector3.Distance(enemypos.position, player.transform.position);//敵とプレイヤーの距離を求める
 
-    void Search()
-    {
-        int i = 0;
-        for (; i < searchpoints.Length; i++)
-        {
-            if (i > searchpoints.Length) i = 0;
-            nav.SetDestination(searchpoints[i].position);
-        }
-    }
-    public void Move()
-    {
-        float gizmos = this.transform.position.normalized.z * gizmo;
-        if (distance <= gizmos)
-        {
-            if (enemyAtackStop == true)
-            {
-                Fire();
-            }
-            else
-            {
-                anime.SetBool("Wait", true);
-            }
-        }
-    }
+		if (distance > 5)
+		{//もしプレイヤーと敵の距離が5以上なら
+			Mode = 0;//Modeを0にする
+		}
 
-    void Fire()
-    {
-        ///<summary>Playerとだけ衝突させる</summary>
-        int layer = 1 << 8;
-        //下に弾の管理を書く
-        bool ray = Physics.Raycast(enemy.transform.position, this.transform.forward, gizmo, layer);
-        if (ray)
-        {
+		if (distance < 5)
+		{//もしプレイヤーと敵の距離が5以下なら
+			Mode = 1;//Modeを1にする
+		}
 
-        }
+		switch (Mode)
+		{//Modeの切り替えは
 
-        //自信の状態を参照して、一定値以下なら逃げながら攻撃する
-    }
+			case 0://case0の場合
 
-    void Status(EnemyState _state)
-    {
-        _state = Estate;
-        switch (_state)
-        {
-            case EnemyState.Stop:
-                break;
-            case EnemyState.Move:
-                transform.position += (transform.forward * enemySpd).normalized;
-                anime.SetBool("WalkF", true);
-                anime.speed = enemySpd;
-                break;
-            case EnemyState.Atack:
-                break;
-        }
-    }
+				if (Vector3.Distance(transform.position, pos) < 1f)
+				{//もし敵の位置と現在の目的地との距離が1以下なら
+					currentRoot += 1;//currentRootを+1する
+					if (currentRoot > wayPoints.Length - 1)
+					{//もしcurrentRootがwayPointsの要素数-1より大きいなら
+						currentRoot = 0;//currentRootを0にする
+					}
+				}
+				GetComponent<NavMeshAgent>().SetDestination(pos);//NavMeshAgentの情報を取得し目的地をposにする
+				break;//switch文の各パターンの最後につける
 
+			case 1://case1の場合
+				agent.destination = player.transform.position;//プレイヤーに向かって進む		
+				break;//switch文の各パターンの最後につける
+		}
+	}
 
 }

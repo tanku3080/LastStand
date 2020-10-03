@@ -18,11 +18,19 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public float playerHp = 1000f, enemyHp;
     [HideInInspector] public bool playerUnitDie = false,enemyUnitDie = false;
     //敵と味方のターン味方：これ一つで移動、攻撃の可否を判定
-    [HideInInspector] public bool playerSide, enemySide = false;
+    [HideInInspector] public bool playerSide = true, enemySide = false;
     [Tooltip("音声認識")]
     [HideInInspector] public bool voiceModeOn = false;
+
+    public int pointCounter = 0;
+    SceneLoder loder;
     private StatusCon status;
     private AtackCon atack;
+
+    private void Start()
+    {
+        loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
+    }
     private void Awake()
     {
         status = this.gameObject.GetComponent<StatusCon>();
@@ -35,6 +43,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             playerSide = true;
+        }
+
+        if (pointCounter == 1)
+        {
+            loder.SceneAcsept5();
         }
     }
 

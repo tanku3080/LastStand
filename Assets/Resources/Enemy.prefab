@@ -254,7 +254,7 @@ GameObject:
   m_Component:
   - component: {fileID: 480262250927903152}
   - component: {fileID: 480262250918100548}
-  - component: {fileID: 2877250902530216774}
+  - component: {fileID: 6544886969822171300}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -299,7 +299,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2877250902530216774
+--- !u!114 &6544886969822171300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -308,21 +308,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 480262250927607184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fcb20b8453040c4797b2a76636d765e, type: 3}
+  m_Script: {fileID: 11500000, guid: ce70f4f8daf618e40961f440c7ae688e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemyAnim: {fileID: 480262250918100548}
-  m_rotateSpeed: 45
-  m_searchDistance1: 16
-  m_searchDistance2: 8
-  m_searchAngle: 60
-  m_stopDistance: 0.5
-  m_attackDistance: 1
-  m_walkingDistance: 3
-  m_attackMuzzle: {fileID: 0}
-  m_obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  playerUnitCount: []
+  enemyAtackStop: 0
+  enemyMoveFlag: 0
+  weponIs1: 0
+  weponIs2: 0
+  limitUnit: 0
+  playerHp: 1000
+  enemyHp: 0
+  playerUnitDie: 0
+  enemyUnitDie: 0
+  playerSide: 0
+  enemySide: 0
+  voiceModeOn: 0
+  enemy: {fileID: 0}
+  enemySpd: 1
+  searchpoints: []
+  gizmo: 3
+  limitdistance: 0
+  rayDir: 4
+  SFX1: {fileID: 0}
 --- !u!1 &480262250927607186
 GameObject:
   m_ObjectHideFlags: 0

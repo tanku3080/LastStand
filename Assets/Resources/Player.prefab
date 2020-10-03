@@ -1806,6 +1806,7 @@ GameObject:
   - component: {fileID: 136775077585159954}
   - component: {fileID: 6548399586154751628}
   - component: {fileID: 8905351066012617799}
+  - component: {fileID: 5111293677417135600}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1830,6 +1831,7 @@ Transform:
   - {fileID: 4215846917929590}
   - {fileID: 4414940419001469681}
   - {fileID: 6196857469278830663}
+  - {fileID: 5483128638441236236}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1899,6 +1901,21 @@ MonoBehaviour:
   Test: {fileID: 0}
   footSound: {fileID: 8300000, guid: 3601028ad4d432747a5985dc74435d10, type: 3}
   RadarSound: {fileID: 8300000, guid: 1219e8aa13fb04f538c35b8d080bbc0a, type: 3}
+  move: {fileID: 0}
+  moveLimit: 700
+--- !u!135 &5111293677417135600
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762146786600250}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 200
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1858714439182666
 GameObject:
   m_ObjectHideFlags: 0
@@ -2201,6 +2218,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4587756876036610}
   m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8830394733503933917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5483128638441236236}
+  m_Layer: 0
+  m_Name: Gun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5483128638441236236
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8830394733503933917}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 11.3, z: 5.93}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4587756876036610}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8878896394436383311
 GameObject:

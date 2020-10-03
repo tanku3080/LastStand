@@ -66,7 +66,7 @@ public class StatusCon :MonoBehaviour
             //このswitch文をStatusConに移動して判定させる予定
             //MG
             case Weponchenge.mWepon1:
-                gunInterval = 0.2f;
+                gunInterval = 0.5f;
                 _accuracy = 0.80f;
                 _gunAccuracy = 0.6f;
                 manager.weponIs1 = true;
@@ -75,7 +75,7 @@ public class StatusCon :MonoBehaviour
                 break;
             //MR
             case Weponchenge.mWepon2:
-                gunInterval = 0.6f;
+                gunInterval = 0.9f;
                 _accuracy = 0.75f;
                 _gunAccuracy = 0.4f;
                 manager.weponIs2 = true;

@@ -1,5 +1,4 @@
-﻿using Cinemachine.Utility;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 public class PlayerCon : MonoBehaviour
 {
@@ -19,8 +18,6 @@ public class PlayerCon : MonoBehaviour
     AudioSource source;
     Animator anime;
     GameManager manager;
-    LimitCon limited;
-    GameObject lites;
     AtackCon atack;
     StatusCon status;
     SphereCollider sphere;
@@ -36,8 +33,6 @@ public class PlayerCon : MonoBehaviour
         status = GameObject.Find("GameManager").GetComponent<StatusCon>();
         move = GameObject.Find("MoveBer").GetComponent<Slider>();
         Test = SerchTag(gameObject);
-        limited = this.gameObject.GetComponent<LimitCon>();
-
 
     }
     private void FixedUpdate()
@@ -46,8 +41,6 @@ public class PlayerCon : MonoBehaviour
     }
     void Update()
     {
-        if (manager.playerSide)
-        {
             searchTime += Time.deltaTime;
             h = Input.GetAxis("Horizontal");
             v = Input.GetAxis("Vertical");
@@ -58,22 +51,23 @@ public class PlayerCon : MonoBehaviour
                 source.PlayOneShot(RadarSound);
                 searchTime = 0;
             }
-            if (status.mouse > 0 || status.mouse < 0) status.ChangeStart();
+        if (status.mouse > 0 || status.mouse < 0) status.ChangeStart();
 
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                manager.enemyAtackStop = false;
-            }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            manager.enemyAtackStop = false;
+        }
 
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                atack.Atacks();
-            }
-            if (h != 0 || v != 0 || h != 0 && v != 0)
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            anime.StopPlayback();
+            this.gameObject.transform.LookAt(Vector3.forward);
+            atack.Atacks();
+        }
+        if (h != 0 || v != 0 || h != 0 && v != 0)
             {
                 Moving();
             }
-        }
     }
     int count = 0;
     public int moveLimit = 700;
@@ -82,6 +76,7 @@ public class PlayerCon : MonoBehaviour
         if (sphere.radius < 0)
         {
             manager.playerSide = false;
+            anime.StopPlayback();
         }
         sphere.radius -= 0.5f;
     }
@@ -101,7 +96,6 @@ public class PlayerCon : MonoBehaviour
             transform.position -= (transform.forward * speed).normalized;
             anime.SetBool("Back", true);
             anime.speed = speed;
-            limited.Restriction();
             Avoid();
         }
         else anime.SetBool("Back", false);
@@ -141,9 +135,11 @@ public class PlayerCon : MonoBehaviour
         }
         return targetObj;
     }
-    void Foot()
+
+    void Food()
     {
         source.PlayOneShot(footSound);
+        return;
     }
 
     private void OnCollisionEnter(Collision collision)

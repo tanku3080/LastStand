@@ -7,6 +7,7 @@ TagManager:
   - Limit
   - Enemy
   - KillZone
+  - Bullet
   layers:
   - Default
   - TransparentFX

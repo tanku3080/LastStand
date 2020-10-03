@@ -19,7 +19,7 @@ public class SceneLoder : MonoBehaviour
     [Header("ゲームオーバー")]
     public Scene sceneList4 = Scene.Start;
     [Header("ゲームクリア")]
-    public Scene sceneList5 = Scene.GameClear;
+    public Scene scemeList5 = Scene.GameClear;
     FadeCon fade;
     string sceneName;
 
@@ -183,11 +183,11 @@ public class SceneLoder : MonoBehaviour
                 return;
         }
     }
-    /// <summary>ゲームクリア</summary>
+
     public void SceneAcsept5()
     {
         Scene scene;
-        scene = sceneList5;
+        scene = SceneAcsept5;
         switch (scene)
         {
             case Scene.Start:

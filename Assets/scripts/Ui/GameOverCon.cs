@@ -20,7 +20,7 @@ public class GameOverCon : MonoBehaviour
         reStart.interactable = false;
         title.interactable = false;
         source = gameObject.GetComponent<AudioSource>();
-        loder.GetComponent<SceneLoder>();
+        loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
         source.Play();
     }
 

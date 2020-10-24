@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Mail;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -187,7 +188,7 @@ public class SceneLoder : MonoBehaviour
     public void SceneAcsept5()
     {
         Scene scene;
-        scene = SceneAcsept5;
+        scene = scemeList5;
         switch (scene)
         {
             case Scene.Start:

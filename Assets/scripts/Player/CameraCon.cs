@@ -15,8 +15,9 @@ public class CameraCon : GameManager
     }
     private void Update()
     {
-        if (playerSide)
-        {
+        //コメントアウトしている部分はいろいろ変更している
+        //if (playerSide)
+        //{
             mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
@@ -38,6 +39,6 @@ public class CameraCon : GameManager
                 }
 
             }
-        }
+        //}
     }
 }

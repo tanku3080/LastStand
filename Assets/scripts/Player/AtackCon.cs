@@ -48,12 +48,13 @@ public class AtackCon : MonoBehaviour
         {
             if (counter >= status.bullet)
             {
-                Debug.Log("北");
+                Debug.Log("きた");
                 CancelInvoke();
             }
             else
             {
                 InvokeRepeating("Shot", 2, interval);
+                counter++;
             }
         }
         if (manager.weponIs2 == true)
@@ -65,6 +66,7 @@ public class AtackCon : MonoBehaviour
             else
             {
                 InvokeRepeating("Shot2", 2, interval);
+                counter++;
             }
         }
     }

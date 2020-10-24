@@ -1806,7 +1806,6 @@ GameObject:
   - component: {fileID: 136775077585159954}
   - component: {fileID: 6548399586154751628}
   - component: {fileID: 8905351066012617799}
-  - component: {fileID: 5111293677417135600}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1903,19 +1902,6 @@ MonoBehaviour:
   RadarSound: {fileID: 8300000, guid: 1219e8aa13fb04f538c35b8d080bbc0a, type: 3}
   move: {fileID: 0}
   moveLimit: 700
---- !u!135 &5111293677417135600
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762146786600250}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 200
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1858714439182666
 GameObject:
   m_ObjectHideFlags: 0
@@ -2358,6 +2344,7 @@ MonoBehaviour:
   playerSide: 0
   enemySide: 0
   voiceModeOn: 0
+  pointCounter: 0
   maxYAngle: -0.5
   minYAngle: 0.5
   mouseX: 0

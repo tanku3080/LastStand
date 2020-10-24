@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 434368}
   - component: {fileID: 3352086}
   - component: {fileID: 2328476}
-  - component: {fileID: 2624729695622716952}
   m_Layer: 0
   m_Name: City_building_030
   m_TagString: Untagged
@@ -82,19 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2624729695622716952
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 102534}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120838, y: 7.0432453, z: 9.855418}
-  m_Center: {x: -0.000007867813, y: -0.0000039339066, z: 4.924092}
 --- !u!1 &107294
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +139,7 @@ Transform:
   - {fileID: 439214}
   - {fileID: 446744}
   m_Father: {fileID: 419628}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &108196
 GameObject:
@@ -166,7 +152,6 @@ GameObject:
   - component: {fileID: 430210}
   - component: {fileID: 3395958}
   - component: {fileID: 2380630}
-  - component: {fileID: 1787778231458893060}
   m_Layer: 0
   m_Name: City_building_038
   m_TagString: Untagged
@@ -237,19 +222,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1787778231458893060
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 108196}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 13.045412, y: 18.524431, z: 8.309065}
-  m_Center: {x: -0.0000019073489, y: 4.0438747, z: 4.1364202}
 --- !u!1 &109140
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,7 +233,6 @@ GameObject:
   - component: {fileID: 438600}
   - component: {fileID: 3364696}
   - component: {fileID: 2360844}
-  - component: {fileID: 6169935012076671995}
   m_Layer: 0
   m_Name: City_building_035
   m_TagString: Untagged
@@ -332,19 +303,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6169935012076671995
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109140}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120834, y: 7.0432444, z: 9.855418}
-  m_Center: {x: -0.00000023841858, y: -0.0000039339066, z: 4.924092}
 --- !u!1 &111150
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +314,6 @@ GameObject:
   - component: {fileID: 447354}
   - component: {fileID: 3376506}
   - component: {fileID: 2321254}
-  - component: {fileID: 7542926850504925180}
   m_Layer: 0
   m_Name: City_building_011
   m_TagString: Untagged
@@ -427,19 +384,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7542926850504925180
-BoxCollider:
+--- !u!1 &111268
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111150}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.117924, y: 16.587717, z: 4.7902727}
-  m_Center: {x: 0.026460648, y: 0.0000052452087, z: 2.392734}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 432614}
+  m_Layer: 0
+  m_Name: Camera001.Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &432614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111268}
+  m_LocalRotation: {x: -0.049339782, y: 0.93228734, z: 0.13933125, w: 0.3301404}
+  m_LocalPosition: {x: 28.132622, y: 20.87333, z: -35.064213}
+  m_LocalScale: {x: 1, y: 1.0000001, z: 1.0000002}
+  m_Children: []
+  m_Father: {fileID: 419628}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -17, y: 141, z: 0}
 --- !u!1 &111564
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +425,6 @@ GameObject:
   - component: {fileID: 441578}
   - component: {fileID: 3335438}
   - component: {fileID: 2341402}
-  - component: {fileID: 6817612285994529173}
   m_Layer: 0
   m_Name: City_building_032
   m_TagString: Untagged
@@ -522,19 +495,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6817612285994529173
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 111564}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 11.836522, y: 12.829918, z: 5.90382}
-  m_Center: {x: 0.9609084, y: 0.0000019073486, z: 2.948234}
 --- !u!1 &113322
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,7 +506,6 @@ GameObject:
   - component: {fileID: 438950}
   - component: {fileID: 3302540}
   - component: {fileID: 2314722}
-  - component: {fileID: 3265953098335137652}
   m_Layer: 0
   m_Name: City_building_039
   m_TagString: Untagged
@@ -617,19 +576,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3265953098335137652
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113322}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120838, y: 7.0432453, z: 9.855418}
-  m_Center: {x: -0.000007867813, y: -0.0000039339066, z: 4.924092}
 --- !u!1 &114660
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,7 +604,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 419628}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 25.2314, y: 90, z: 0}
 --- !u!1 &117212
 GameObject:
@@ -671,7 +617,6 @@ GameObject:
   - component: {fileID: 490570}
   - component: {fileID: 3355010}
   - component: {fileID: 2399756}
-  - component: {fileID: 82973936053009477}
   m_Layer: 0
   m_Name: City_building_024
   m_TagString: Untagged
@@ -742,19 +687,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &82973936053009477
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117212}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 7.060393, y: 5.2050657, z: 3.4438891}
-  m_Center: {x: -3.6217881e-22, y: -0.0000038146973, z: 1.7103415}
 --- !u!1 &119188
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +779,6 @@ GameObject:
   - component: {fileID: 434024}
   - component: {fileID: 3362494}
   - component: {fileID: 2318082}
-  - component: {fileID: 6016041156263339759}
   m_Layer: 0
   m_Name: City_building_016
   m_TagString: Untagged
@@ -918,19 +849,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6016041156263339759
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 119784}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 12.7126, y: 7.0176363, z: 10.216327}
-  m_Center: {x: 8.6489165e-21, y: 0.0000038146973, z: 5.1054206}
 --- !u!1 &119790
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +860,6 @@ GameObject:
   - component: {fileID: 469194}
   - component: {fileID: 3317130}
   - component: {fileID: 2371508}
-  - component: {fileID: 5721942652650674631}
   m_Layer: 0
   m_Name: City_building_004
   m_TagString: Untagged
@@ -1013,19 +930,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5721942652650674631
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 119790}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 11.836522, y: 12.829918, z: 5.90382}
-  m_Center: {x: 0.9609084, y: 0.0000019073486, z: 2.948234}
 --- !u!1 &125740
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,6 +958,8 @@ Transform:
   m_LocalPosition: {x: -5.1, y: -5.87, z: 21.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 478268}
+  - {fileID: 432614}
   - {fileID: 496200}
   - {fileID: 420732}
   - {fileID: 465076}
@@ -1091,7 +997,6 @@ GameObject:
   - component: {fileID: 431170}
   - component: {fileID: 3302390}
   - component: {fileID: 2328332}
-  - component: {fileID: 6001369042775700063}
   m_Layer: 0
   m_Name: City_building_026
   m_TagString: Untagged
@@ -1162,19 +1067,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6001369042775700063
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 129926}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 22.611855, y: 10.436683, z: 8.309065}
-  m_Center: {x: 4.783224, y: 0.00000166893, z: 4.1364202}
 --- !u!1 &140680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1095,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 419628}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &142934
 GameObject:
@@ -1216,7 +1108,6 @@ GameObject:
   - component: {fileID: 405858}
   - component: {fileID: 3328840}
   - component: {fileID: 2378826}
-  - component: {fileID: 7405919541259616033}
   m_Layer: 0
   m_Name: City_building_010
   m_TagString: Untagged
@@ -1287,19 +1178,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7405919541259616033
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142934}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 12.712605, y: 7.0176373, z: 10.216327}
-  m_Center: {x: 0.0000076293945, y: 8.6489165e-21, z: 5.1054206}
 --- !u!1 &146334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1311,7 +1189,6 @@ GameObject:
   - component: {fileID: 476348}
   - component: {fileID: 3342926}
   - component: {fileID: 2326592}
-  - component: {fileID: 610554132335222486}
   m_Layer: 0
   m_Name: City_building_031
   m_TagString: Untagged
@@ -1382,19 +1259,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &610554132335222486
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 146334}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120838, y: 7.0432453, z: 9.855418}
-  m_Center: {x: -0.000007867813, y: -0.00000011920932, z: 4.924092}
 --- !u!1 &150352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1487,7 +1351,6 @@ GameObject:
   - component: {fileID: 432932}
   - component: {fileID: 3336980}
   - component: {fileID: 2309592}
-  - component: {fileID: 3937913250876530212}
   m_Layer: 0
   m_Name: City_building_034
   m_TagString: Untagged
@@ -1558,19 +1421,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3937913250876530212
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 150918}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 19.77928, y: 10.436216, z: 8.309065}
-  m_Center: {x: -3.3669374, y: -0.00023174282, z: 4.1364202}
 --- !u!1 &156642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,7 +1432,6 @@ GameObject:
   - component: {fileID: 451926}
   - component: {fileID: 3333300}
   - component: {fileID: 2328426}
-  - component: {fileID: 7036943880578541851}
   m_Layer: 0
   m_Name: City_building_014
   m_TagString: Untagged
@@ -1653,19 +1502,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7036943880578541851
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 156642}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 9.914705, y: 23.78525, z: 5.9055476}
-  m_Center: {x: 0.00000023841858, y: 5.4776583, z: 2.9473684}
 --- !u!1 &159558
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,7 +1513,6 @@ GameObject:
   - component: {fileID: 432874}
   - component: {fileID: 3398224}
   - component: {fileID: 2367288}
-  - component: {fileID: 5001213301155950371}
   m_Layer: 0
   m_Name: City_building_037
   m_TagString: Untagged
@@ -1748,19 +1583,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5001213301155950371
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 159558}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 12.30209, y: 10.436683, z: 8.309065}
-  m_Center: {x: -0.37166023, y: 0.00000166893, z: 4.1364202}
 --- !u!1 &160336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,7 +1594,6 @@ GameObject:
   - component: {fileID: 409574}
   - component: {fileID: 3396262}
   - component: {fileID: 2360224}
-  - component: {fileID: 9072392318100945428}
   m_Layer: 0
   m_Name: City_building_013
   m_TagString: Untagged
@@ -1843,19 +1664,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &9072392318100945428
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160336}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 11.020992, y: 8.235409, z: 7.291197}
-  m_Center: {x: 0.14041167, y: 0.2911213, z: 3.6459646}
 --- !u!1 &161686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1867,7 +1675,6 @@ GameObject:
   - component: {fileID: 464712}
   - component: {fileID: 3380118}
   - component: {fileID: 2375092}
-  - component: {fileID: 8980281478721366582}
   m_Layer: 0
   m_Name: City_building_007
   m_TagString: Untagged
@@ -1938,19 +1745,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8980281478721366582
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 161686}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.117924, y: 16.587717, z: 4.7902727}
-  m_Center: {x: 0.026460648, y: 0.0000052452087, z: 2.392734}
 --- !u!1 &165112
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,7 +1756,6 @@ GameObject:
   - component: {fileID: 486436}
   - component: {fileID: 3340676}
   - component: {fileID: 2310070}
-  - component: {fileID: 3353051017301977193}
   m_Layer: 0
   m_Name: City_building_036
   m_TagString: Untagged
@@ -2033,19 +1826,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3353051017301977193
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165112}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 11.020992, y: 8.235409, z: 7.291197}
-  m_Center: {x: 0.14042693, y: 0.29111558, z: 3.6459646}
 --- !u!1 &171296
 GameObject:
   m_ObjectHideFlags: 0
@@ -2138,7 +1918,6 @@ GameObject:
   - component: {fileID: 404892}
   - component: {fileID: 3300600}
   - component: {fileID: 2351682}
-  - component: {fileID: 668210270674379633}
   m_Layer: 0
   m_Name: City_building_017
   m_TagString: Untagged
@@ -2209,19 +1988,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &668210270674379633
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 176104}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 12.712605, y: 7.0176373, z: 10.216327}
-  m_Center: {x: 0.0000076293945, y: -0.0000038146973, z: 5.1054206}
 --- !u!1 &177830
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,7 +1999,6 @@ GameObject:
   - component: {fileID: 458724}
   - component: {fileID: 3397772}
   - component: {fileID: 2312100}
-  - component: {fileID: 4573562687158837430}
   m_Layer: 0
   m_Name: City_building_028
   m_TagString: Untagged
@@ -2304,19 +2069,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4573562687158837430
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 177830}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120834, y: 7.0432444, z: 9.855418}
-  m_Center: {x: -0.00000023841858, y: -0.0000039339066, z: 4.924092}
 --- !u!1 &178228
 GameObject:
   m_ObjectHideFlags: 0
@@ -2328,7 +2080,6 @@ GameObject:
   - component: {fileID: 471616}
   - component: {fileID: 3369108}
   - component: {fileID: 2341616}
-  - component: {fileID: 5612341619208793520}
   m_Layer: 0
   m_Name: City_building_041
   m_TagString: Untagged
@@ -2399,19 +2150,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5612341619208793520
-BoxCollider:
+--- !u!1 &181390
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 178228}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 13.8369465, y: 10.114253, z: 4.707826}
-  m_Center: {x: 0.006803039, y: -0.0000011920927, z: 2.353926}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 478268}
+  m_Layer: 0
+  m_Name: Camera001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &478268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181390}
+  m_LocalRotation: {x: -0.049339768, y: 0.9322874, z: 0.13933124, w: 0.33014032}
+  m_LocalPosition: {x: 78.31243, y: 45.251217, z: -97.03111}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 419628}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: -17, y: 141, z: 0}
 --- !u!1 &181798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2440,7 +2208,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 419628}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &187046
 GameObject:
@@ -2453,7 +2221,6 @@ GameObject:
   - component: {fileID: 445730}
   - component: {fileID: 3332794}
   - component: {fileID: 2382310}
-  - component: {fileID: 5996554521146658182}
   m_Layer: 0
   m_Name: City_building_022
   m_TagString: Untagged
@@ -2524,19 +2291,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5996554521146658182
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 187046}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 13.04541, y: 20.236511, z: 8.309065}
-  m_Center: {x: 1.3926394e-13, y: 4.899918, z: 4.1364202}
 --- !u!1 &191830
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,7 +2302,6 @@ GameObject:
   - component: {fileID: 402242}
   - component: {fileID: 3331902}
   - component: {fileID: 2314482}
-  - component: {fileID: 4499326676953815535}
   m_Layer: 0
   m_Name: City_building_001
   m_TagString: Untagged
@@ -2619,19 +2372,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4499326676953815535
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 191830}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 13.83694, y: 10.114251, z: 4.707826}
-  m_Center: {x: 0.0068068504, y: 0.0000026226044, z: 2.353926}
 --- !u!1 &192178
 GameObject:
   m_ObjectHideFlags: 0
@@ -2643,7 +2383,6 @@ GameObject:
   - component: {fileID: 419702}
   - component: {fileID: 3308220}
   - component: {fileID: 2372064}
-  - component: {fileID: 7259944015279362476}
   m_Layer: 0
   m_Name: City_building_040
   m_TagString: Untagged
@@ -2714,19 +2453,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7259944015279362476
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 192178}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 8.120838, y: 7.0432453, z: 9.855418}
-  m_Center: {x: -0.000007867813, y: -0.00000011920932, z: 4.924092}
 --- !u!1 &192632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,7 +2464,6 @@ GameObject:
   - component: {fileID: 470990}
   - component: {fileID: 3300080}
   - component: {fileID: 2362308}
-  - component: {fileID: 8885186088633626237}
   m_Layer: 0
   m_Name: City_building_033
   m_TagString: Untagged
@@ -2809,19 +2534,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8885186088633626237
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 192632}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 19.518223, y: 8.235408, z: 7.291197}
-  m_Center: {x: 4.389037, y: 0.29112127, z: 3.6459646}
 --- !u!1 &194092
 GameObject:
   m_ObjectHideFlags: 0
@@ -2833,7 +2545,6 @@ GameObject:
   - component: {fileID: 400422}
   - component: {fileID: 3300698}
   - component: {fileID: 2329330}
-  - component: {fileID: 8897727472898489355}
   m_Layer: 0
   m_Name: City_building_023
   m_TagString: Untagged
@@ -2904,19 +2615,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8897727472898489355
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194092}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.117924, y: 16.587717, z: 4.7902727}
-  m_Center: {x: 0.026460648, y: 0.0000052452087, z: 2.392734}
 --- !u!1 &198300
 GameObject:
   m_ObjectHideFlags: 0
@@ -2928,7 +2626,6 @@ GameObject:
   - component: {fileID: 410644}
   - component: {fileID: 3323012}
   - component: {fileID: 2337080}
-  - component: {fileID: 7941155292445307594}
   m_Layer: 0
   m_Name: City_building_008
   m_TagString: Untagged
@@ -2999,16 +2696,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7941155292445307594
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 198300}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 7.060396, y: 5.2050667, z: 3.4438891}
-  m_Center: {x: -0.0000038146973, y: -0.0000038146973, z: 1.7103415}

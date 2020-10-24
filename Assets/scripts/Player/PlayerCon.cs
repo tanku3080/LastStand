@@ -20,12 +20,12 @@ public class PlayerCon : MonoBehaviour
     GameManager manager;
     AtackCon atack;
     StatusCon status;
-    SphereCollider sphere;
+    SphereCollider sphere;//半径２００
     Rigidbody _rb;
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        anime = GetComponent<Animator>();
+        anime = gameObject.GetComponent<Animator>();
         source = GetComponent<AudioSource>();
         sphere = this.gameObject.GetComponent<SphereCollider>();
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -136,7 +136,7 @@ public class PlayerCon : MonoBehaviour
         return targetObj;
     }
 
-    void Food()
+    void Foot()
     {
         source.PlayOneShot(footSound);
         return;

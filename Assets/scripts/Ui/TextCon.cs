@@ -49,8 +49,8 @@ public class TextCon : MonoBehaviour
         if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 		{
 			Debug.Log("呼ばれた");
-			//missionF.InFadeStart();//戦闘シーンフェードするだけの機能
-			loder.SceneAcsept2();
+            //missionF.InFadeStart();//戦闘シーンフェードするだけの機能
+            loder.SceneAcsept2();
 		}
 		// 文字の表示が完了してるならクリック時に次の行を表示する
 		if (IsCompleteDisplayText)

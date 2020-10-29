@@ -5,7 +5,7 @@ using System.Net.Mail;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoder : MonoBehaviour
+public class SceneLoder : Singleton<SceneLoder>
 {
     public enum Scene
     {

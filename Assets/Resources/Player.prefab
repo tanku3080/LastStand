@@ -1805,7 +1805,7 @@ GameObject:
   - component: {fileID: 95302132483740286}
   - component: {fileID: 136775077585159954}
   - component: {fileID: 6548399586154751628}
-  - component: {fileID: 8905351066012617799}
+  - component: {fileID: 4458762841911655852}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1883,7 +1883,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!114 &8905351066012617799
+--- !u!114 &4458762841911655852
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1892,16 +1892,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1762146786600250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17bed61a29caedd449d2d429337490b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8582901b5d8e6124690b130ad0f01e42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 0.05
   limitDistance: 0
-  Test: {fileID: 0}
-  footSound: {fileID: 8300000, guid: 3601028ad4d432747a5985dc74435d10, type: 3}
-  RadarSound: {fileID: 8300000, guid: 1219e8aa13fb04f538c35b8d080bbc0a, type: 3}
-  move: {fileID: 0}
-  moveLimit: 700
+  missionObj: {fileID: 0}
+  footSound: {fileID: 0}
+  RadarSound: {fileID: 0}
+  source: {fileID: 0}
 --- !u!1 &1858714439182666
 GameObject:
   m_ObjectHideFlags: 0
@@ -2262,7 +2261,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8878896394436383311}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1999969, y: 20.40002, z: -20.1}
+  m_LocalPosition: {x: 0.1999969, y: 20.40002, z: -34.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4587756876036610}

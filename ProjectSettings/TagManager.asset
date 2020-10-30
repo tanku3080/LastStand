@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - KillZone
   - Bullet
+  - Object
   layers:
   - Default
   - TransparentFX

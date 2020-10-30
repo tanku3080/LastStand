@@ -1,21 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Teisyutu_PlayerCon : MonoBehaviour
 {
     [Tooltip("基本情報")]
-    [HideInInspector] public float speed = 0.05f;
+    [HideInInspector] public float speed = 1000f;
     /// <summary>移動制限</summary>
     [HideInInspector] public float limitDistance;
     float h, v;
     //以下はエネミー
     [HideInInspector] public GameObject missionObj;
     private float searchTime = 0;
-    /// <summary>メイン武器,サブ武器弾数</summary>
     [SerializeField] private AudioClip footSound;
     public AudioClip RadarSound;
     [HideInInspector] public AudioSource source;
@@ -26,13 +23,13 @@ public class Teisyutu_PlayerCon : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        source.GetComponent<AudioSource>();
+        source = gameObject.GetComponent<AudioSource>();
         anime = gameObject.GetComponent<Animator>();
         missionObj = SerchObj(gameObject);
     }
     private void FixedUpdate()
     {
-        _rb.AddForce(100 * Physics.gravity,ForceMode.Force);
+        _rb.AddForce(10 * Physics.gravity,ForceMode.Acceleration);
     }
     // Update is called once per frame
     void Update()
@@ -69,35 +66,37 @@ public class Teisyutu_PlayerCon : MonoBehaviour
 
     void Move()
     {
-        if (h > 0)
+        if (Input.GetKey(KeyCode.W))
         {
-            _rb.AddForce(Vector3.right,ForceMode.Acceleration);
-            anime.SetBool("Left",false);
-            anime.SetBool("Right",true);
-            anime.speed = speed;
-        }
-        else if(h < 0)
-        {
-            _rb.AddForce(Vector3.left,ForceMode.Acceleration);
-            anime.SetBool("Right",false);
-            anime.SetBool("Left",true);
-            anime.speed = speed;
-        }
-
-        if (v > 0)
-        {
-            _rb.AddForce(Vector3.forward,ForceMode.Acceleration);
-            anime.SetBool("Back", false);
+            transform.position += transform.forward * speed;
             anime.SetBool("WalkF", true);
-            anime.speed = speed;
+            //anime.speed = speed;
         }
-        else if (v < 0)
+        else anime.SetBool("WalkF", false);
+
+        if (Input.GetKey(KeyCode.S))
         {
-            _rb.AddForce(Vector3.back,ForceMode.Acceleration);
-            anime.SetBool("WalkF", false);
+            transform.position -= transform.forward * (speed * 0.5f);
             anime.SetBool("Back", true);
+            //anime.speed = speed;
+        }
+        else anime.SetBool("Back", false);
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.position -= transform.right * speed;
+            anime.SetBool("Left", true);
             anime.speed = speed;
         }
+        else anime.SetBool("Left", false);
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += (transform.right * speed);
+            anime.SetBool("Right", true);
+            anime.speed = speed;
+        }
+        else anime.SetBool("Right", false);
     }
 
     void Foot()

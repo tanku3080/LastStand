@@ -23,7 +23,6 @@ public class TextCon : MonoBehaviour
 	private float timeElapsed = 1;
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
-	FadeCon missionF;
 	SceneLoder loder;
 
 	// 文字の表示が完了しているかどうか
@@ -37,7 +36,6 @@ public class TextCon : MonoBehaviour
 		uiText = GameObject.Find("Texts").GetComponent<TextMeshProUGUI>();
 		audio = this.gameObject.GetComponent<AudioSource>();
 		loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
-		missionF = gameObject.GetComponent<FadeCon>();
 		uiText.font = Resources.Load<TMP_FontAsset>("font/mplus-1mn-regular SDF");
 		audio.PlayOneShot(Se);
 		SetNextLine();

@@ -11,9 +11,8 @@ public class StringFade : MonoBehaviour
         fade = this.gameObject.GetComponent<FadeCon>();
         alfaFader = this.gameObject.GetComponent<CanvasGroup>();
     }
-
-    public void InFadeStart()
+    private void Update()
     {
-        fade.fadeInFlag = false;
+        alfaFader.alpha += 0.1f;
     }
 }

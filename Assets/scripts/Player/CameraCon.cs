@@ -8,6 +8,7 @@ public class CameraCon : GameManager
     [Range(-0.999f, -0.5f)] public float maxYAngle = -0.5f;
     [Range(0.5f, 0.999f)] public float minYAngle = 0.5f;
     [HideInInspector] public float mouseX;
+    [SerializeField] float mouseAddP = 10f;
     private void Awake()
     {
         if (playerPos == null) playerPos = transform.parent;
@@ -18,7 +19,7 @@ public class CameraCon : GameManager
         //コメントアウトしている部分はいろいろ変更している
         //if (playerSide)
         //{
-            mouseX = Input.GetAxis("Mouse X");
+            mouseX = Input.GetAxis("Mouse X") * mouseAddP;
             float mouseY = Input.GetAxis("Mouse Y");
 
             playerPos.Rotate(0, mouseX, 0);

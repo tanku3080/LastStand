@@ -21,13 +21,10 @@ public class SceneLoder : Singleton<SceneLoder>
     public Scene sceneList4 = Scene.Start;
     [Header("ゲームクリア")]
     public Scene scemeList5 = Scene.GameClear;
-    FadeCon fade;
     string sceneName;
 
     private void Start()
     {
-        fade = GameObject.Find("GameStatus").AddComponent<FadeCon>();
-        fade = GameObject.Find("GameStatus").GetComponent<FadeCon>();
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -39,30 +36,33 @@ public class SceneLoder : Singleton<SceneLoder>
         switch (scene)
         {
             case Scene.Start:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Start";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Select:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "PlayerSelect";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Game:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Game map2";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.GameOver:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameOver";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.GameClear:
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameClear";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:
@@ -78,30 +78,33 @@ public class SceneLoder : Singleton<SceneLoder>
         switch (scene)
         {
             case Scene.Start:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Start";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Select:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "PlayerSelect";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Game:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Game map2";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.GameOver:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameOver";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.GameClear:
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameClear";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:
@@ -116,30 +119,33 @@ public class SceneLoder : Singleton<SceneLoder>
         switch (scene)
         {
             case Scene.Start:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Start";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Select:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "PlayerSelect";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Game:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Game map2";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.GameOver:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameOver";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.GameClear:
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameClear";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:
@@ -154,30 +160,33 @@ public class SceneLoder : Singleton<SceneLoder>
         switch (scene)
         {
             case Scene.Start:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Start";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Select:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "PlayerSelect";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Game:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Game map2";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.GameOver:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameOver";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.GameClear:
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameClear";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:
@@ -192,30 +201,33 @@ public class SceneLoder : Singleton<SceneLoder>
         switch (scene)
         {
             case Scene.Start:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Start";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Select:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "PlayerSelect";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.Game:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "Game map2";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
-                fade.fadeInFlag = false;
                 break;
             case Scene.GameOver:
-                fade.fadeInFlag = true;
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameOver";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.GameClear:
+                Teisyutuyou_FadeManager.Instance.FadeOut();
                 sceneName = "GameClear";
+                Teisyutuyou_FadeManager.Instance.FadeIn();
                 SceneManager.LoadScene(sceneName);
                 break;
             case Scene.NULL:

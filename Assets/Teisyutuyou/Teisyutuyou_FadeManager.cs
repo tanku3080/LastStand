@@ -51,7 +51,7 @@ public class Teisyutuyou_FadeManager : Singleton<Teisyutuyou_FadeManager>
         group.alpha = Mathf.Lerp(min,max,timer);
     }
 
-    public static void FadeIn(float fadeTimer = fadeTime)
+    public void FadeIn(float fadeTimer = fadeTime)
     {
         if (!Instance.isCreated) return;
         Instance.fade = fadeTimer;
@@ -61,7 +61,7 @@ public class Teisyutuyou_FadeManager : Singleton<Teisyutuyou_FadeManager>
         Instance.nowTime = 0.0f;
     }
 
-    public static void FadeOut(float fadeTimer = fadeTime)
+    public void FadeOut(float fadeTimer = fadeTime)
     {
         if (!Instance.isCreated) return;
         Instance.fade = fadeTimer;

@@ -9,17 +9,18 @@ public class Teisyutu_PlayerCon : MonoBehaviour
     [HideInInspector] public float speed = 1000f;
     /// <summary>移動制限</summary>
     [HideInInspector] public float limitDistance;
-    float h, v;
     //以下はエネミー
     [HideInInspector] public GameObject missionObj;
     private float searchTime = 0;
     [SerializeField] private AudioClip footSound;
     public AudioClip RadarSound;
     [HideInInspector] public AudioSource source;
+    [HideInInspector] public int objKeepNum = 0;
     Animator anime;
-    GameManager manager;
     Rigidbody _rb;
-    // Start is called before the first frame update
+    
+    [Tooltip("残り時間")][SerializeField] public int generalTime = 180;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -29,14 +30,18 @@ public class Teisyutu_PlayerCon : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        _rb.AddForce(10 * Physics.gravity,ForceMode.Acceleration);
+        _rb.AddForce(10 * Physics.gravity,ForceMode.Force);
+        if (generalTime <= 0)
+        {
+            SceneLoder.Instance.SceneAcsept3();
+        }
+        generalTime -= (int)Time.deltaTime;
     }
-    // Update is called once per frame
+
     void Update()
     {
-        searchTime += Time.deltaTime;
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
+        searchTime = Time.deltaTime;
+
 
         if (searchTime >= 1.0f)
         {
@@ -44,16 +49,22 @@ public class Teisyutu_PlayerCon : MonoBehaviour
             searchTime = 0;
         }
 
-        if (h != 0 || v != 0 || h != 0 && v != 0) Move();
+        Move();
     }
 
     GameObject SerchObj(GameObject @object)
     {
         float nearDis = 0;
         GameObject tagetObj = null;
-
+        objKeepNum = 0;
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Object"))
         {
+            if(obj == null)
+            {
+                Teisyutuyou_FadeManager.Instance.FadeIn();
+                SceneLoder.Instance.SceneAcsept2();
+            }
+            objKeepNum++;
             float timeDis = Vector3.Distance(obj.transform.position,@object.transform.position);
             if (nearDis == 0 || nearDis > timeDis)
             {
@@ -81,22 +92,6 @@ public class Teisyutu_PlayerCon : MonoBehaviour
             //anime.speed = speed;
         }
         else anime.SetBool("Back", false);
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.position -= transform.right * speed;
-            anime.SetBool("Left", true);
-            anime.speed = speed;
-        }
-        else anime.SetBool("Left", false);
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.position += (transform.right * speed);
-            anime.SetBool("Right", true);
-            anime.speed = speed;
-        }
-        else anime.SetBool("Right", false);
     }
 
     void Foot()

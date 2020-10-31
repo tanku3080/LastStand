@@ -11,7 +11,7 @@ public class Teisyutu_RaderCon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        image.gameObject.GetComponent<Image>();
+        image = gameObject.GetComponent<Image>();
         _player = GameObject.Find("Player").GetComponent<Teisyutu_PlayerCon>();
     }
 

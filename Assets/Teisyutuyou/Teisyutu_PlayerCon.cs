@@ -6,7 +6,7 @@ using UnityEngine;
 public class Teisyutu_PlayerCon : MonoBehaviour
 {
     [Tooltip("基本情報")]
-    [HideInInspector] public float speed = 1000f;
+    [HideInInspector] public float speed = 500f;
     /// <summary>移動制限</summary>
     [HideInInspector] public float limitDistance;
     //以下はエネミー
@@ -52,7 +52,7 @@ public class Teisyutu_PlayerCon : MonoBehaviour
         Move();
     }
 
-    GameObject SerchObj(GameObject @object)
+    public GameObject SerchObj(GameObject @object)
     {
         float nearDis = 0;
         GameObject tagetObj = null;
@@ -79,7 +79,7 @@ public class Teisyutu_PlayerCon : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += transform.forward * speed;
+            transform.position += (transform.forward * speed).normalized;
             anime.SetBool("WalkF", true);
             //anime.speed = speed;
         }
@@ -87,7 +87,7 @@ public class Teisyutu_PlayerCon : MonoBehaviour
 
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position -= transform.forward * (speed * 0.5f);
+            transform.position -= (transform.forward * (speed * 0.5f)).normalized;
             anime.SetBool("Back", true);
             //anime.speed = speed;
         }

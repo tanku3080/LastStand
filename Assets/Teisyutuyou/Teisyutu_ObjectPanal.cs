@@ -14,7 +14,6 @@ public class Teisyutu_ObjectPanal : MonoBehaviour
         text = this.gameObject.GetComponent<Text>();
         playerCon = GameObject.Find("Player").GetComponent<Teisyutu_PlayerCon>();
         keeper = playerCon.objKeepNum;
-        text.text = keeper.ToString();
     }
 
     // Update is called once per frame

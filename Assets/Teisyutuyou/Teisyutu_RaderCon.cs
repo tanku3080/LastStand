@@ -17,6 +17,10 @@ public class Teisyutu_RaderCon : MonoBehaviour
 
     void Update()
     {
+        if (!_player.missionObj)
+        {
+            return;
+        }
         GameObject pos = _player.missionObj;
         float posDis = Vector3.Distance(_player.transform.position,pos.transform.position);
 

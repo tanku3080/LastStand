@@ -9,7 +9,6 @@ public class GameClearCon : MonoBehaviour
     public Button reStart, title;
     public AudioClip mC, sfx;
     AudioSource source;
-    public SceneLoder loder;
     float timer = 0;
     void Start()
     {
@@ -20,7 +19,6 @@ public class GameClearCon : MonoBehaviour
         reStart.interactable = false;
         title.interactable = false;
         source = gameObject.GetComponent<AudioSource>();
-        loder.GetComponent<SceneLoder>();
         source.Play();
     }
 
@@ -40,11 +38,13 @@ public class GameClearCon : MonoBehaviour
     public void Restart()
     {
         source.PlayOneShot(sfx);
-        loder.SceneAcsept2();
+        SceneLoder.Instance.restart_title = true;
+        SceneLoder.Instance.SceneAcsept();
     }
     public void Title()
     {
         source.PlayOneShot(sfx);
-        loder.SceneAcsept4();
+        SceneLoder.Instance.restart_title = false;
+        SceneLoder.Instance.SceneAcsept();
     }
 }

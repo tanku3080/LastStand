@@ -2564,10 +2564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroy: 0
   sceneList1: 1
-  sceneList2: 2
-  sceneList3: 3
-  sceneList4: 0
-  scemeList5: 4
+  restart_title: 1
 --- !u!114 &1978488769
 MonoBehaviour:
   m_ObjectHideFlags: 0

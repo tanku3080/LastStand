@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour
             playerSide = true;
         }
 
-        if (pointCounter == 1)
+        if (pointCounter == 1)//タイトルに移動かもしれない
         {
-            loder.SceneAcsept5();
+            loder.SceneAcsept();
         }
     }
 

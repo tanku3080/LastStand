@@ -33,7 +33,7 @@ public class Teisyutu_PlayerCon : MonoBehaviour
         _rb.AddForce(10 * Physics.gravity,ForceMode.Force);
         if (generalTime <= 0)
         {
-            SceneLoder.Instance.SceneAcsept3();
+            SceneLoder.Instance.SceneAcsept();
         }
         generalTime -= (int)Time.deltaTime;
     }
@@ -62,7 +62,7 @@ public class Teisyutu_PlayerCon : MonoBehaviour
             if(obj == null)
             {
                 Teisyutuyou_FadeManager.Instance.FadeIn();
-                SceneLoder.Instance.SceneAcsept2();
+                SceneLoder.Instance.SceneAcsept();
             }
             objKeepNum++;
             float timeDis = Vector3.Distance(obj.transform.position,@object.transform.position);

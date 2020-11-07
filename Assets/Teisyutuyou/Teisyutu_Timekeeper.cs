@@ -17,7 +17,7 @@ public class Teisyutu_Timekeeper : MonoBehaviour
     {
         if (generalTime <= 0)
         {
-            SceneLoder.Instance.SceneAcsept3();
+            SceneLoder.Instance.SceneAcsept();
         }
         generalTime -= Time.deltaTime;
         text.text = generalTime.ToString();

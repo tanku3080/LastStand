@@ -7,6 +7,11 @@ using UnityEngine.UI;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    enum Scene
+    {
+        Title,Meeting,Game,GameOver,GameClear,
+    }
+    Scene scene;
     [HideInInspector]  public GameObject[] playerUnitCount;
     [Tooltip("敵の攻撃を止める,移動キー")]
     [HideInInspector] public bool enemyAtackStop, enemyMoveFlag = false;
@@ -23,14 +28,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool voiceModeOn = false;
 
     public int pointCounter = 0;
-    SceneLoder loder;
     private StatusCon status;
     private AtackCon atack;
 
-    private void Start()
-    {
-        loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
-    }
     private void Awake()
     {
         status = this.gameObject.GetComponent<StatusCon>();
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+
         if (weponIs1) weponIs2 = false;
         else weponIs2 = true;
         if (Input.GetKeyDown(KeyCode.P))
@@ -47,12 +48,25 @@ public class GameManager : MonoBehaviour
 
         if (pointCounter == 1)
         {
-            loder.SceneAcsept5();
+            SceneLoder.Instance.SceneAcsept();
         }
     }
 
     private void FixedUpdate()
     {
+        switch (scene)
+        {
+            case Scene.Title:
+                break;
+            case Scene.Meeting:
+                break;
+            case Scene.Game:
+                break;
+            case Scene.GameOver:
+                break;
+            case Scene.GameClear:
+                break;
+        }
         if (playerHp >= 0) playerUnitDie = true;
         else if (enemyHp >= 0) enemyUnitDie = true;
     }

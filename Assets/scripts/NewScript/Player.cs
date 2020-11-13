@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewEnemy : EnemyBase,IRobotTypeCon
+public class Player : PlayerBase,IRobotTypeCon
 {
     int life;
     float speed;
@@ -19,5 +19,10 @@ public class NewEnemy : EnemyBase,IRobotTypeCon
                 speed = 0.05f;
                 break;
         }
+    }
+
+    private void Start()
+    {
+
     }
 }

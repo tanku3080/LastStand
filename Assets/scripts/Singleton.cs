@@ -28,5 +28,7 @@ public class Singleton<T> : MonoBehaviour where T:MonoBehaviour
             return;
         }
         if (dontDestroy) DontDestroyOnLoad(this.gameObject);
+
+        if (PlayerManager.instance.spornPoint.Length < 0) Debug.LogError("味方のスポーンポイントが設定されていません");
     }
 }

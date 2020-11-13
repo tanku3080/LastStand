@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
- public abstract class PlayerManager : MonoBehaviour
+ public class PlayerManager : Singleton<PlayerManager>
 {
-    [SerializeField] float speed = 0f;
-    int life = 1000;
-
-    public virtual void Start()
+    List<GameObject> players;
+    [SerializeField] public Transform[] spornPoint;
+    private void Start()
     {
-        
-    }
-
-    public virtual void Update()
-    {
-        
+        players.Add(GameObject.FindWithTag("Player"));
     }
 }

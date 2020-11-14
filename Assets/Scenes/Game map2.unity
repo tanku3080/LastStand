@@ -1641,10 +1641,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroy: 0
   sceneList1: 1
-  sceneList2: 2
-  sceneList3: 3
-  sceneList4: 0
-  scemeList5: 4
 --- !u!1 &1887701895
 GameObject:
   m_ObjectHideFlags: 0

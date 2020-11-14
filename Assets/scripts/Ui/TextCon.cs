@@ -24,7 +24,6 @@ public class TextCon : MonoBehaviour
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
 	FadeCon missionF;
-	SceneLoder loder;
 
 	// 文字の表示が完了しているかどうか
 	public bool IsCompleteDisplayText
@@ -36,7 +35,6 @@ public class TextCon : MonoBehaviour
 	{
 		uiText = GameObject.Find("Texts").GetComponent<TextMeshProUGUI>();
 		audio = this.gameObject.GetComponent<AudioSource>();
-		loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
 		missionF = gameObject.GetComponent<FadeCon>();
 		uiText.font = Resources.Load<TMP_FontAsset>("font/mplus-1mn-regular SDF");
 		audio.PlayOneShot(Se);
@@ -50,7 +48,7 @@ public class TextCon : MonoBehaviour
 		{
 			Debug.Log("呼ばれた");
             //missionF.InFadeStart();//戦闘シーンフェードするだけの機能
-            loder.SceneAcsept2();
+            SceneLoder.Instance.SceneAcsept();
 		}
 		// 文字の表示が完了してるならクリック時に次の行を表示する
 		if (IsCompleteDisplayText)

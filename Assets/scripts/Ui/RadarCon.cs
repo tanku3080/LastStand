@@ -6,44 +6,42 @@ public class RadarCon : MonoBehaviour
     float time = 0;
     float speed;
     PlayerCon _player;
-    GameManager manager;
     void Start()
     {
         image = GameObject.Find("EnemyPointer").GetComponent<Image>();
         _player = GameObject.Find("Player").GetComponent<PlayerCon>();
-        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     private void Update()
     {
-        if (manager.playerSide)
+        if (NewGameManager.Instance.playerSide)
         {
             GameObject poss = _player.Test;
             float pos = Vector3.Distance(_player.transform.position, poss.transform.position);
             if (pos < 500)
             {
-                if (pos < 300)
-                {
-                    if (pos < 100)
-                    {
-                        if (pos < 50)
-                        {
-                            if (pos <= 0)
-                            {
-                                Debug.Log("0又はそれ以下");
-                                speed = 2f;
-                                image.color = GetAlphaColor(image.color);
-                            }
-                            speed = 1.5f;
-                            image.color = GetAlphaColor(image.color);
-                        }
-                        speed = 1f;
-                        image.color = GetAlphaColor(image.color);
-                    }
-                    speed = 0.5f;
-                    image.color = GetAlphaColor(image.color);
-                }
                 speed = 0.5f;
+                image.color = GetAlphaColor(image.color);
+            }
+            if (pos < 300)
+            {
+                speed = 0.5f;
+                image.color = GetAlphaColor(image.color);
+            }
+            if (pos < 100)
+            {
+                speed = 1f;
+                image.color = GetAlphaColor(image.color);
+            }
+            if (pos < 50)
+            {
+                speed = 1.5f;
+                image.color = GetAlphaColor(image.color);
+            }
+            if (pos <= 0)
+            {
+                Debug.Log("0又はそれ以下");
+                speed = 2f;
                 image.color = GetAlphaColor(image.color);
             }
         }

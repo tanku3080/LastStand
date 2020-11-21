@@ -4,8 +4,6 @@ public class PlayerCon : MonoBehaviour
 {
     [Tooltip("基本情報")]
     [HideInInspector] public float speed = 0.05f;
-    //プレイヤーの最高体力。現在の体力の定数はGameManagerにある
-    [HideInInspector] public float HpM { get { return manager.playerHp; } set { HpM = 1000f; } }
     /// <summary>移動制限</summary>
     [HideInInspector]  public float limitDistance;
     float h, v;
@@ -17,7 +15,6 @@ public class PlayerCon : MonoBehaviour
     public Slider move;
     AudioSource source;
     Animator anime;
-    GameManager manager;
     AtackCon atack;
     StatusCon status;
     SphereCollider sphere;//半径２００
@@ -28,9 +25,7 @@ public class PlayerCon : MonoBehaviour
         anime = gameObject.GetComponent<Animator>();
         source = GetComponent<AudioSource>();
         sphere = this.gameObject.GetComponent<SphereCollider>();
-        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         atack = GameObject.Find("GameManager").GetComponent<AtackCon>();
-        status = GameObject.Find("GameManager").GetComponent<StatusCon>();
         move = GameObject.Find("MoveBer").GetComponent<Slider>();
         Test = SerchTag(gameObject);
 
@@ -55,14 +50,14 @@ public class PlayerCon : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            manager.enemyAtackStop = false;
+            NewGameManager.Instance.enemyAtackStop = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             anime.StopPlayback();
             this.gameObject.transform.LookAt(Vector3.forward);
-            atack.Atacks();
+            //atack.Atacks();//攻撃を行う
         }
         if (h != 0 || v != 0 || h != 0 && v != 0)
             {
@@ -75,7 +70,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (sphere.radius < 0)
         {
-            manager.playerSide = false;
+            NewGameManager.Instance.playerSide = false;
             anime.StopPlayback();
         }
         sphere.radius -= 0.5f;
@@ -146,7 +141,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (collision.gameObject == sphere)
         {
-            manager.playerSide = false;
+            NewGameManager.Instance.playerSide = false;
         }
     }
 }

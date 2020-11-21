@@ -20,12 +20,10 @@ public class StatusCon :MonoBehaviour
     public GameObject WeponNemeObj;
     [HideInInspector] public float mouse;
     AtackCon atack;
-    GameManager manager;
 
     private void Start()
     {
         WeponNemeObj = GameObject.Find("WeponText");
-        manager = this.gameObject.GetComponent<GameManager>();
         WeponNemeObj = GameObject.Find("WeponText");
         atack = GameObject.Find("GameManager").GetComponent<AtackCon>();//gamemanagerがあるオブジェクトに追加する
     }
@@ -36,7 +34,6 @@ public class StatusCon :MonoBehaviour
 
     public void ChangeStart()//敵味方使用武器共通化
     {
-        Weponchenger(Mouse());
     }
 
 
@@ -55,33 +52,6 @@ public class StatusCon :MonoBehaviour
             Debug.Log("マウス後進" + keeping);
         }
         return keeping;
-    }
-    void Weponchenger(int _keep)
-    {
-        Text weponNeme = WeponNemeObj.GetComponent<Text>();
-        Weponchenge t = (Weponchenge)_keep;
-        switch (t)
-        {
-            //このswitch文をStatusConに移動して判定させる予定
-            //MG
-            case Weponchenge.mWepon1:
-                gunInterval = 0.5f;
-                _accuracy = 0.80f;
-                _gunAccuracy = 0.6f;
-                manager.weponIs1 = true;
-                weponNeme.text = "MachineGun";
-                Debug.Log("メイン");
-                break;
-            //MR
-            case Weponchenge.mWepon2:
-                gunInterval = 0.9f;
-                _accuracy = 0.75f;
-                _gunAccuracy = 0.4f;
-                manager.weponIs2 = true;
-                weponNeme.text = "Missile";
-                Debug.Log("メイン２");
-                break;
-        }
     }
 
 }

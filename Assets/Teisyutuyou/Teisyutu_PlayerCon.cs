@@ -17,7 +17,6 @@ public class Teisyutu_PlayerCon : MonoBehaviour
     public AudioClip RadarSound;
     [HideInInspector] public AudioSource source;
     Animator anime;
-    GameManager manager;
     Rigidbody _rb;
     // Start is called before the first frame update
     void Start()

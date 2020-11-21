@@ -8,12 +8,10 @@ public class Other : MonoBehaviour
     public Button startBunt;
     public AudioClip sfx;
     AudioSource source;
-    public SceneLoder loder;
     // Start is called before the first frame update
     void Start()
     {
         source = gameObject.GetComponent<AudioSource>();
-        loder = GameObject.Find("Selecter").GetComponent<SceneLoder>();
         source.Play();
     }
 
@@ -28,6 +26,7 @@ public class Other : MonoBehaviour
     public void GameStart()
     {
         source.PlayOneShot(sfx);
-        loder.SceneAcsept();
+        SceneFadeManager.Instance.SceneFadeStart(true);
+        SceneFadeManager.Instance.SceneChangeStart(SceneFadeManager.SceneName.Meeting);
     }
 }

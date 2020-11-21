@@ -3,17 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 ///このスクリプトではポーズ画面の作成とUIの操作を行う
-[RequireComponent(typeof(GameManager))]
 public class MenuCon : MonoBehaviour
 {
     bool isCancel = false;
     CanvasGroup group;
     public Button button,button2;
-    public GameManager manager;
 
     private void Start()
     {
-        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
         group = this.gameObject.GetComponent<CanvasGroup>();
         button = GameObject.Find("Cancel").GetComponent<Button>();
         button2 = GameObject.Find("End").GetComponent<Button>();
@@ -29,7 +26,7 @@ public class MenuCon : MonoBehaviour
                 isCancel = true;
                 return;
             }
-            manager.playerSide = false;
+            NewGameManager.Instance.playerSide = false;
             button.interactable = true;
             button.interactable = true;
             group.alpha = 1;
@@ -37,7 +34,7 @@ public class MenuCon : MonoBehaviour
 
         if (isCancel)
         {
-            manager.enemySide = true;
+            NewGameManager.Instance.enemySide = true;
             group.alpha = 0;
             isCancel = false;
         }

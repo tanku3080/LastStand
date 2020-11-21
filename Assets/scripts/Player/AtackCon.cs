@@ -20,12 +20,9 @@ public class AtackCon : MonoBehaviour
     float counter = 0;
     //何発当たったか格納する
     System.Collections.Generic.List<int> atackCount = null;
-    float healthM { get { return players.HpM; } }
-    float Health { get { return manager.playerHp; } }
     AudioSource source;
     public AudioClip mg, mr;
     Slider hp;
-    GameManager manager;
     StatusCon status;
     PlayerCon players;
 
@@ -35,49 +32,20 @@ public class AtackCon : MonoBehaviour
         jukou = GameObject.Find("Gun").transform;
         hp = GameObject.Find("HpBer").GetComponent<Slider>();
         players = GameObject.Find("Player").GetComponent<PlayerCon>();
-        manager = this.gameObject.GetComponent<GameManager>();
         status = GameObject.Find("GameManager").GetComponent<StatusCon>();
     }
 
     private void Update()
     {
     }
-    public void Atacks()
-    {
-        if (manager.weponIs1 == true)
-        {
-            if (counter >= status.bullet)
-            {
-                Debug.Log("きた");
-                CancelInvoke();
-            }
-            else
-            {
-                InvokeRepeating("Shot", 2, interval);
-                counter++;
-            }
-        }
-        if (manager.weponIs2 == true)
-        {
-            if (counter >= status.bullet2)
-            {
-                CancelInvoke();
-            }
-            else
-            {
-                InvokeRepeating("Shot2", 2, interval);
-                counter++;
-            }
-        }
-    }
 
-    float GunFireCalculation()
-    {
-        //プレイヤーのtransformの位置にこの計算を入れる。
-        float accuracyPenalty = (float)(1 * 0.75 + (0.25 * Health / healthM));//命中精度のペナルティ
-        hitPercent = accuracy * accuracyPenalty * gunAccuracy;
-        return hitPercent = 0.87f;
-    }
+    //float GunFireCalculation()
+    //{
+    //    //プレイヤーのtransformの位置にこの計算を入れる。
+    //    float accuracyPenalty = (float)(1 * 0.75 + (0.25 * Health / healthM));//命中精度のペナルティ
+    //    hitPercent = accuracy * accuracyPenalty * gunAccuracy;
+    //    return hitPercent = 0.87f;
+    //}
 
     void Shot()
     {

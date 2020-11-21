@@ -5,13 +5,12 @@ using RobotTypes;
 
 public abstract class PlayerBase : MonoBehaviour
 {
-    private int playerLife;
-    private float playerSpeed;
+    protected int playerLife;
+    protected float playerSpeed;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;
-    public bool PlayerUpdator { get; protected set; } = false;
 
 
      
@@ -25,9 +24,5 @@ public abstract class PlayerBase : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlayerUpdator)
-        {
-            //各プレイヤーのアップデートを行う?
-        }
     }
 }

@@ -8,7 +8,7 @@ public class Player : PlayerBase
     [SerializeField] Animator animator;
     private void Start()
     {
-        Rd.GetComponent<Rigidbody>();
+        Rd = gameObject.GetComponent<Rigidbody>();
         animator = Anime.GetComponent<Animator>();
     }
     //人間は大雑把に八方向に移動できる。ロボットは不便な仕様にしたほうが良い？

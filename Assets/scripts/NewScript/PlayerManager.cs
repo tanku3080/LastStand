@@ -4,7 +4,7 @@ using UnityEngine;
 
  public class PlayerManager : Singleton<PlayerManager>
 {
-    List<GameObject> players;
+    private List<GameObject> players = null;
     [SerializeField] public Transform[] spornPoint;
     private void Start()
     {

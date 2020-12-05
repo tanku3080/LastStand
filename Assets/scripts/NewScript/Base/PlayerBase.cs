@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RobotTypes;
 
-public abstract class PlayerBase : MonoBehaviour
+public abstract class PlayerBase : MonoBehaviour,IRobotSetble
 {
-    protected int playerLife;
-    protected float playerSpeed;
+    public int playerLife;
+    public float playerSpeed;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
@@ -15,11 +14,9 @@ public abstract class PlayerBase : MonoBehaviour
 
      
 
-    private void Start()
+    private void Start()//インターフェイスから変更
     {
-        RobotSetter robot = RobotSetter.RobotValSet(RobotType.Medium);
-        playerLife = robot.life;
-        playerSpeed = robot.speed;
+        IRobotSetble.RobotSetter.RobotValSet(IRobotSetble.RobotType.Medium);
     }
 
     ///<summary>playerの死亡時に呼び出す</summary>

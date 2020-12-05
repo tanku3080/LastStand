@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NewGameManager : Singleton<NewGameManager>
 {
@@ -16,5 +17,12 @@ public class NewGameManager : Singleton<NewGameManager>
     void Update()
     {
         
+    }
+
+    /// <summary>ゲームクリア時に呼び出す</summary>
+    void EndStage()
+    {
+        PlayerManager.Instance.players.Clear();
+        SceneFadeManager.Instance.SceneFadeStart(true);
     }
 }

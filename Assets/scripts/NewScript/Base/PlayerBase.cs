@@ -22,7 +22,10 @@ public abstract class PlayerBase : MonoBehaviour
         playerSpeed = robot.speed;
     }
 
-    private void FixedUpdate()
+    ///<summary>playerの死亡時に呼び出す</summary>
+    protected void PlayerDie()
     {
+        Trans.position = Vector3.one * (Random.Range(1000,2000));
+        this.enabled = false;
     }
 }

@@ -26,6 +26,11 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     /// <param name="name">指定のシーンに行く</param>
     public void SceneChangeStart(SceneName name)
     {
+        if (name.ToString() != SceneManager.GetActiveScene().name)//未登録の場合
+        {
+            Debug.LogError("シーンが登録されていませんん");
+            return;
+        }
         switch (name)
         {
             case SceneName.Start:

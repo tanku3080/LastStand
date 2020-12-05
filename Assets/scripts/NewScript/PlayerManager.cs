@@ -4,7 +4,7 @@ using UnityEngine;
 
  public class PlayerManager : Singleton<PlayerManager>
 {
-    private List<GameObject> players = null;
+    public List<GameObject> players = null;
     [SerializeField] public Transform[] spornPoint;
     private void Start()
     {
@@ -14,7 +14,6 @@ using UnityEngine;
         foreach (var item in playersList)
         {
             players.Add(item);
-            Debug.Log("PlayerAdded" + item);
         }
     }
 }

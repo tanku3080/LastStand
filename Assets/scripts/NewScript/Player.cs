@@ -14,15 +14,25 @@ public class Player : PlayerBase
     //人間は大雑把に八方向に移動できる。ロボットは不便な仕様にしたほうが良い？
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        var y = Input.GetAxis("Vertical") * playerSpeed;
+        if (y > 0)
         {
             Anime.SetBool("WalkF", true);
-            this.transform.position = (Vector3.forward* playerSpeed).normalized;
+            Rd.velocity += new Vector3(0,0,y);
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else
+        {
+            Anime.SetBool("WalkF",false);
+        }
+
+        if (y < 0)
         {
             Anime.SetBool("Back", true);
-            this.transform.position = (Vector3.forward * playerSpeed / 2).normalized;
+            Rd.velocity -= new Vector3(0, 0, y);
+        }
+        else
+        {
+            Anime.SetBool("Back",false);
         }
     }
 

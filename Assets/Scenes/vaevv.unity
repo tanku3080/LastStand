@@ -130,6 +130,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3959145869878429686, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3959145869878429686, guid: 077155289d2e14247bd0864b560f74ac,
+        type: 3}
+      propertyPath: m_Mass
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 5090911705693087400, guid: 077155289d2e14247bd0864b560f74ac,
         type: 3}
       propertyPath: animator

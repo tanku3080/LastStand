@@ -13,62 +13,42 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     GameObject fadeIbj = null;
     Image thisImg = null;
     string sceneName = null;
+    /// <summary>フェード単体かシーン切り替えか</summary>
+    bool fadeSingleOfMulti = false;
     // Start is called before the first frame update
     void Start()
     {
-        fadeIbj = this.gameObject;
+        fadeIbj = transform.GetChild(0).GetChild(0).gameObject;
         thisImg = fadeIbj.GetComponent<Image>();
         thisImg.color = Color.black;
     }
-    /// <summary>
-    /// シーンの切り替えを行う
-    /// </summary>
-    /// <param name="name">指定のシーンに行く</param>
-    public void SceneChangeStart(SceneName name)
+    private void Update()
     {
-        if (name.ToString() != SceneManager.GetActiveScene().name)//未登録の場合
-        {
-            Debug.LogError("シーンが登録されていませんん");
-            return;
-        }
-        switch (name)
-        {
-            case SceneName.Start:
-                sceneName = "Start";
-                break;
-            case SceneName.Meeting:
-                sceneName = "PlayerSelect";
-                break;
-            case SceneName.GamePlay:
-                sceneName = "Game Map2";
-                break;
-            case SceneName.GameOvar:
-                sceneName = "GameOver";
-                break;
-            case SceneName.GameClear:
-                sceneName = "GameClear";
-                break;
-        }
-
-        SceneManager.LoadScene(sceneName); 
     }
-    /// <summary>
-    /// フェードを行う
-    /// </summary>
-    /// <param name="startAndEndFlag">trueならstart、falseはend</param>
-    public void SceneFadeStart(bool startAndEndFlag)
-    {
-        float fadeValue;
-        if (startAndEndFlag)
-        {
-            fadeValue = 1;
-            Mathf.Sin(fadeValue);
 
-        }
-        else
+    /// <summary>
+    /// シーンの切り替えとフェードを行う関数
+    /// </summary>
+    /// <param name="name">遷移先のシーンを選択</param>
+    /// <param name="fadeStart">trueならフェードありfalseはフェード無し</param>
+    /// <param name="sceneChangeStart">trueならシーン遷移スタート</param>
+    public void SceneFadeAndChanging(SceneName name,bool fadeStart = false,bool sceneChangeStart = false)
+    {
+        if (fadeStart)
         {
-            fadeValue = 0;
+            float fadeValue = 0;
+            fadeValue += Time.deltaTime;
             Mathf.Sin(fadeValue);
+            //以下はフェードアウト
+            fadeValue -= Time.deltaTime;
+            Mathf.Sin(fadeValue);
+        }
+        if (sceneChangeStart)
+        {
+            if (name.ToString() == SceneManager.GetActiveScene().name) Debug.LogError("遷移先が同じです");
+            sceneName = name.ToString();
+            SceneManager.LoadScene(sceneName);
+            sceneChangeStart = false;
         }
     }
 }

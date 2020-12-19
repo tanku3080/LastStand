@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Other : MonoBehaviour
@@ -26,7 +24,6 @@ public class Other : MonoBehaviour
     public void GameStart()
     {
         source.PlayOneShot(sfx);
-        SceneFadeManager.Instance.SceneFadeStart(true);
-        SceneFadeManager.Instance.SceneChangeStart(SceneFadeManager.SceneName.Meeting);
+        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting, true, true);
     }
 }

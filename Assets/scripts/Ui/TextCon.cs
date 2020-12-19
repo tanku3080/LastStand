@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 /// <summary>
 /// テキスト表示
 /// </summary>
@@ -10,8 +7,6 @@ public class TextCon : MonoBehaviour
 {
 	public string[] unit;
 	[SerializeField] TextMeshProUGUI uiText;
-	[SerializeField] AudioClip nextButtonSfx,Se;
-     AudioSource audio;
 	private int count = 0;
 
 	[SerializeField]
@@ -33,9 +28,8 @@ public class TextCon : MonoBehaviour
 	void Start()
 	{
 		uiText = GameObject.Find("Texts").GetComponent<TextMeshProUGUI>();
-		audio = this.gameObject.GetComponent<AudioSource>();
 		uiText.font = Resources.Load<TMP_FontAsset>("font/mplus-1mn-regular SDF");
-		audio.PlayOneShot(Se);
+		NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.mC_meeting);
 		SetNextLine();
 	}
 
@@ -45,15 +39,14 @@ public class TextCon : MonoBehaviour
         if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 		{
 			Debug.Log("呼ばれた");
-			SceneFadeManager.Instance.SceneFadeStart(true);
-			SceneFadeManager.Instance.SceneChangeStart(SceneFadeManager.SceneName.GamePlay);
+			SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay,true,true);
 		}
 		// 文字の表示が完了してるならクリック時に次の行を表示する
 		if (IsCompleteDisplayText)
 		{
 			if (currentLine < unit.Length && Input.GetMouseButtonDown(0) || currentLine < unit.Length && Input.GetKeyDown(KeyCode.Return))
 			{
-				audio.PlayOneShot(nextButtonSfx);
+				NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.sfx);
 				SetNextLine();
 			}
 		}

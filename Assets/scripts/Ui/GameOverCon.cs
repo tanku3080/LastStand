@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class GameOverCon : MonoBehaviour
 {
     public CanvasGroup canvas;
     public Button reStart, title;
-    public AudioClip mC, sfx;
-    AudioSource source;
     float timer = 0;
     void Start()
     {
@@ -18,8 +14,7 @@ public class GameOverCon : MonoBehaviour
         canvas.alpha = 0;
         reStart.interactable = false;
         title.interactable = false;
-        source = gameObject.GetComponent<AudioSource>();
-        source.Play();
+        NewGameManager.Instance.source.Play();
     }
 
     // Update is called once per frame
@@ -33,19 +28,5 @@ public class GameOverCon : MonoBehaviour
             canvas.alpha = 1;
             
         }
-    }
-
-    public void Restart()
-    {
-        source.PlayOneShot(sfx);
-        SceneFadeManager.Instance.SceneFadeStart(true);
-        SceneFadeManager.Instance.SceneChangeStart(SceneFadeManager.SceneName.GamePlay);
-    }
-    public void Title()
-    {
-        source.PlayOneShot(sfx);
-
-        SceneFadeManager.Instance.SceneFadeStart(true);
-        SceneFadeManager.Instance.SceneChangeStart(SceneFadeManager.SceneName.Start);
     }
 }

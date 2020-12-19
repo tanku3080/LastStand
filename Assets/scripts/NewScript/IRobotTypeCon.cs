@@ -2,29 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-interface IRobotSetble
+public class IRobotTypeCon : Singleton<IRobotTypeCon>
 {
     public enum RobotType
     {
         Normal, Medium
     }
-    class RobotSetter
+    public void RobotValSet(RobotType type, int life = 0, float speed = 0)
     {
-        public static RobotSetter RobotValSet(RobotType type, int life = 0,float speed = 0)
+        if (type == RobotType.Medium)
         {
-            RobotSetter setter = new RobotSetter();
-            if (type == RobotType.Medium)
-            {
-                life = 1000;
-                speed = 0.05f;
-            }
-            if (type == RobotType.Normal)
-            {
-                life = 600;
-                speed = 0.1f;
-            }
-            return setter;//？
+            life = 1000;
+            speed = 0.05f;
+        }
+        if (type == RobotType.Normal)
+        {
+            life = 600;
+            speed = 0.1f;
         }
     }
 }

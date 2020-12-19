@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerBase : MonoBehaviour,IRobotSetble
+public abstract class PlayerBase : MonoBehaviour
 {
     public int playerLife;
     public float playerSpeed;
@@ -11,18 +11,18 @@ public abstract class PlayerBase : MonoBehaviour,IRobotSetble
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;
 
-
+    public MeshRenderer Renderer { get; protected set; } = null;
      
 
     private void Start()//インターフェイスから変更
     {
-        IRobotSetble.RobotSetter.RobotValSet(IRobotSetble.RobotType.Medium);
+        IRobotTypeCon.Instance.RobotValSet(IRobotTypeCon.RobotType.Medium);
     }
 
     ///<summary>playerの死亡時に呼び出す</summary>
-    protected void PlayerDie()
+    protected void PlayerDie(MeshRenderer mesh)
     {
         Trans.position = Vector3.one * (Random.Range(1000,2000));
-        this.enabled = false;
+        mesh.enabled = false;
     }
 }

@@ -8,6 +8,7 @@ public class Player : PlayerBase
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
+        Renderer = gameObject.GetComponent<MeshRenderer>();
         Anime = gameObject.GetComponent<Animator>();
     }
     //人間は大雑把に八方向に移動できる。ロボットは不便な仕様にしたほうが良い？
@@ -23,5 +24,10 @@ public class Player : PlayerBase
             Anime.SetBool("Back", true);
             this.transform.position = (Vector3.forward * playerSpeed / 2).normalized;
         }
+    }
+
+    void Die()
+    {
+        PlayerDie(Renderer);
     }
 }

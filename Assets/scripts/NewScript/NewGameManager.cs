@@ -8,7 +8,7 @@ public class NewGameManager : Singleton<NewGameManager>
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
-    public AudioSource source;
+    [HideInInspector] public AudioSource source;
     [SerializeField,Tooltip("UIclickボタン")] public AudioClip sfx;
     [SerializeField, Header("meeting音")] public AudioClip mC_meeting;
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;

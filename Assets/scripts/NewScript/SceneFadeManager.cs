@@ -10,20 +10,24 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
         Start,Meeting,GamePlay,GameOvar,GameClear,
     }
     public SceneName scene;
-    GameObject fadeIbj = null;
-    Image thisImg = null;
+    CanvasGroup group = null;
     string sceneName = null;
+    float timer = 0;
     /// <summary>フェード単体かシーン切り替えか</summary>
     bool fadeSingleOfMulti = false;
     // Start is called before the first frame update
     void Start()
     {
-        fadeIbj = transform.GetChild(0).GetChild(0).gameObject;
-        thisImg = fadeIbj.GetComponent<Image>();
-        thisImg.color = Color.black;
+        var t = this.gameObject.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        group = gameObject.transform.GetChild(0).GetComponent<CanvasGroup>();
+        t.color = Color.black;
+        group.alpha = 1;
     }
     private void Update()
     {
+        timer += Time.deltaTime;
+        SceneFadeAndChanging(SceneName.GameClear, true);
+
     }
 
     /// <summary>
@@ -36,19 +40,22 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     {
         if (fadeStart)
         {
-            float fadeValue = 0;
-            fadeValue += Time.deltaTime;
-            Mathf.Sin(fadeValue);
-            //以下はフェードアウト
-            fadeValue -= Time.deltaTime;
-            Mathf.Sin(fadeValue);
+            //0.0005はmeetingに使うとちょうどいいかも？
+            if (group.alpha >= 0)//透明化する
+            {
+                group.alpha -= timer * 0.05f;
+            }
+            else//あらわれる
+            {
+                group.alpha += timer * 0.05f;
+            }
         }
         if (sceneChangeStart)
         {
-            if (name.ToString() == SceneManager.GetActiveScene().name) Debug.LogError("遷移先が同じです");
+            if (name.ToString() == SceneManager.GetActiveScene().name && sceneChangeStart == false) return;
             sceneName = name.ToString();
             SceneManager.LoadScene(sceneName);
-            sceneChangeStart = false;
         }
+        else return;
     }
 }

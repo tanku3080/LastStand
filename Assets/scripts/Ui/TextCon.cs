@@ -5,8 +5,8 @@ using UnityEngine;
 /// </summary>
 public class TextCon : MonoBehaviour
 {
-	public string[] unit;
-	[SerializeField] TextMeshProUGUI uiText;
+    string[] unit;
+	TextMeshProUGUI uiText;
 	private int count = 0;
 
 	[SerializeField]
@@ -18,6 +18,7 @@ public class TextCon : MonoBehaviour
 	private float timeElapsed = 1;
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
+	TextAsset asset;
 
 	// 文字の表示が完了しているかどうか
 	public bool IsCompleteDisplayText
@@ -29,7 +30,10 @@ public class TextCon : MonoBehaviour
 	{
 		uiText = GameObject.Find("Texts").GetComponent<TextMeshProUGUI>();
 		uiText.font = Resources.Load<TMP_FontAsset>("font/mplus-1mn-regular SDF");
-		NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.mC_meeting);
+		asset = Resources.Load<TextAsset>("Text");
+		string stringNum = asset.text;
+		unit = stringNum.Split('\n');
+		//NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.mC_meeting);
 		SetNextLine();
 	}
 
@@ -46,7 +50,7 @@ public class TextCon : MonoBehaviour
 		{
 			if (currentLine < unit.Length && Input.GetMouseButtonDown(0) || currentLine < unit.Length && Input.GetKeyDown(KeyCode.Return))
 			{
-				NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.sfx);
+				//NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.sfx);
 				SetNextLine();
 			}
 		}

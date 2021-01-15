@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Player : PlayerBase
@@ -8,6 +6,7 @@ public class Player : PlayerBase
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
+        Rd.mass = 10;
         Renderer = gameObject.GetComponent<MeshRenderer>();
         Anime = gameObject.GetComponent<Animator>();
     }
@@ -18,7 +17,7 @@ public class Player : PlayerBase
         if (y > 0)
         {
             Anime.SetBool("WalkF", true);
-            Rd.velocity += new Vector3(0,0,y);
+            Rd.velocity = new Vector3(0,0,y);
         }
         else
         {
@@ -28,7 +27,7 @@ public class Player : PlayerBase
         if (y < 0)
         {
             Anime.SetBool("Back", true);
-            Rd.velocity -= new Vector3(0, 0, y);
+            Rd.velocity = new Vector3(0, 0, -y);
         }
         else
         {

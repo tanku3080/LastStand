@@ -1,26 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TestMove : MonoBehaviour
 {
-    Rigidbody rd;
-    float spd = 10f;
-    // Start is called before the first frame update
+    Rigidbody Rd = null;
+    Animator Anime = null;
+    float playerSpeed = 2f;
     void Start()
     {
-        rd = gameObject.GetComponent<Rigidbody>();
+        Rd = gameObject.GetComponent<Rigidbody>();
+        Anime = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        var x = Input.GetAxis("Vertical") * spd;
-        var y = Input.GetAxis("Horizontal") * spd;
+        var x = Input.GetAxis("Vertical") * playerSpeed;
 
-        if (x != 0 || y != 0)
+        //if (x != 0)
+        //{
+        //    Rd.velocity = new Vector3(0, 0,x);
+        //    Anime.SetBool("Move",true);
+        //}
+        //else
+        //{
+        //    Anime.SetBool("Move",false);
+        //}
+
+        if (x != 0)
         {
-            rd.velocity = new Vector3(y,0,x);
+            Rd.velocity = new Vector3(0, 0, x);
+            Anime.SetBool("Move", true);
         }
+        else
+        {
+            Anime.SetBool("Move",false);
+        }
+    }
+
+    void TypeSet()
+    {
+
     }
 }

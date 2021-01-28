@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class PlayerBase : MonoBehaviour
 {
@@ -12,9 +10,11 @@ public abstract class PlayerBase : MonoBehaviour
     public Transform Trans { get; protected set; } = null;
 
     public MeshRenderer Renderer { get; protected set; } = null;
+
+    public bool IsGranded { get; protected set; } = false;
      
 
-    private void Start()//インターフェイスから変更
+    private void Start()//インターフェイスから変更//デリゲートで行ける可能性
     {
         IRobotTypeCon.Instance.RobotValSet(IRobotTypeCon.RobotType.Medium);
     }

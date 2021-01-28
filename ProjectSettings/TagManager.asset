@@ -9,6 +9,7 @@ TagManager:
   - KillZone
   - Bullet
   - Object
+  - Grand
   layers:
   - Default
   - TransparentFX

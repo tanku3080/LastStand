@@ -10,29 +10,16 @@ public class Player : PlayerBase
         Renderer = gameObject.GetComponent<MeshRenderer>();
         Anime = gameObject.GetComponent<Animator>();
     }
-    //人間は大雑把に八方向に移動できる。ロボットは不便な仕様にしたほうが良い？
+    //大雑把に八方向に移動できる。ロボットは二方向にしたほうが良い？
     private void Update()
     {
         var y = Input.GetAxis("Vertical") * playerSpeed;
-        if (y > 0)
+        if (y != 0)
         {
-            Anime.SetBool("WalkF", true);
-            Rd.velocity = new Vector3(0,0,y);
+            Rd.velocity = new Vector3(0, 0, y);
+            Anime.SetFloat("Move",y);
         }
-        else
-        {
-            Anime.SetBool("WalkF",false);
-        }
-
-        if (y < 0)
-        {
-            Anime.SetBool("Back", true);
-            Rd.velocity = new Vector3(0, 0, -y);
-        }
-        else
-        {
-            Anime.SetBool("Back",false);
-        }
+        //Rd.velocity = Vector3.zero;
     }
 
     void Die()

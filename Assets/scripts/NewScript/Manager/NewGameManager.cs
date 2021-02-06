@@ -8,6 +8,9 @@ public class NewGameManager : Singleton<NewGameManager>
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
+
+    //この値がtrueなら敵味方問わず攻撃を停止する
+    public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
     [SerializeField,Tooltip("UIclickボタン")] public AudioClip sfx;
     [SerializeField, Header("meeting音")] public AudioClip mC_meeting;

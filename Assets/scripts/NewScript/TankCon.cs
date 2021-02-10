@@ -3,6 +3,7 @@ using Cinemachine;
 public class TankCon : PlayerBase
 {
     //ティーガー戦車は上下に0から∔65度
+    //AddRelativeForceを使えば斜面での移動に最適らしい
     //xの射角は入れない
     Transform tankHead = null;
     Transform tankGun = null;

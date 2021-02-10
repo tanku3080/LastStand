@@ -653,7 +653,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &765704001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -696,7 +696,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765704000}
-  m_LocalRotation: {x: 0.03788832, y: -0.0000000021504805, z: 8.1536625e-11, w: 0.999282}
+  m_LocalRotation: {x: 0.03788832, y: -0.0000000021492532, z: 8.1490086e-11, w: 0.999282}
   m_LocalPosition: {x: 0.0000009568544, y: 2.7719402, z: 3.6672478}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1021,7 +1021,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh15384
+  m_Name: pb_Mesh30578
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

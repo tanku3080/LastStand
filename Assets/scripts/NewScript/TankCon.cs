@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using Cinemachine;
 public class TankCon : PlayerBase
 {
     //ティーガー戦車は上下に0から∔65度
@@ -13,12 +13,13 @@ public class TankCon : PlayerBase
     [SerializeField] float tankHead_R_SPD = 1.5f;
     [SerializeField] float tankTurn_Speed = 1.5f;
     [SerializeField] float tankLimitSpeed = 50f;
+    [SerializeField] CinemachineVirtualCamera defaultCon = null;
+    [SerializeField] CinemachineVirtualCamera aimCom = null;
     Vector2 m_x;
     Vector2 m_y;
     bool moveF = false;
+    bool AimFlag = false;
 
-    //bool AimFlag { get { return NewGameManager.Instance.GameFlag; } set { AimFlag = value; } }
-    bool AimFlag =false;
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
@@ -39,11 +40,11 @@ public class TankCon : PlayerBase
             Quaternion rotetion = Quaternion.identity;
             if (Input.GetKey(KeyCode.J))
             {
-                rotetion = Quaternion.Euler(Vector3.down / 2 * tankHead_R_SPD);
+                rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag? tankHead_R_SPD:tankHead_R_SPD / 0.5f));
             }
             else if (Input.GetKey(KeyCode.L))
             {
-                rotetion = Quaternion.Euler(Vector3.up / 2 * tankHead_R_SPD);
+                rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f));
             }
             tankHead.rotation *= rotetion;
         }
@@ -67,7 +68,8 @@ public class TankCon : PlayerBase
 
         if (Input.GetButtonUp("Fire1"))
         {
-            AimFlag = true;
+            if (AimFlag) AimFlag = false;
+            else AimFlag = true;
         }
         if (IsGranded)
         {
@@ -87,11 +89,24 @@ public class TankCon : PlayerBase
                 Rd.AddForce(tankBody.transform.forward * mov,ForceMode.Force);
                 //Rd.MovePosition(new  * mov);
             }
+        }
+        AimMove(AimFlag);
+    }
 
-            if (AimFlag)
-            {
-                //ここにエイムの処理を書く
-            }
+    /// <summary>
+    /// aimFlagがtrueならtrue
+    /// </summary>
+    void AimMove(bool aim)
+    {
+        if (aim)
+        {
+            aimCom.gameObject.SetActive(true);
+            defaultCon.gameObject.SetActive(false);
+        }
+        else
+        {
+            aimCom.gameObject.SetActive(false);
+            defaultCon.gameObject.SetActive(true);
         }
     }
 

@@ -20,10 +20,14 @@ public class TankCon : PlayerBase
     Vector2 m_y;
     bool moveF = false;
     bool AimFlag = false;
+    //テスト用に作った。
+    bool kari = false;
+    public bool showFlag = false;
 
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
+        Renderer = GetComponent<MeshRenderer>();
         tankHead = transform.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankBody = transform.GetChild(0);
@@ -92,6 +96,42 @@ public class TankCon : PlayerBase
             }
         }
         AimMove(AimFlag);
+
+        if (playerLife <= 0)
+        {
+            PlayerDie(Renderer);
+        }
+
+
+
+        //機体切替テスト
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (kari)
+            {
+                NewGameManager.Instance.TankChengeUiPop(false);
+                kari = false;
+            }
+            else
+            {
+                kari = true;
+                NewGameManager.Instance.TankChengeUiPop(true);
+            }
+            //ControllTankChenge(NewGameManager.Instance.tankchenger);
+            ControllTankChenge(showFlag);
+        }
+    }
+    /// <summary>
+    /// 操作している戦車を変更する
+    /// </summary>
+    void ControllTankChenge(bool chenge)
+    {
+        if (chenge)
+        {
+            defaultCon = GameObject.Find("CM vcam3").GetComponent<CinemachineVirtualCamera>();
+            aimCom = GameObject.Find("CM vcam4").GetComponent<CinemachineVirtualCamera>();
+            chenge = false;
+        }
     }
 
     /// <summary>

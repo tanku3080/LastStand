@@ -9,7 +9,7 @@ public class CompasRot : MonoBehaviour
     }
     void Update()
     {
-        if (NewGameManager.Instance.playerSide == true)
+        if (GameManager.Instance.playerSide == true)
         {
             float mouseX = Input.GetAxis("Mouse X");
             transform.Rotate(0, 0, mouseX);

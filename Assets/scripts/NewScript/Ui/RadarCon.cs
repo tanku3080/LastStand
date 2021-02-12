@@ -14,7 +14,7 @@ public class RadarCon : MonoBehaviour
 
     private void Update()
     {
-        if (NewGameManager.Instance.playerSide)
+        if (GameManager.Instance.playerSide)
         {
             GameObject poss = _player.Test;
             float pos = Vector3.Distance(_player.transform.position, poss.transform.position);

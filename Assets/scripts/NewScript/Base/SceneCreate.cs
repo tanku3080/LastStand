@@ -73,7 +73,7 @@ public class SceneCreate : MonoBehaviour
             var c = new GameObject("Canvas");
             c.transform.parent = ManagersObj.transform;
             //以下ManagerObjにアタッチ
-            ManagersObj.AddComponent<NewGameManager>();
+            ManagersObj.AddComponent<GameManager>();
             ManagersObj.AddComponent<PlayerManager>();
             ManagersObj.AddComponent<EnemyManager>();
             ManagersObj.AddComponent<SceneFadeManager>();
@@ -104,9 +104,9 @@ public class SceneCreate : MonoBehaviour
 
     private void Start()
     {
-        if (NewGameManager.Instance.tankChengeObj == null)
+        if (GameManager.Instance.tankChengeObj == null)
         {
-            NewGameManager.Instance.tankChengeObj = GameObject.Find("TankChengeButton");
+            GameManager.Instance.tankChengeObj = GameObject.Find("TankChengeButton");
         }
     }
 }

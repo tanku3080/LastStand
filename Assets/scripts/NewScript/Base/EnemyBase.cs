@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour,ICharactorAtack
 {
     public int enemyLife;
     public float enemySpeed;
@@ -21,5 +19,10 @@ public abstract class EnemyBase : MonoBehaviour
     {
         Trans.position = Vector3.one * (Random.Range(1000, 2000));
         mesh.enabled = false;
+    }
+
+    public void Atack(int damager)
+    {
+        enemyLife -= damager;
     }
 }

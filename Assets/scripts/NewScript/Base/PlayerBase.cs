@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-
-public abstract class PlayerBase : MonoBehaviour
+public abstract class PlayerBase : MonoBehaviour,ICharactorAtack
 {
     public int playerLife;
     public float playerSpeed;
@@ -36,5 +35,10 @@ public abstract class PlayerBase : MonoBehaviour
             playerPos = transform.position;
         }
         return spd;
+    }
+
+    public void Atack(int damage)
+    {
+        playerLife -= damage;
     }
 }

@@ -5,9 +5,13 @@ using UnityEngine.SceneManagement;
 
 public interface ITankChoice
 {
-    void TankChoiceStart(NewGameManager.TankChoice tank);
+    void TankChoiceStart(GameManager.TankChoice tank);
 }
-public class NewGameManager : Singleton<NewGameManager>,ITankChoice
+public interface ICharactorAtack
+{
+    void Atack(int damager);
+}
+public class GameManager : Singleton<GameManager>,ITankChoice
 {
     public enum TankChoice
     {
@@ -66,7 +70,10 @@ public class NewGameManager : Singleton<NewGameManager>,ITankChoice
         source.PlayOneShot(sfx);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
-
+    /// <summary>
+    /// 戦車を選択
+    /// </summary>
+    /// <param name="tank">選択する戦車の名前</param>
     public void TankChoiceStart(TankChoice tank)
     {
         switch (tank)

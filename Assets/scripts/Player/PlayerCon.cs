@@ -50,7 +50,7 @@ public class PlayerCon : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            NewGameManager.Instance.enemyAtackStop = false;
+            GameManager.Instance.enemyAtackStop = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -70,7 +70,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (sphere.radius < 0)
         {
-            NewGameManager.Instance.playerSide = false;
+            GameManager.Instance.playerSide = false;
             anime.StopPlayback();
         }
         sphere.radius -= 0.5f;
@@ -141,7 +141,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (collision.gameObject == sphere)
         {
-            NewGameManager.Instance.playerSide = false;
+            GameManager.Instance.playerSide = false;
         }
     }
 }

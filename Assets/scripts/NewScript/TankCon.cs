@@ -28,11 +28,9 @@ public class TankCon : PlayerBase
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
-<<<<<<< Updated upstream
         tankHead = transform.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankBody = transform.GetChild(0);
-=======
         Trans = GetComponent<Transform>();
         Renderer = GetComponent<MeshRenderer>();
         tankAim = GameObject.Find("Canvas").transform.GetChild(2).GetComponent<RawImage>();
@@ -41,7 +39,6 @@ public class TankCon : PlayerBase
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
->>>>>>> Stashed changes
         tankRig_L = tankBody.GetChild(0);
         tankRig_R = tankBody.GetChild(1);
     }

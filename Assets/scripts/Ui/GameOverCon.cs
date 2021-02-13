@@ -14,7 +14,7 @@ public class GameOverCon : MonoBehaviour
         canvas.alpha = 0;
         reStart.interactable = false;
         title.interactable = false;
-        NewGameManager.Instance.source.Play();
+        GameManager.Instance.source.Play();
     }
 
     // Update is called once per frame

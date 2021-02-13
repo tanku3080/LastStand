@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Player : PlayerBase
-{
+public class Player : PlayerBase{
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -21,6 +20,8 @@ public class Player : PlayerBase
         }
         //Rd.velocity = Vector3.zero;
     }
+
+
 
     void Die()
     {

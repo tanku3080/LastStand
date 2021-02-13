@@ -26,7 +26,7 @@ public class MenuCon : MonoBehaviour
                 isCancel = true;
                 return;
             }
-            NewGameManager.Instance.playerSide = false;
+            GameManager.Instance.playerSide = false;
             button.interactable = true;
             button.interactable = true;
             group.alpha = 1;
@@ -34,7 +34,7 @@ public class MenuCon : MonoBehaviour
 
         if (isCancel)
         {
-            NewGameManager.Instance.enemySide = true;
+            GameManager.Instance.enemySide = true;
             group.alpha = 0;
             isCancel = false;
         }

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-
-public abstract class PlayerBase : MonoBehaviour
+public abstract class PlayerBase : MonoBehaviour,ICharactorAtack
 {
     public int playerLife;
     public float playerSpeed;
@@ -24,5 +23,22 @@ public abstract class PlayerBase : MonoBehaviour
     {
         Trans.position = Vector3.one * (Random.Range(1000,2000));
         mesh.enabled = false;
+    }
+
+    protected float PlayerGetMove(bool isPlayer = false)
+    {
+        Vector3 playerPos = Vector3.zero;
+        float spd = 0f;
+        if (isPlayer)
+        {
+            spd = ((transform.position - playerPos) / Time.deltaTime).magnitude;
+            playerPos = transform.position;
+        }
+        return spd;
+    }
+
+    public void Atack(int damage)
+    {
+        playerLife -= damage;
     }
 }

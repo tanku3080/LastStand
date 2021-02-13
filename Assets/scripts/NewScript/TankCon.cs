@@ -21,6 +21,10 @@ public class TankCon : PlayerBase
     [SerializeField] float tankLimitSpeed = 50f;
     [SerializeField] CinemachineVirtualCamera defaultCon = null;
     [SerializeField] CinemachineVirtualCamera aimCom = null;
+
+    [SerializeField] float limitRange = 10f;
+    bool moveLimit;
+    
     Vector2 m_x;
     Vector2 m_y;
     bool moveF = false;
@@ -32,13 +36,14 @@ public class TankCon : PlayerBase
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
+        Trans = GetComponent<Transform>();
         Renderer = GetComponent<MeshRenderer>();
         tankAim = GameObject.Find("Canvas").transform.GetChild(2).GetComponent<RawImage>();
         tankAim.enabled = false;
-        tankHead = transform.GetChild(1);
+        tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
-        tankBody = transform.GetChild(0);
+        tankBody = Trans.GetChild(0);
         tankRig_L = tankBody.GetChild(0);
         tankRig_R = tankBody.GetChild(1);
     }
@@ -53,11 +58,11 @@ public class TankCon : PlayerBase
             Quaternion rotetion = Quaternion.identity;
             if (Input.GetKey(KeyCode.J))
             {
-                rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag? tankHead_R_SPD:tankHead_R_SPD / 0.5f));
+                rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag? tankHead_R_SPD:tankHead_R_SPD / 0.5f) * Time.deltaTime);
             }
             else if (Input.GetKey(KeyCode.L))
             {
-                rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f));
+                rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
             }
             tankHead.rotation *= rotetion;
         }
@@ -94,6 +99,7 @@ public class TankCon : PlayerBase
                 float rot = h * tankTurn_Speed * Time.deltaTime;
                 Quaternion rotetion = Quaternion.Euler(0,rot,0);
                 Rd.MoveRotation(Rd.rotation * rotetion);
+                MoveLimit(moveLimit);
             }
             //前進後退
             if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || Rd.velocity.magnitude != -tankLimitSpeed)
@@ -101,6 +107,7 @@ public class TankCon : PlayerBase
                 float mov = v * playerSpeed / 2;// * Time.deltaTime;
                 Rd.AddForce(tankBody.transform.forward * mov,ForceMode.Force);
                 //Rd.MovePosition(new  * mov);
+                MoveLimit(moveLimit);
             }
         }
         AimMove(AimFlag);
@@ -176,6 +183,23 @@ public class TankCon : PlayerBase
         t.GetComponent<Rigidbody>().AddForce(tankGunFire.transform.forward * 1000f);
         t.transform.TransformVector(pos);
 
+    }
+
+    /// <summary>
+    /// 移動制限をつけるメソッド
+    /// </summary>
+    void MoveLimit(bool moveLimitFlag = false)
+    {
+        Vector3 pos = Trans.position;
+        if (limitRange > 0)
+        {
+            pos.x = Mathf.Clamp(pos.x, 0, limitRange);
+            pos.z = Mathf.Clamp(pos.z, 0, limitRange);
+            limitRange -= 1 * Time.deltaTime;
+            moveLimitFlag = false;
+        }
+        else moveLimitFlag = true;
+    Trans.position = pos;
     }
 
     private void OnCollisionStay(Collision collision)

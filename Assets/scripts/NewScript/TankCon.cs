@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Cinemachine;
-using UnityEngine.UI;
 public class TankCon : PlayerBase
 {
     //ティーガー戦車は上下に0から∔65度
@@ -12,10 +11,6 @@ public class TankCon : PlayerBase
     Transform tankRig_L = null;//左
     Transform tankRig_R = null;//右
     private Transform tankBody = null;
-
-    private GameObject tankGunFire = null;
-    [SerializeField] RawImage tankAim = null;
-
     [SerializeField] float tankHead_R_SPD = 1.5f;
     [SerializeField] float tankTurn_Speed = 1.5f;
     [SerializeField] float tankLimitSpeed = 50f;
@@ -29,13 +24,13 @@ public class TankCon : PlayerBase
     Vector2 m_y;
     bool moveF = false;
     bool AimFlag = false;
-    //テスト用に作った。
-    bool kari = false;
-    public bool showFlag = false;
 
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
+        tankHead = transform.GetChild(1);
+        tankGun = tankHead.GetChild(0);
+        tankBody = transform.GetChild(0);
         Trans = GetComponent<Transform>();
         Renderer = GetComponent<MeshRenderer>();
         tankAim = GameObject.Find("Canvas").transform.GetChild(2).GetComponent<RawImage>();
@@ -83,8 +78,8 @@ public class TankCon : PlayerBase
             tankGun.rotation *= rotetion;
         }
 
-        //右クリック
-        if (Input.GetButtonUp("Fire2"))
+
+        if (Input.GetButtonUp("Fire1"))
         {
             if (AimFlag) AimFlag = false;
             else AimFlag = true;
@@ -111,42 +106,6 @@ public class TankCon : PlayerBase
             }
         }
         AimMove(AimFlag);
-
-        if (playerLife <= 0)
-        {
-            PlayerDie(Renderer);
-        }
-
-
-
-        //機体切替テスト
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            if (kari)
-            {
-                GameManager.Instance.TankChengeUiPop(false);
-                kari = false;
-            }
-            else
-            {
-                kari = true;
-                GameManager.Instance.TankChengeUiPop(true);
-            }
-            //ControllTankChenge(NewGameManager.Instance.tankchenger);
-            ControllTankChenge(showFlag);
-        }
-    }
-    /// <summary>
-    /// 操作している戦車を変更する
-    /// </summary>
-    void ControllTankChenge(bool chenge)
-    {
-        if (chenge && GameManager.Instance.players.Count > 1)
-        {
-            defaultCon = GameObject.Find("CM vcam3").GetComponent<CinemachineVirtualCamera>();
-            aimCom = GameObject.Find("CM vcam4").GetComponent<CinemachineVirtualCamera>();
-            chenge = false;
-        }
     }
 
     /// <summary>
@@ -158,21 +117,16 @@ public class TankCon : PlayerBase
         {
             aimCom.gameObject.SetActive(true);
             defaultCon.gameObject.SetActive(false);
-            tankAim.enabled = true;
-            if (Input.GetButtonUp("Fire1"))
-            {
-                //攻撃
-                Atack();
-            }
         }
         else
         {
             aimCom.gameObject.SetActive(false);
             defaultCon.gameObject.SetActive(true);
-            tankAim.enabled = false;
         }
     }
 
+<<<<<<< Updated upstream
+=======
     void Atack()
     {
         //posは飛ぶ座標
@@ -202,6 +156,7 @@ public class TankCon : PlayerBase
     Trans.position = pos;
     }
 
+>>>>>>> Stashed changes
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Grand")

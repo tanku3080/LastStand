@@ -19,9 +19,11 @@ public class TankCon : PlayerBase
     [SerializeField] float tankHead_R_SPD = 1.5f;
     [SerializeField] float tankTurn_Speed = 1.5f;
     [SerializeField] float tankLimitSpeed = 50f;
+    //バーチャルカメラよう
     [SerializeField] CinemachineVirtualCamera defaultCon = null;
     [SerializeField] CinemachineVirtualCamera aimCom = null;
 
+    //移動制限用
     [SerializeField] float limitRange = 10f;
     bool moveLimit;
     

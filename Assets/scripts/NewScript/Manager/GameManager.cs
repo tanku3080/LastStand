@@ -22,8 +22,6 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
-
-    [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     // Start is called before the first frame update
 
     void Start()
@@ -31,10 +29,6 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
         TankChengeUiPop(false);
         source = gameObject.GetComponent<AudioSource>();
         source.Play();
-        foreach (var item in FindObjectsOfType<TankCon>())
-        {
-            players.Add(item);
-        }
     }
 
     // Update is called once per frame

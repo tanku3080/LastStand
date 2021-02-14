@@ -50,8 +50,8 @@ public class TankCon : PlayerBase
         tankBody = Trans.GetChild(0);
         tankRig_L = tankBody.GetChild(0);
         tankRig_R = tankBody.GetChild(1);
-        _interface = GameObject.Find("Inter").GetComponent<InterfaceScripts.ITankChoice>();
-        _interface.TankChoiceStart(gameObject.name);
+        //_interface = GameObject.Find("Inter").GetComponent<InterfaceScripts.ITankChoice>();
+        //_interface.TankChoiceStart(gameObject.name);
     }
 
     // Update is called once per frame

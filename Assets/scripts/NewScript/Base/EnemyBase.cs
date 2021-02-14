@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour,ICharactorAtack
+public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorAtack
 {
     public int enemyLife;
     public float enemySpeed;
@@ -12,7 +12,6 @@ public abstract class EnemyBase : MonoBehaviour,ICharactorAtack
 
     private void Start()
     {
-        IRobotTypeCon.Instance.RobotValSet(IRobotTypeCon.RobotType.Medium);
     }
 
     protected void EnemyDie(MeshRenderer mesh)

@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-[RequireComponent(typeof(Rigidbody))]
-public class NewEnemy : EnemyBase
+﻿using UnityEngine;
+
+public class Enemy : EnemyBase
 {
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
         Renderer = gameObject.GetComponent<MeshRenderer>();
         Anime = gameObject.GetComponent<Animator>();
+        Trans = gameObject.GetComponent<Transform>();
     }
 
     /// <summary>
@@ -17,7 +16,7 @@ public class NewEnemy : EnemyBase
     /// <param name="obj"></param>
     /// <param name="name">探すオブジェクトのlayer名</param>
     /// <returns></returns>
-    GameObject NearPlayer(GameObject obj,string name = "Player")
+    GameObject NearPlayer(GameObject obj, string name = "Player")
     {
         float keepPos = 0;
         float nearDistance = 0;
@@ -28,14 +27,14 @@ public class NewEnemy : EnemyBase
         {
             if (item.layer == layerNum)
             {
-                keepPos = Vector3.Distance(item.transform.position,obj.transform.position);
+                keepPos = Vector3.Distance(item.transform.position, obj.transform.position);
                 if (nearDistance == 0 || nearDistance > keepPos)
                 {
                     nearDistance = keepPos;
                     target = item;
                 }
             }
-            
+
         }
         return target;
     }

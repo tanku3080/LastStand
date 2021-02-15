@@ -74,8 +74,7 @@ public class SceneCreate : MonoBehaviour
             c.transform.parent = ManagersObj.transform;
             //以下ManagerObjにアタッチ
             ManagersObj.AddComponent<GameManager>();
-            ManagersObj.AddComponent<PlayerManager>();
-            ManagersObj.AddComponent<EnemyManager>();
+            ManagersObj.AddComponent<TurnManager>();
             ManagersObj.AddComponent<SceneFadeManager>();
             ManagersObj.AddComponent<DieManager>();
             ManagersObj.AddComponent<AudioSource>();

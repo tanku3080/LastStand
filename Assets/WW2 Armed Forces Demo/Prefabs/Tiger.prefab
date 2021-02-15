@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 6154374998762372557}
   - component: {fileID: 456044572926886196}
   m_Layer: 0
-  m_Name: Panzer_VI_E
+  m_Name: Tiger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

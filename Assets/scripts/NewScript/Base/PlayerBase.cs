@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-public abstract class PlayerBase : MonoBehaviour,ICharactorAtack
+public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorAtack
 {
     public int playerLife;
     public float playerSpeed;
@@ -13,9 +13,8 @@ public abstract class PlayerBase : MonoBehaviour,ICharactorAtack
     public bool IsGranded { get; protected set; } = false;
      
 
-    private void Start()//インターフェイスから変更//デリゲートで行ける可能性
+    private void Start()
     {
-        IRobotTypeCon.Instance.RobotValSet(IRobotTypeCon.RobotType.Medium);
     }
 
     ///<summary>playerの死亡時に呼び出す</summary>

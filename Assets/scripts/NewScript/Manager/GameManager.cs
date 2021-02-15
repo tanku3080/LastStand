@@ -8,11 +8,16 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     {
         Tiger, Panzer2, Panzer4, KV2, H35, Shaman, Stuart, S35, T34_76,
     }
+    public enum Now
+    {
+        Wait,Move,Change,Atack,UIPOP
+    }
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
     //切替テスト用に作った
     public bool tankchenger = false;
+    public Renderer[] enemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
@@ -22,6 +27,7 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
+
     // Start is called before the first frame update
 
     void Start()
@@ -34,12 +40,41 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().name == "GamePlay")
+        {
+            if (Input.GetKeyUp(KeyCode.P) && playerSide)
+            {
+
+            }
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                TankChengeUiPop(true);
+            }
+        }
+    }
+
+    public void NowSet(Now now)
+    {
+        switch (now)
+        {
+            case Now.Wait:
+                break;
+            case Now.Move:
+                break;
+            case Now.Change:
+                break;
+            case Now.Atack:
+                break;
+            case Now.UIPOP:
+                break;
+        }
     }
 
     /// <summary>ゲームクリア時に呼び出す</summary>
     void EndStage()
     {
-        PlayerManager.Instance.players.Clear();
+        TurnManager.Instance.players.Clear();
+        TurnManager.Instance.enemys.Clear();
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
     }
 
@@ -107,8 +142,6 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
             case TankChoice.T34_76:
                 charactorHp = 90;
                 charactorSpeed = 32f;
-                break;
-            default:
                 break;
         }
         Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");

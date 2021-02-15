@@ -1,27 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public interface ITankChoice
-{
-    void TankChoiceStart(GameManager.TankChoice tank);
-}
-public interface ICharactorAtack
-{
-    void Atack(int damager);
-}
-public class GameManager : Singleton<GameManager>,ITankChoice
+public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
 {
     public enum TankChoice
     {
         Tiger, Panzer2, Panzer4, KV2, H35, Shaman, Stuart, S35, T34_76,
+    }
+    public enum Now
+    {
+        Wait,Move,Change,Atack,UIPOP
     }
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
     //切替テスト用に作った
     public bool tankchenger = false;
+    public Renderer[] enemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
@@ -32,7 +28,6 @@ public class GameManager : Singleton<GameManager>,ITankChoice
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
 
-    [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     // Start is called before the first frame update
 
     void Start()
@@ -40,21 +35,46 @@ public class GameManager : Singleton<GameManager>,ITankChoice
         TankChengeUiPop(false);
         source = gameObject.GetComponent<AudioSource>();
         source.Play();
-        foreach (var item in FindObjectsOfType<TankCon>())
-        {
-            players.Add(item);
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().name == "GamePlay")
+        {
+            if (Input.GetKeyUp(KeyCode.P) && playerSide)
+            {
+
+            }
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                TankChengeUiPop(true);
+            }
+        }
+    }
+
+    public void NowSet(Now now)
+    {
+        switch (now)
+        {
+            case Now.Wait:
+                break;
+            case Now.Move:
+                break;
+            case Now.Change:
+                break;
+            case Now.Atack:
+                break;
+            case Now.UIPOP:
+                break;
+        }
     }
 
     /// <summary>ゲームクリア時に呼び出す</summary>
     void EndStage()
     {
-        PlayerManager.Instance.players.Clear();
+        TurnManager.Instance.players.Clear();
+        TurnManager.Instance.enemys.Clear();
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
     }
 
@@ -70,35 +90,61 @@ public class GameManager : Singleton<GameManager>,ITankChoice
         source.PlayOneShot(sfx);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
+
+    public int charactorHp;
+    public float charactorSpeed;
     /// <summary>
     /// 戦車を選択
     /// </summary>
     /// <param name="tank">選択する戦車の名前</param>
-    public void TankChoiceStart(TankChoice tank)
+    public void TankChoiceStart(string num)
     {
+        TankChoice tank = TankChoice.Tiger;
+        while (num != tank.ToString())
+        {
+            tank++;
+            Debug.Log("次の奴");
+        }
         switch (tank)
         {
             case TankChoice.Tiger:
+                charactorHp = 100;
+                charactorSpeed = 20f;
                 break;
             case TankChoice.Panzer2:
+                charactorHp = 50;
+                charactorSpeed = 28f;
                 break;
             case TankChoice.Panzer4:
+                charactorHp = 75;
+                charactorSpeed = 25f;
                 break;
             case TankChoice.KV2:
+                charactorHp = 100;
+                charactorSpeed = 20f;
                 break;
             case TankChoice.H35:
+                charactorHp = 40;
+                charactorSpeed = 10f;
                 break;
             case TankChoice.Shaman:
+                charactorHp = 80;
+                charactorSpeed = 21f;
                 break;
             case TankChoice.Stuart:
+                charactorHp = 30;
+                charactorSpeed = 30f;
                 break;
             case TankChoice.S35:
+                charactorHp = 60;
+                charactorSpeed = 22;
                 break;
             case TankChoice.T34_76:
-                break;
-            default:
+                charactorHp = 90;
+                charactorSpeed = 32f;
                 break;
         }
+        Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");
     }
 
     /// <summary>

@@ -6,11 +6,13 @@ using Cinemachine;
 public class TurnManager : Singleton<TurnManager>
 {
     public bool enemyTurn = false;
-    public bool playerTurn = false;
+    public bool playerTurn = true;
     [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     [SerializeField, Header("味方操作キャラ")] public List<Enemy> enemys = null;
     [HideInInspector] public List<Renderer> playersRender = null;
     [HideInInspector] public List<Renderer> enemysRender = null;
+    [SerializeField] public int playerMoveValue = 5;
+    [SerializeField] public int enemyMoveValue = 5;
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
     //最初のプレイヤーの数
@@ -28,6 +30,10 @@ public class TurnManager : Singleton<TurnManager>
         }
         foreach (var enemy in FindObjectsOfType<Enemy>())
         {
+            if (enemy == null)
+            {
+                Debug.Log("ないよ");
+            }
             enemys.Add(enemy);
             //enemysRender.Add(enemy.Renderer);
         }
@@ -39,6 +45,10 @@ public class TurnManager : Singleton<TurnManager>
         if (playerTurn)
         {
             MoveCharaSet(true);
+        }
+        if (enemyTurn)
+        {
+            MoveCharaSet(false,true);
         }
     }
 
@@ -63,7 +73,7 @@ public class TurnManager : Singleton<TurnManager>
             //何か間違っているような・・・
             if (playerNum++ == playerMaxNum)
             {
-
+                //ここにコンポーネントを消す処理を行う
                 playerNum += 1;
             }
             else playerNum = 0;
@@ -91,25 +101,20 @@ public class TurnManager : Singleton<TurnManager>
         }
     }
 
-    public void Clear()
+    public void OkTankChenge() 
     {
+        GameManager.Instance.ChengeUiPop(false, GameManager.Instance.tankChengeObj);
+        MoveCharaSet(true);
+    }
+    public void NoTankChenge() => GameManager.Instance.ChengeUiPop(false,GameManager.Instance.tankChengeObj);
 
+    public void TurnEnd()
+    {
+        playerTurn = false;
+        enemyTurn = true;
     }
 
-    /// <summary>
-    /// 操作している戦車を変更する
-    /// </summary>
-    void ControllTankChenge(bool chenge)
-    {
-        if (chenge && players.Count > 1)
-        {
-            DefCon = GameObject.Find("CM vcam3").GetComponent<CinemachineVirtualCamera>();
-            AimCon = GameObject.Find("CM vcam4").GetComponent<CinemachineVirtualCamera>();
-            chenge = false;
-        }
-        else
-        {
-            Debug.LogWarning("切り替えるcharacterがいません");
-        }
-    }
+    public void Clear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
+
+    public void Back() => GameManager.Instance.ChengeUiPop(false,GameManager.Instance.gameObject);
 }

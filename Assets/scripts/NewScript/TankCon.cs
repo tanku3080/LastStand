@@ -12,7 +12,6 @@ public class TankCon : PlayerBase
     Transform tankRig_L = null;//左
     Transform tankRig_R = null;//右
     private Transform tankBody = null;
-    bool isMove = false;
 
     private GameObject tankGunFire = null;
 
@@ -20,8 +19,8 @@ public class TankCon : PlayerBase
     [SerializeField] float tankTurn_Speed = 1.5f;
     [SerializeField] float tankLimitSpeed = 50f;
     //バーチャルカメラよう
-    [SerializeField] CinemachineVirtualCamera defaultCon = TurnManager.Instance.DefCon;
-    [SerializeField] CinemachineVirtualCamera aimCom = TurnManager.Instance.AimCon;
+    [SerializeField] CinemachineVirtualCamera defaultCon;
+    [SerializeField] CinemachineVirtualCamera aimCom;
 
     //移動制限用
     [SerializeField] float limitRange = 10f;
@@ -31,10 +30,6 @@ public class TankCon : PlayerBase
     Vector2 m_y;
     bool moveF = false;
     bool AimFlag = false;
-    //テスト用に作った。
-    bool kari = false;
-    public bool showFlag = false;
-
     //向いているかチェック
     bool lookChactor;
 
@@ -52,6 +47,10 @@ public class TankCon : PlayerBase
         tankBody = Trans.GetChild(0);
         tankRig_L = tankBody.GetChild(0);
         tankRig_R = tankBody.GetChild(1);
+        aimCom = TurnManager.Instance.AimCon;
+        defaultCon = TurnManager.Instance.DefCon;
+        aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
+        defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
         //_interface = GameObject.Find("Inter").GetComponent<InterfaceScripts.ITankChoice>();
         //_interface.TankChoiceStart(gameObject.name);
     }
@@ -59,90 +58,73 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        //マウスを「J」「L」での旋回に変更
-
-        if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
+        if (GameManager.Instance.playerIsMove)
         {
-            Quaternion rotetion = Quaternion.identity;
-            if (Input.GetKey(KeyCode.J))
-            {
-                rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-            }
-            else if (Input.GetKey(KeyCode.L))
-            {
-                rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-            }
-            tankHead.rotation *= rotetion;
-        }
+            //マウスを「J」「L」での旋回に変更
 
-        //未実装
-        if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
-        {
-            Quaternion rotetion = Quaternion.identity;
-            var normal = Mathf.Repeat(tankGun.rotation.x, 65);
-            if (Input.GetKey(KeyCode.I) && normal < 65)
+            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
             {
-                rotetion = Quaternion.Euler(Vector3.left);
+                Quaternion rotetion = Quaternion.identity;
+                if (Input.GetKey(KeyCode.J))
+                {
+                    rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                }
+                else if (Input.GetKey(KeyCode.L))
+                {
+                    rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                }
+                tankHead.rotation *= rotetion;
             }
-            if (Input.GetKey(KeyCode.K) && normal > 0)
-            {
-                rotetion = Quaternion.Euler(Vector3.right);
-            }
-            tankGun.rotation *= rotetion;
-        }
 
+            //未実装
+            if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
+            {
+                Quaternion rotetion = Quaternion.identity;
+                var normal = Mathf.Repeat(tankGun.rotation.x, 65);
+                if (Input.GetKey(KeyCode.I) && normal < 65)
+                {
+                    rotetion = Quaternion.Euler(Vector3.left);
+                }
+                if (Input.GetKey(KeyCode.K) && normal > 0)
+                {
+                    rotetion = Quaternion.Euler(Vector3.right);
+                }
+                tankGun.rotation *= rotetion;
+            }
+            if (IsGranded)
+            {
+                float v = Input.GetAxis("Vertical");
+                float h = Input.GetAxis("Horizontal");
+
+                if (h != 0)
+                {
+                    float rot = h * tankTurn_Speed * Time.deltaTime;
+                    Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                    Rd.MoveRotation(Rd.rotation * rotetion);
+                    //MoveLimit(moveLimit);//問題あり
+                }
+                //前進後退
+                if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || Rd.velocity.magnitude != -tankLimitSpeed)
+                {
+                    float mov = v * playerSpeed / 2;// * Time.deltaTime;
+                    Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                    //Rd.MovePosition(new  * mov);
+                    //MoveLimit(moveLimit);
+                }
+            }
+        }
         //右クリック
         if (Input.GetButtonUp("Fire2"))
         {
             if (AimFlag) AimFlag = false;
             else AimFlag = true;
         }
-        if (IsGranded && isMove)
-        {
-            float v = Input.GetAxis("Vertical");
-            float h = Input.GetAxis("Horizontal");
-
-            if (h != 0)
-            {
-                float rot = h * tankTurn_Speed * Time.deltaTime;
-                Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                Rd.MoveRotation(Rd.rotation * rotetion);
-                //MoveLimit(moveLimit);//問題あり
-            }
-            //前進後退
-            if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || Rd.velocity.magnitude != -tankLimitSpeed)
-            {
-                float mov = v * playerSpeed / 2;// * Time.deltaTime;
-                Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                //Rd.MovePosition(new  * mov);
-                //MoveLimit(moveLimit);
-            }
-        }
         AimMove(AimFlag);
+
 
         if (playerLife <= 0)
         {
             PlayerDie(Renderer);
-        }
-
-
-
-        //機体切替テスト
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (kari)
-            {
-                GameManager.Instance.TankChengeUiPop(false);
-                kari = false;//これはループを防ぐために作っている
-            }
-            else
-            {
-                kari = true;
-                GameManager.Instance.TankChengeUiPop(true);
-            }
-            //ControllTankChenge(NewGameManager.Instance.tankchenger);
-            //ボタンを選択したらこれを使う。これをターンマネージャーに入れる
-            TurnManager.Instance.MoveCharaSet(showFlag);
         }
     }
 
@@ -153,8 +135,8 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
-            isMove = false;
-            aimCom.gameObject.SetActive(true);
+            GameManager.Instance.playerIsMove = false;
+            aimCom.gameObject.SetActive(true); ;
             defaultCon.gameObject.SetActive(false);
             if (Input.GetButtonUp("Fire1"))
             {
@@ -168,9 +150,9 @@ public class TankCon : PlayerBase
         }
         else
         {
-            aimCom.gameObject.SetActive(false);
+            GameManager.Instance.playerIsMove = true;
             defaultCon.gameObject.SetActive(true);
-            isMove = true;
+            aimCom.gameObject.SetActive(false);
         }
     }
 

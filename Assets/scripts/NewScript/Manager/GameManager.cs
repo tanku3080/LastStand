@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
+public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 {
     public enum TankChoice
     {
@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     }
     public enum Now
     {
-        Wait,Move,Change,Atack,UIPOP
+        Wait, Move, Change, Atack, UIPOP
     }
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
@@ -18,21 +18,29 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     //切替テスト用に作った
     public bool tankchenger = false;
     public Renderer[] enemyRender { get; set; }
+    public bool playerIsMove = true, enemyIsMove = false;
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField,Tooltip("UIclickボタン")] public AudioClip sfx;
+    [SerializeField, Tooltip("UIclickボタン")] public AudioClip sfx;
     [SerializeField, Header("meeting音")] public AudioClip mC_meeting;
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
+    [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
+    [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
+    [SerializeField] public GameObject[] battleUIs;
+
+    bool clickC = true;
 
     // Start is called before the first frame update
 
     void Start()
     {
-        TankChengeUiPop(false);
+        ChengeUiPop(false,tankChengeObj);
+        ChengeUiPop(false,pauseObj);
+        ChengeUiPop(false,endObj);
         source = gameObject.GetComponent<AudioSource>();
         source.Play();
     }
@@ -40,15 +48,49 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay")
+        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
-            if (Input.GetKeyUp(KeyCode.P) && playerSide)
+            if (Input.GetKeyUp(KeyCode.P) && clickC)
             {
-
+                ChengeUiPop(clickC, pauseObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = false;
             }
-            if (Input.GetKeyUp(KeyCode.Space))
+            else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
             {
-                TankChengeUiPop(true);
+                ChengeUiPop(clickC, pauseObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = true;
+            }
+            if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC)
+            {
+                ChengeUiPop(clickC, tankChengeObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = false;
+            }
+            else if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC == false)
+            {
+                ChengeUiPop(clickC, tankChengeObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = true;
+            }
+            if (Input.GetKeyUp(KeyCode.Return) && playerSide)
+            {
+                ChengeUiPop(clickC, endObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = false;
+            }
+            else if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC == false)
+            {
+                ChengeUiPop(clickC, endObj);
+                playerIsMove = !clickC;
+                enemyIsMove = !clickC;
+                clickC = true;
             }
         }
     }
@@ -75,7 +117,7 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     {
         TurnManager.Instance.players.Clear();
         TurnManager.Instance.enemys.Clear();
-        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
+        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
     }
 
     ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
@@ -150,19 +192,11 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     /// <summary>
     /// 確認メッセージが表示される
     /// </summary>
-    public void TankChengeUiPop(bool isChenge)
-    {
-        tankChengeObj.SetActive(isChenge);
-    }
+    public void ChengeUiPop(bool isChenge = false, GameObject uiObj = null) => uiObj.SetActive(isChenge);
 
-    public void OkTankChenge()
+    public void TurnEnd()
     {
-        tankchenger = true;
-        TankChengeUiPop(false);
-    }
-    public void NoTankChenge()
-    {
-        tankchenger = false;
-        TankChengeUiPop(false);
+        TurnManager.Instance.playerTurn = true;
+        ChengeUiPop(false);
     }
 }

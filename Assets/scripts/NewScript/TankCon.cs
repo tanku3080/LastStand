@@ -33,6 +33,7 @@ public class TankCon : PlayerBase
     //向いているかチェック
     bool lookChactor;
 
+    bool hithit = false;
     InterfaceScripts.ITankChoice _interface;
 
 
@@ -96,7 +97,7 @@ public class TankCon : PlayerBase
                 float v = Input.GetAxis("Vertical");
                 float h = Input.GetAxis("Horizontal");
 
-                if (h != 0)
+                if (h != 0 && GameManager.Instance.playerIsMove)
                 {
                     float rot = h * tankTurn_Speed * Time.deltaTime;
                     Quaternion rotetion = Quaternion.Euler(0, rot, 0);
@@ -104,12 +105,19 @@ public class TankCon : PlayerBase
                     //MoveLimit(moveLimit);//問題あり
                 }
                 //前進後退
-                if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || Rd.velocity.magnitude != -tankLimitSpeed)
+                if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 &&Rd.velocity.magnitude != -tankLimitSpeed)
                 {
                     float mov = v * playerSpeed / 2;// * Time.deltaTime;
                     Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                     //Rd.MovePosition(new  * mov);
                     //MoveLimit(moveLimit);
+                }
+
+                if (Input.GetKeyUp(KeyCode.R))
+                {
+                    //GunDirctionIsEnemy();
+                    TurnManager.Instance.PlayerMoveVal--;
+                    Debug.Log("値" + TurnManager.Instance.PlayerMoveVal);
                 }
             }
         }
@@ -143,9 +151,11 @@ public class TankCon : PlayerBase
                 //攻撃
                 Atack();
             }
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyUp(KeyCode.F))
             {
-                GunRangeCheckAndSet();
+                GunRangeCheckAndSet();//精度
+                TurnManager.Instance.PlayerMoveVal--;
+                Debug.Log(hithit);
             }
         }
         else
@@ -156,7 +166,12 @@ public class TankCon : PlayerBase
         }
     }
 
-    void GunRangeCheckAndSet()
+    /// <summary>
+    /// 命中率を100％にする
+    /// </summary>
+    bool GunRangeCheckAndSet() => hithit = true;
+
+    void GunDirctionIsEnemy()
     {
         //向いてるっぽい動きをするが何かがおかしい
         RaycastHit hit;
@@ -174,8 +189,10 @@ public class TankCon : PlayerBase
             Debug.Log("敵の方向を向いた。");
         }
         else Debug.Log("元から向いていた");
+
+
     }
-    
+
 
     void Atack()
     {

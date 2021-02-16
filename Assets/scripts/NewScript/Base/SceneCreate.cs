@@ -12,6 +12,7 @@ public class SceneCreate : MonoBehaviour
     private void Awake()
     {
         //シーン名を取得。今はテストシーンだけの判定にするので意味のない条件式を書く
+        //raycasttargetの切替も
         if (SceneManager.GetActiveScene().name == "vvvv")
         {
             var v = GameObject.Find("Uis");

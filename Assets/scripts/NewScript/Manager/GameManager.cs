@@ -1,22 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 {
     public enum TankChoice
     {
-        Tiger, Panzer2, Panzer4, KV2, H35, Shaman, Stuart, S35, T34_76,
-    }
-    public enum Now
-    {
-        Wait, Move, Change, Atack, UIPOP
+        Tiger, Panzer2, Shaman, Stuart,
     }
     public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
-    //切替テスト用に作った
-    public bool tankchenger = false;
     public Renderer[] enemyRender { get; set; }
     public bool playerIsMove = true, enemyIsMove = false;
 
@@ -30,10 +26,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
-    [SerializeField] public GameObject[] battleUIs;
 
     bool clickC = true;
-
+    Navigation nav;
     // Start is called before the first frame update
 
     void Start()
@@ -43,6 +38,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         ChengeUiPop(false,endObj);
         source = gameObject.GetComponent<AudioSource>();
         source.Play();
+        //system = GetComponent<EventSystem>();
     }
 
     // Update is called once per frame
@@ -50,65 +46,66 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
-            if (Input.GetKeyUp(KeyCode.P) && clickC)
+            if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space)|| Input.GetKeyUp(KeyCode.R))
             {
-                ChengeUiPop(clickC, pauseObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = false;
-            }
-            else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
-            {
-                ChengeUiPop(clickC, pauseObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = true;
-            }
-            if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC)
-            {
-                ChengeUiPop(clickC, tankChengeObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = false;
-            }
-            else if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC == false)
-            {
-                ChengeUiPop(clickC, tankChengeObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = true;
-            }
-            if (Input.GetKeyUp(KeyCode.Return) && playerSide)
-            {
-                ChengeUiPop(clickC, endObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = false;
-            }
-            else if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC == false)
-            {
-                ChengeUiPop(clickC, endObj);
-                playerIsMove = !clickC;
-                enemyIsMove = !clickC;
-                clickC = true;
+                ButtonSelected();
             }
         }
     }
 
-    public void NowSet(Now now)
+    public void ButtonSelected()
     {
-        switch (now)
+        if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
-            case Now.Wait:
-                break;
-            case Now.Move:
-                break;
-            case Now.Change:
-                break;
-            case Now.Atack:
-                break;
-            case Now.UIPOP:
-                break;
+            ChengeUiPop(clickC, pauseObj);
+            SelectedObj(pauseObj);
+            if (Input.GetKeyUp(KeyCode.W))
+            {
+                SelectedObj(pauseObj);
+            }
+            if (Input.GetKeyUp(KeyCode.D))
+            {
+                SelectedObj(pauseObj,true);
+            }
+            if (nav.selectOnDown) SelectedObj(pauseObj, true);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
+        {
+            ChengeUiPop(clickC, pauseObj);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC)
+        {
+            ChengeUiPop(clickC, tankChengeObj);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC == false)
+        {
+            ChengeUiPop(clickC, tankChengeObj);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Return) && playerSide)
+        {
+            ChengeUiPop(clickC, endObj);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC == false)
+        {
+            ChengeUiPop(clickC, endObj);
+            playerIsMove = !clickC;
+            enemyIsMove = !clickC;
+            clickC = true;
         }
     }
 
@@ -157,18 +154,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 charactorHp = 50;
                 charactorSpeed = 28f;
                 break;
-            case TankChoice.Panzer4:
-                charactorHp = 75;
-                charactorSpeed = 25f;
-                break;
-            case TankChoice.KV2:
-                charactorHp = 100;
-                charactorSpeed = 20f;
-                break;
-            case TankChoice.H35:
-                charactorHp = 40;
-                charactorSpeed = 10f;
-                break;
             case TankChoice.Shaman:
                 charactorHp = 80;
                 charactorSpeed = 21f;
@@ -176,14 +161,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             case TankChoice.Stuart:
                 charactorHp = 30;
                 charactorSpeed = 30f;
-                break;
-            case TankChoice.S35:
-                charactorHp = 60;
-                charactorSpeed = 22;
-                break;
-            case TankChoice.T34_76:
-                charactorHp = 90;
-                charactorSpeed = 32f;
                 break;
         }
         Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");
@@ -193,6 +170,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     /// 確認メッセージが表示される
     /// </summary>
     public void ChengeUiPop(bool isChenge = false, GameObject uiObj = null) => uiObj.SetActive(isChenge);
+    public void SelectedObj(GameObject o,bool f = false)
+    {
+        EventSystem.current.SetSelectedGameObject(o.transform.GetChild(0).GetChild(f ? 0 : 1).gameObject);
+    }
 
     public void TurnEnd()
     {

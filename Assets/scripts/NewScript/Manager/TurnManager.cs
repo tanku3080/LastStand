@@ -11,8 +11,27 @@ public class TurnManager : Singleton<TurnManager>
     [SerializeField, Header("味方操作キャラ")] public List<Enemy> enemys = null;
     [HideInInspector] public List<Renderer> playersRender = null;
     [HideInInspector] public List<Renderer> enemysRender = null;
-    [SerializeField] public int playerMoveValue = 5;
-    [SerializeField] public int enemyMoveValue = 5;
+    //敵味方の行動回数
+    private int playerMoveValue = 5;
+    public int PlayerMoveVal
+    {
+        get { return playerMoveValue; }
+        set
+        {
+            if (value <= 0) GameManager.Instance.ChengeUiPop(true,GameManager.Instance.endObj);
+            playerMoveValue = value;
+        }
+    }
+    private int enemyMoveValue = 5;
+    public int EnemyMoveVal
+    {
+        get { return enemyMoveValue; }
+        set
+        {
+            if (value <= 0) TurnEnd();
+            enemyMoveValue = value;
+        }
+    }
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
     //最初のプレイヤーの数
@@ -44,11 +63,11 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (playerTurn)
         {
-            MoveCharaSet(true);
+            MoveCharaSet(true,false,PlayerMoveVal);
         }
         if (enemyTurn)
         {
-            MoveCharaSet(false,true);
+            MoveCharaSet(false,true,enemyMoveValue);
         }
     }
 
@@ -57,7 +76,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     /// <param name="player">playerの場合はtrue</param>
     /// <param name="enemy">enemyの場合はtrue</param>
-    public void MoveCharaSet(bool player = false,bool enemy = false)
+    public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0)
     {
         if (playerTurn && player)
         {
@@ -112,9 +131,15 @@ public class TurnManager : Singleton<TurnManager>
     {
         playerTurn = false;
         enemyTurn = true;
+        PlayerMoveVal = 5;
+        EnemyMoveVal = 5;
     }
 
     public void Clear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
 
-    public void Back() => GameManager.Instance.ChengeUiPop(false,GameManager.Instance.gameObject);
+    public void Back()
+    {
+        Debug.Log("Test");
+        GameManager.Instance.ButtonSelected();
+    }
 }

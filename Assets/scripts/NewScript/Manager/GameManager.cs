@@ -26,6 +26,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
+    [SerializeField, HideInInspector] public GameObject nearEnemy = null;
 
     bool clickC = true;
     Navigation nav;
@@ -46,11 +47,28 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
+            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space)|| Input.GetKeyUp(KeyCode.R))
             {
                 ButtonSelected();
             }
         }
+    }
+
+    GameObject SerchTag(GameObject nowObj)
+    {
+        float nearDis = 0;
+        GameObject targetObj = null;
+        foreach (Enemy obj in TurnManager.Instance.enemys)
+        {
+            var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
+            if (nearDis == 0 || nearDis > timDis)
+            {
+                nearDis = timDis;
+                targetObj = obj.gameObject;
+            }
+        }
+        return targetObj;
     }
 
     public void ButtonSelected()

@@ -18,6 +18,7 @@ public class TankCon : PlayerBase
     [SerializeField] float tankHead_R_SPD = 1.5f;
     [SerializeField] float tankTurn_Speed = 1.5f;
     [SerializeField] float tankLimitSpeed = 50f;
+    [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう
     [SerializeField] CinemachineVirtualCamera defaultCon;
     [SerializeField] CinemachineVirtualCamera aimCom;
@@ -32,6 +33,8 @@ public class TankCon : PlayerBase
     bool AimFlag = false;
     //向いているかチェック
     bool lookChactor;
+    //これがtureじゃないとPlayerの操作権はない
+    public bool controlAccess = false;
 
     bool hithit = false;
     InterfaceScripts.ITankChoice _interface;
@@ -59,75 +62,78 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.playerIsMove)
+        if (controlAccess)
         {
-            //マウスを「J」「L」での旋回に変更
-
-            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
+            if (GameManager.Instance.playerIsMove)
             {
-                Quaternion rotetion = Quaternion.identity;
-                if (Input.GetKey(KeyCode.J))
-                {
-                    rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                }
-                else if (Input.GetKey(KeyCode.L))
-                {
-                    rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                }
-                tankHead.rotation *= rotetion;
-            }
+                //マウスを「J」「L」での旋回に変更
 
-            //未実装
-            if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
+                if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
+                {
+                    Quaternion rotetion = Quaternion.identity;
+                    if (Input.GetKey(KeyCode.J))
+                    {
+                        rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                    }
+                    else if (Input.GetKey(KeyCode.L))
+                    {
+                        rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                    }
+                    tankHead.rotation *= rotetion;
+                }
+
+                //未実装
+                if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
+                {
+                    Quaternion rotetion = Quaternion.identity;
+                    var normal = Mathf.Repeat(tankGun.rotation.x, 65);
+                    if (Input.GetKey(KeyCode.I) && normal < 65)
+                    {
+                        rotetion = Quaternion.Euler(Vector3.left);
+                    }
+                    if (Input.GetKey(KeyCode.K) && normal > 0)
+                    {
+                        rotetion = Quaternion.Euler(Vector3.right);
+                    }
+                    tankGun.rotation *= rotetion;
+                }
+                if (IsGranded)
+                {
+                    float v = Input.GetAxis("Vertical");
+                    float h = Input.GetAxis("Horizontal");
+
+                    if (h != 0 && GameManager.Instance.playerIsMove)
+                    {
+                        float rot = h * tankTurn_Speed * Time.deltaTime;
+                        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                        Rd.MoveRotation(Rd.rotation * rotetion);
+                        //MoveLimit(moveLimit);//問題あり
+                    }
+                    //前進後退
+                    if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
+                    {
+                        float mov = v * playerSpeed / 2;// * Time.deltaTime;
+                        Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                        //Rd.MovePosition(new  * mov);
+                        //MoveLimit(moveLimit);
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.R))
+                    {
+                        //GunDirctionIsEnemy();
+                        TurnManager.Instance.PlayerMoveVal--;
+                        Debug.Log("値" + TurnManager.Instance.PlayerMoveVal);
+                    }
+                }
+            }
+            //右クリック
+            if (Input.GetButtonUp("Fire2"))
             {
-                Quaternion rotetion = Quaternion.identity;
-                var normal = Mathf.Repeat(tankGun.rotation.x, 65);
-                if (Input.GetKey(KeyCode.I) && normal < 65)
-                {
-                    rotetion = Quaternion.Euler(Vector3.left);
-                }
-                if (Input.GetKey(KeyCode.K) && normal > 0)
-                {
-                    rotetion = Quaternion.Euler(Vector3.right);
-                }
-                tankGun.rotation *= rotetion;
+                if (AimFlag) AimFlag = false;
+                else AimFlag = true;
             }
-            if (IsGranded)
-            {
-                float v = Input.GetAxis("Vertical");
-                float h = Input.GetAxis("Horizontal");
-
-                if (h != 0 && GameManager.Instance.playerIsMove)
-                {
-                    float rot = h * tankTurn_Speed * Time.deltaTime;
-                    Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                    Rd.MoveRotation(Rd.rotation * rotetion);
-                    //MoveLimit(moveLimit);//問題あり
-                }
-                //前進後退
-                if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 &&Rd.velocity.magnitude != -tankLimitSpeed)
-                {
-                    float mov = v * playerSpeed / 2;// * Time.deltaTime;
-                    Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                    //Rd.MovePosition(new  * mov);
-                    //MoveLimit(moveLimit);
-                }
-
-                if (Input.GetKeyUp(KeyCode.R))
-                {
-                    //GunDirctionIsEnemy();
-                    TurnManager.Instance.PlayerMoveVal--;
-                    Debug.Log("値" + TurnManager.Instance.PlayerMoveVal);
-                }
-            }
+            AimMove(AimFlag);
         }
-        //右クリック
-        if (Input.GetButtonUp("Fire2"))
-        {
-            if (AimFlag) AimFlag = false;
-            else AimFlag = true;
-        }
-        AimMove(AimFlag);
 
 
         if (playerLife <= 0)

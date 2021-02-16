@@ -13,9 +13,9 @@ public class AtackCon : MonoBehaviour
     [HideInInspector]public GameObject inPrefab;
     public GameObject plafab;
     public Transform jukou;
-    public float interval { get { return status.gunInterval; } }
-    float accuracy { get { return status._accuracy; } }
-    float gunAccuracy { get { return status._gunAccuracy; } }
+    public float interval;
+    float accuracy;
+    float gunAccuracy;
     float hitPercent;
     float counter = 0;
     //何発当たったか格納する
@@ -23,7 +23,6 @@ public class AtackCon : MonoBehaviour
     AudioSource source;
     public AudioClip mg, mr;
     Slider hp;
-    StatusCon status;
     PlayerCon players;
 
     private void Start()
@@ -32,7 +31,6 @@ public class AtackCon : MonoBehaviour
         jukou = GameObject.Find("Gun").transform;
         hp = GameObject.Find("HpBer").GetComponent<Slider>();
         players = GameObject.Find("Player").GetComponent<PlayerCon>();
-        status = GameObject.Find("GameManager").GetComponent<StatusCon>();
     }
 
     private void Update()

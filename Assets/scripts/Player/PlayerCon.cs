@@ -16,7 +16,6 @@ public class PlayerCon : MonoBehaviour
     AudioSource source;
     Animator anime;
     AtackCon atack;
-    StatusCon status;
     SphereCollider sphere;//半径２００
     Rigidbody _rb;
     void Start()
@@ -46,7 +45,6 @@ public class PlayerCon : MonoBehaviour
                 source.PlayOneShot(RadarSound);
                 searchTime = 0;
             }
-        if (status.mouse > 0 || status.mouse < 0) status.ChangeStart();
 
         if (Input.GetKeyDown(KeyCode.M))
         {

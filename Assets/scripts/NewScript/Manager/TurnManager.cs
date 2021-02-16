@@ -7,10 +7,13 @@ public class TurnManager : Singleton<TurnManager>
 {
     public bool enemyTurn = false;
     public bool playerTurn = true;
+    public int nowTurn = 1;
+    private int maxTurn = 5;
     [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     [SerializeField, Header("味方操作キャラ")] public List<Enemy> enemys = null;
     [HideInInspector] public List<Renderer> playersRender = null;
     [HideInInspector] public List<Renderer> enemysRender = null;
+    public GameObject nowPayer = null;
     //敵味方の行動回数
     private int playerMoveValue = 5;
     public int PlayerMoveVal
@@ -56,6 +59,10 @@ public class TurnManager : Singleton<TurnManager>
             enemys.Add(enemy);
             //enemysRender.Add(enemy.Renderer);
         }
+        if (nowTurn == 1)
+        {
+            MoveCharaSet(true);
+        }
     }
 
     // Update is called once per frame
@@ -78,9 +85,9 @@ public class TurnManager : Singleton<TurnManager>
     /// <param name="enemy">enemyの場合はtrue</param>
     public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0)
     {
-        if (playerTurn && player)
+        if (playerTurn && player && moveV > 0)
         {
-            foreach (var item in players)//この処理は移動中に攻撃が可能ならPlayerが死亡する事を考慮したため
+            foreach (var item in players)//この処理は移動中に攻撃されてPlayerが死亡する事を考慮したため
             {
                 if (item == null)
                 {
@@ -100,10 +107,11 @@ public class TurnManager : Singleton<TurnManager>
             
             DefCon = GameObject.Find($"CM vcam{playerNum}").GetComponent<CinemachineVirtualCamera>();
             AimCon = GameObject.Find($"CM vcam{playerNum++}").GetComponent<CinemachineVirtualCamera>();
-
+            nowPayer = players[playerNum].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
             player = false;
         }
-        if (enemyTurn && enemy)
+        if (enemyTurn && enemy && moveV > 0)
         {
             foreach (var item in enemys)
             {

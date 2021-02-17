@@ -283,6 +283,8 @@ GameObject:
   - component: {fileID: 2896867665593862139}
   - component: {fileID: 6154374998762372557}
   - component: {fileID: 456044572926886196}
+  - component: {fileID: 2580049183128961952}
+  - component: {fileID: 8646517969618470174}
   m_Layer: 8
   m_Name: Tiger
   m_TagString: Player
@@ -357,6 +359,44 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2580049183128961952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191251992303597032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4b51a3627fb0f43b0a9ffb0718369f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLife: 10
+  playerSpeed: 20
+  tankHead_R_SPD: 1.5
+  tankTurn_Speed: 1.5
+  tankLimitSpeed: 50
+  nearEnemy: {fileID: 0}
+  defaultCon: {fileID: 2847055013916119198}
+  aimCom: {fileID: 4946670193906062939}
+  limitRange: 10
+  controlAccess: 0
+--- !u!54 &8646517969618470174
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191251992303597032}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &2316823819499745733
 GameObject:
   m_ObjectHideFlags: 0

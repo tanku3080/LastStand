@@ -96,7 +96,6 @@ public class TurnManager : Singleton<TurnManager>
                     }
                     playerTurn = true;
                     MoveCharaSet(true, true);
-                    Debug.Log("aa");
                     GameManager.Instance.isGameScene = false;
                 }
                 break;
@@ -141,21 +140,19 @@ public class TurnManager : Singleton<TurnManager>
     /// <param name="enemy">enemyの場合はtrue</param>
     public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0,bool charaIsDie = false)
     {
-        Debug.Log($"切替 p={player},n={enemy},move={moveV},die={charaIsDie}");
-        Debug.Log($"playerTurn={playerTurn},nowTurn{nowTurn}");
         if (playerTurn && player && moveV > 0)
         {
             Debug.Log("case1");
-            playerCam++;
+            nowPayer.GetComponent<TankCon>().controlAccess = false;
+            playerCam += 2;
             DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
             AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
-            nowPayer = players[playerNum--].gameObject;
+            nowPayer = players[playerNum].gameObject;
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             player = false;
         }
         else if (playerTurn && player && nowTurn == 1)
         {
-            Debug.Log("case2");
             DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
             AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
             nowPayer = players[playerNum--].gameObject;
@@ -167,12 +164,13 @@ public class TurnManager : Singleton<TurnManager>
             Debug.Log("case3");
             CharactorDie(true);
         }
+        playerNum++;
 
         if (enemyTurn && enemy && moveV > 0)
         {
             enemyCam++;
             EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
-            nowEnemy = enemys[enemyCam--].gameObject;
+            nowEnemy = enemys[enemyCam].gameObject;
             nowEnemy.GetComponent<Enemy>().controlAccess = true;
             enemy = false;
         }
@@ -187,6 +185,7 @@ public class TurnManager : Singleton<TurnManager>
         {
             CharactorDie(false,true);
         }
+        enemyNum++;
     }
     /// <summary>
     /// 死んだ場合の処理
@@ -223,7 +222,7 @@ public class TurnManager : Singleton<TurnManager>
     public void OkTankChenge() 
     {
         GameManager.Instance.ChengeUiPop(false, GameManager.Instance.tankChengeObj);
-        MoveCharaSet(true);
+        MoveCharaSet(true,false,PlayerMoveVal);
     }
     public void NoTankChenge() => GameManager.Instance.ChengeUiPop(false,GameManager.Instance.tankChengeObj);
 

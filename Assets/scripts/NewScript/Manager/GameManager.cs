@@ -61,7 +61,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space)|| Input.GetKeyUp(KeyCode.R) || Input.GetKeyUp(KeyCode.Q))
             {
-                Debug.Log("押された");
                 ButtonSelected();
             }
         }

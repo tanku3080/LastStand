@@ -61,12 +61,11 @@ public class TurnManager : Singleton<TurnManager>
 
     void Start()
     {
+        controlPanel = GameObject.Find("TurnPanel");
+        turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
         turnText.GetComponent<TextMeshProUGUI>();
+        moveIconParent = GameObject.Find("MoveCounterUI");
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
-        for (int i = 0; i < moveIconParent.transform.GetChild(0).transform.childCount; i++)
-        {
-            moveImage[i] = moveIconParent.transform.GetChild(0).GetChild(i).GetComponent<Image>();
-        }
         GameManager.Instance.ChengeUiPop(false,controlPanel);
         GameManager.Instance.ChengeUiPop(false,moveIconParent);
         director.stopped += TimeLineStop;
@@ -75,10 +74,9 @@ public class TurnManager : Singleton<TurnManager>
     // Update is called once per frame
     void Update()
     {
-        TurnManag();
         if (gameObject.scene.name == "GamePlay" || gameObject.scene.name == "TestMap")
         {
-
+            TurnManag();
         }
     }
 
@@ -87,6 +85,12 @@ public class TurnManager : Singleton<TurnManager>
         switch (nowTurn)
         {
             case 1:
+                for (int i = 0; i < PlayerMoveVal; i++)
+                {
+                    var t = Instantiate(moveIconParent.transform.GetChild(0).GetChild(0).GetComponent<Image>());
+                    t = moveIconParent.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+                    moveImage[i] = t;
+                }
                 FirstSet();
                 break;
             case 2:
@@ -254,7 +258,7 @@ public class TurnManager : Singleton<TurnManager>
             playerTurn = false;
             enemyTurn = true;
         }
-        else
+        else if(turnFlag == 2)
         {
             nowTurn++;
             turnFlag = 0;

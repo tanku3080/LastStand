@@ -35,7 +35,8 @@ public class TankCon : PlayerBase
     //これがtureじゃないとPlayerの操作権はない
     public bool controlAccess = false;
 
-    bool perfectHit = false;
+    bool perfectHit = false;//命中率
+    bool AccuracyFalg = false;//精度
     InterfaceScripts.ITankChoice _interface;
 
 
@@ -115,19 +116,25 @@ public class TankCon : PlayerBase
                         //MoveLimit(moveLimit);
                     }
 
-                    if (Input.GetKeyUp(KeyCode.R))
+                    if (Input.GetKeyUp(KeyCode.R))//命中率を100
                     {
                         //GunDirctionIsEnemy();
                         TurnManager.Instance.PlayerMoveVal--;
-                        Debug.Log("値" + TurnManager.Instance.PlayerMoveVal);
+                        GunDirctionIsEnemy();
                     }
                 }
             }
             //右クリック
             if (Input.GetButtonUp("Fire2"))
             {
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (AimFlag) AimFlag = false;
                 else AimFlag = true;
+            }
+            if (Input.GetKeyUp(KeyCode.F))//精度
+            {
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+                TurnManager.Instance.PlayerMoveVal--;
             }
             AimMove(AimFlag);
         }
@@ -157,6 +164,7 @@ public class TankCon : PlayerBase
             if (Input.GetKeyUp(KeyCode.F))
             {
                 perfectHit = true;//精度100％
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
                 TurnManager.Instance.PlayerMoveVal--;
             }
         }

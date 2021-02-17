@@ -11,14 +11,14 @@ public class Enemy : EnemyBase
     EnemyState state;
     public NavMeshAgent agent;
     [SerializeField] CinemachineVirtualCamera defaultCon = null;
-    [SerializeField] CinemachineVirtualCamera aimCon = null;
     Transform tankHead = null;
     Transform tankGun = null;
     GameObject tankGunFire = null;
     Transform tankBody = null;
-
-    List<Transform> patrolPos = null;
+    bool isPlayer = false;
+    [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
+    public bool controlAccess = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -30,43 +30,52 @@ public class Enemy : EnemyBase
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
         agent = GetComponent<NavMeshAgent>();
-        aimCon = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
-        defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        defaultCon = TurnManager.Instance.DefCon;
+        defaultCon = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
+
         agent.autoBraking = true;
-        foreach (var item in GameObject.FindGameObjectsWithTag("Point"))
-        {
-            patrolPos.Add(item.transform);
-        }
+        agent.speed = enemySpeed;
         state = EnemyState.Patrol;
     }
 
     private void Update()
     {
-        switch (state)
+        if (controlAccess)
         {
-            case EnemyState.Idol:
-                break;
-            case EnemyState.Patrol:
-                EnemyPatrol();
-                break;
-            case EnemyState.AtackMove:
-                break;
-            case EnemyState.Atack:
-                break;
-            default:
-                break;
+            switch (state)
+            {
+                case EnemyState.Idol:
+                    break;
+                case EnemyState.Patrol:
+                    EnemyPatrol();
+                    break;
+                case EnemyState.AtackMove:
+                    EnemyAtackMove();
+                    break;
+                case EnemyState.Atack:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     void EnemyPatrol()
     {
-        if (patrolPos.Count <= patrolNum) patrolNum = 0;
-
-        if (!agent.pathPending || agent.remainingDistance < 0.5f)
+        if (TurnManager.Instance.playerTurn != true)
         {
-            agent.destination = patrolPos[patrolNum].position;
+            if (patrolPos.Length <= patrolNum)
+            {
+                patrolNum = 0;
+                Debug.Log("NamberReset" + patrolNum);
+            }
+            if (agent.remainingDistance < 0.5f) patrolNum++;
+            agent.SetDestination(patrolPos[patrolNum].transform.position);
         }
-
+        else state = EnemyState.AtackMove;
+    }
+    void EnemyAtackMove()
+    {
 
     }
 
@@ -74,16 +83,15 @@ public class Enemy : EnemyBase
     /// 一番近い敵のオブジェクトを探す
     /// </summary>
     /// <param name="obj"></param>
-    /// <param name="name">探すオブジェクトのlayer名</param>
     /// <returns></returns>
-    GameObject NearPlayer(GameObject obj)
+    GameObject NearPlayer()
     {
         float keepPos = 0;
         float nearDistance = 0;
         GameObject target = null;
         foreach (var item in TurnManager.Instance.players)
         {
-            keepPos = Vector3.Distance(item.Trans.position, obj.transform.position);
+            keepPos = Vector3.Distance(gameObject.transform.position, item.transform.position);
             if (nearDistance == 0 || nearDistance > keepPos)
             {
                 nearDistance = keepPos;

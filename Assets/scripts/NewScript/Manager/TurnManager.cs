@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Playables;
 using UnityEngine;
+using TMPro;
 using Cinemachine;
 
 public class TurnManager : Singleton<TurnManager>
 {
     public bool enemyTurn = false;
-    public bool playerTurn = true;
+    public bool playerTurn = false;
     public int nowTurn = 1;
     private int maxTurn = 5;
     [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     [SerializeField, Header("味方操作キャラ")] public List<Enemy> enemys = null;
-    [HideInInspector] public List<Renderer> playersRender = null;
-    [HideInInspector] public List<Renderer> enemysRender = null;
-    public GameObject nowPayer = null;
-    //敵味方の行動回数
+    //現在の操作キャラ
+    [HideInInspector] public GameObject nowPayer = null;
+    [HideInInspector] public GameObject nowEnemy = null;
+    [SerializeField] GameObject turnText = null;
+    //以下はtimeLine   
+    private PlayableDirector director;
+    public GameObject controlPanel;
+    //キャラの行動回数
     private int playerMoveValue = 5;
     public int PlayerMoveVal
     {
@@ -37,45 +43,95 @@ public class TurnManager : Singleton<TurnManager>
     }
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
+    public CinemachineVirtualCamera EnemyDefCon { get; set; }
     //最初のプレイヤーの数
-    int playerMaxNum = 0;
-    //現在の数
+    private int playerMaxNum = 2;
+    private int enemyMaxNum = 2;
+    //現在のキャラ数
     int playerNum = 0;
-    int enemyMaxNum = 0;
-    int enemyNum = 0;
+    int enemyNum = 5;
+    //カメラ
+    int playerCam = 1;
+    int enemyCam = 5;
+    //timeline
+    bool timeLlineF = true;
+
     void Start()
     {
-        foreach (var item in FindObjectsOfType<TankCon>())
-        {
-            players.Add(item);
-            //playersRender.Add(item.Renderer);
-        }
-        foreach (var enemy in FindObjectsOfType<Enemy>())
-        {
-            if (enemy == null)
-            {
-                Debug.Log("ないよ");
-            }
-            enemys.Add(enemy);
-            //enemysRender.Add(enemy.Renderer);
-        }
-        if (nowTurn == 1)
-        {
-            MoveCharaSet(true);
-        }
+        turnText.GetComponent<TextMeshProUGUI>();
+        director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
+        GameManager.Instance.ChengeUiPop(false,controlPanel);
+        director.stopped += TimeLineStop;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerTurn)
+        TurnManag();
+        if (playerTurn && nowTurn > 1)
         {
             MoveCharaSet(true,false,PlayerMoveVal);
         }
-        if (enemyTurn)
+        if (enemyTurn && nowTurn > 1)
         {
             MoveCharaSet(false,true,enemyMoveValue);
         }
+    }
+
+    void TurnManag()
+    {
+        switch (nowTurn)
+        {
+            case 1:
+                if (GameManager.Instance.isGameScene)
+                {
+                    foreach (var item in FindObjectsOfType<TankCon>())
+                    {
+                        players.Add(item);
+                    }
+                    foreach (var enemy in FindObjectsOfType<Enemy>())
+                    {
+                        if (enemy == null) Debug.Log("ない");
+                        enemys.Add(enemy);
+                    }
+                    playerTurn = true;
+                    MoveCharaSet(true, true);
+                    Debug.Log("aa");
+                    GameManager.Instance.isGameScene = false;
+                }
+                break;
+            case 2:
+                playerTurn = true;
+                nowTurn++;
+                break;
+            case 3:
+                playerTurn = true;
+                nowTurn++;
+                break;
+            case 4:
+                playerTurn = true;
+                nowTurn++;
+                break;
+            case 5:
+                playerTurn = true;
+                break;
+        }
+        if (timeLlineF)
+        {
+            TurnTextMove();
+            StartTimeLine();
+        }
+    }
+
+    void TurnTextMove()
+    {
+        TextMeshProUGUI text = turnText.GetComponent<TextMeshProUGUI>();
+        text.text = nowTurn.ToString();
+        if (int.Parse(text.text) == maxTurn)
+        {
+            text.text = "Last";
+        }
+        text.text += "Turn";
     }
 
     /// <summary>
@@ -83,11 +139,63 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     /// <param name="player">playerの場合はtrue</param>
     /// <param name="enemy">enemyの場合はtrue</param>
-    public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0)
+    public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0,bool charaIsDie = false)
     {
+        Debug.Log($"切替 p={player},n={enemy},move={moveV},die={charaIsDie}");
+        Debug.Log($"playerTurn={playerTurn},nowTurn{nowTurn}");
         if (playerTurn && player && moveV > 0)
         {
-            foreach (var item in players)//この処理は移動中に攻撃されてPlayerが死亡する事を考慮したため
+            Debug.Log("case1");
+            playerCam++;
+            DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+            nowPayer = players[playerNum--].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
+            player = false;
+        }
+        else if (playerTurn && player && nowTurn == 1)
+        {
+            Debug.Log("case2");
+            DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+            nowPayer = players[playerNum--].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
+            player = false;
+        }
+        else if (playerTurn && player && charaIsDie)//死んで呼ばれた場合
+        {
+            Debug.Log("case3");
+            CharactorDie(true);
+        }
+
+        if (enemyTurn && enemy && moveV > 0)
+        {
+            enemyCam++;
+            EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
+            nowEnemy = enemys[enemyCam--].gameObject;
+            nowEnemy.GetComponent<Enemy>().controlAccess = true;
+            enemy = false;
+        }
+        if (enemyTurn && enemy && nowTurn == 1)
+        {
+            EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
+            nowEnemy = enemys[enemyCam--].gameObject;
+            nowEnemy.GetComponent<Enemy>().controlAccess = true;
+            enemy = false;
+        }
+        else if (playerTurn && player && charaIsDie)
+        {
+            CharactorDie(false,true);
+        }
+    }
+    /// <summary>
+    /// 死んだ場合の処理
+    /// </summary>
+    void CharactorDie(bool player = false,bool enemy = false)
+    {
+        if (player)
+        {
+            foreach (var item in players)
             {
                 if (item == null)
                 {
@@ -95,23 +203,10 @@ public class TurnManager : Singleton<TurnManager>
                     players.Sort();
                 }
             }
-            playerMaxNum = players.Count;
-            //何か間違っているような・・・
-            if (playerNum++ == playerMaxNum)
-            {
-                //ここにコンポーネントを消す処理を行う
-                playerNum += 1;
-            }
-            else playerNum = 0;
-
-            
-            DefCon = GameObject.Find($"CM vcam{playerNum}").GetComponent<CinemachineVirtualCamera>();
-            AimCon = GameObject.Find($"CM vcam{playerNum++}").GetComponent<CinemachineVirtualCamera>();
-            nowPayer = players[playerNum].gameObject;
-            nowPayer.GetComponent<TankCon>().controlAccess = true;
-            player = false;
+            playerNum = players.Count;
+            if (playerNum == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOvar, true, true);
         }
-        if (enemyTurn && enemy && moveV > 0)
+        if (enemy)
         {
             foreach (var item in enemys)
             {
@@ -122,12 +217,9 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
             enemyMaxNum = enemys.Count;
-            if (enemyNum++ == enemyMaxNum) enemyNum += 1;
-            else enemyNum = 0;
-            enemy = false;
+            if (enemyNum == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
         }
     }
-
     public void OkTankChenge() 
     {
         GameManager.Instance.ChengeUiPop(false, GameManager.Instance.tankChengeObj);
@@ -143,11 +235,20 @@ public class TurnManager : Singleton<TurnManager>
         EnemyMoveVal = 5;
     }
 
-    public void Clear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
-
     public void Back()
     {
         Debug.Log("Test");
         GameManager.Instance.ButtonSelected();
+    }
+    void TimeLineStop(PlayableDirector stop)
+    {
+        stop.Stop();
+        controlPanel.SetActive(false);
+        timeLlineF = false;
+    }
+    void StartTimeLine()
+    {
+        controlPanel.SetActive(true);
+        director.Play();
     }
 }

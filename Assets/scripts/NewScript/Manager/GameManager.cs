@@ -19,16 +19,20 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField, Tooltip("UIclickボタン")] public AudioClip sfx;
+    [SerializeField, Tooltip("UIclickボタン")] public AudioClip sfx;//UIHitGameの音らしい
     [SerializeField, Header("meeting音")] public AudioClip mC_meeting;
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
+    [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
+    //ゲームシーンかの判定(ターンマネージャー限定)
+    [SerializeField, HideInInspector] public bool isGameScene;
 
     bool clickC = true;
+    private int nowTurnValue = 0;
     Navigation nav;
     // Start is called before the first frame update
 
@@ -37,19 +41,27 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         ChengeUiPop(false,tankChengeObj);
         ChengeUiPop(false,pauseObj);
         ChengeUiPop(false,endObj);
+        ChengeUiPop(false,radarObj);
         source = gameObject.GetComponent<AudioSource>();
         source.Play();
+        isGameScene = true;
         //system = GetComponent<EventSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().name == "Start" && Input.GetKeyUp(KeyCode.Return))
+        {
+            nowTurnValue = TurnManager.Instance.nowTurn;
+            source.PlayOneShot(sfx);
+            SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting,true,true);
+        }
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
-            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
-            if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space)|| Input.GetKeyUp(KeyCode.R))
+            if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space)|| Input.GetKeyUp(KeyCode.R) || Input.GetKeyUp(KeyCode.Q))
             {
+                Debug.Log("押された");
                 ButtonSelected();
             }
         }
@@ -111,7 +123,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             enemyIsMove = !clickC;
             clickC = true;
         }
-        if (Input.GetKeyUp(KeyCode.Return) && playerSide)
+        if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC)
         {
             ChengeUiPop(clickC, endObj);
             playerIsMove = !clickC;
@@ -123,6 +135,17 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             ChengeUiPop(clickC, endObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC)
+        {
+            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
+            ChengeUiPop(clickC);
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC == false)
+        {
+            ChengeUiPop(clickC, radarObj);
             clickC = true;
         }
     }

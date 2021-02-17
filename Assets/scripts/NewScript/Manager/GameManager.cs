@@ -19,10 +19,24 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField, Tooltip("UIclickボタン")] public AudioClip sfx;//UIHitGameの音らしい
+    [HideInInspector] public AudioSource sourceBGM;
+    [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;//UIHitGameの音らしい
+    [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;//UIHitGameの音らしい
+    [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
+    [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
+    [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
+    [SerializeField, Tooltip("移動")] public AudioClip TankSfx;
+    [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
+    [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
+    [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
+
+    [SerializeField, Header("Start音")] public AudioClip mC_Start;
     [SerializeField, Header("meeting音")] public AudioClip mC_meeting;
+    [SerializeField, Header("player音")] public AudioClip mC_playerBGM;
+    [SerializeField, Header("enemy音")] public AudioClip mC_enemyBGM;
     [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
     [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
+
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
@@ -43,7 +57,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         ChengeUiPop(false,endObj);
         ChengeUiPop(false,radarObj);
         source = gameObject.GetComponent<AudioSource>();
-        source.Play();
+        sourceBGM = gameObject.GetComponent<AudioSource>();
+        source.playOnAwake = false;
+        sourceBGM.playOnAwake = false;
+        sourceBGM.loop = true;
         isGameScene = true;
         //system = GetComponent<EventSystem>();
     }
@@ -51,11 +68,21 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Start" && Input.GetKeyUp(KeyCode.Return))
+        if (SceneManager.GetActiveScene().name == "Start")
         {
+            sourceBGM.clip = mC_Start;
+            sourceBGM.Play();
+            if (Input.GetKeyUp(KeyCode.Return))
+            {
+                source.PlayOneShot(click);
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting, true, true);
+            }
             nowTurnValue = TurnManager.Instance.nowTurn;
-            source.PlayOneShot(sfx);
-            SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting,true,true);
+        }
+        if (SceneManager.GetActiveScene().name == "Meeting")
+        {
+            sourceBGM.clip = mC_meeting;
+            sourceBGM.Play();
         }
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
@@ -86,6 +113,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
+            source.PlayOneShot(click);
             ChengeUiPop(clickC, pauseObj);
             SelectedObj(pauseObj);
             if (Input.GetKeyUp(KeyCode.W))
@@ -103,6 +131,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
+            source.PlayOneShot(cancel);
             ChengeUiPop(clickC, pauseObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -110,6 +139,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC)
         {
+            source.PlayOneShot(click);
             ChengeUiPop(clickC, tankChengeObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -117,6 +147,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         else if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC == false)
         {
+            source.PlayOneShot(cancel);
             ChengeUiPop(clickC, tankChengeObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -124,6 +155,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC)
         {
+            source.PlayOneShot(click);
             ChengeUiPop(clickC, endObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -131,6 +163,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC == false)
         {
+            source.PlayOneShot(cancel);
             ChengeUiPop(clickC, endObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -138,6 +171,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC)
         {
+            source.PlayOneShot(click);
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
             ChengeUiPop(clickC);
             clickC = false;
@@ -160,13 +194,13 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
     public void Restart()
     {
-        source.PlayOneShot(sfx);
+        source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay, true, true);
     }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()
     {
-        source.PlayOneShot(sfx);
+        source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 

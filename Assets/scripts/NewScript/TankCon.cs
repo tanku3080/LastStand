@@ -8,9 +8,6 @@ public class TankCon : PlayerBase
     //xの射角は入れない
     Transform tankHead = null;
     Transform tankGun = null;
-    //左右はアニメーション用
-    Transform tankRig_L = null;//左
-    Transform tankRig_R = null;//右
     private Transform tankBody = null;
 
     private GameObject tankGunFire = null;
@@ -22,6 +19,8 @@ public class TankCon : PlayerBase
     //バーチャルカメラよう
     [SerializeField] CinemachineVirtualCamera defaultCon;
     [SerializeField] CinemachineVirtualCamera aimCom;
+
+
 
     //移動制限用
     [SerializeField] float limitRange = 10f;
@@ -36,7 +35,7 @@ public class TankCon : PlayerBase
     //これがtureじゃないとPlayerの操作権はない
     public bool controlAccess = false;
 
-    bool hithit = false;
+    bool perfectHit = false;
     InterfaceScripts.ITankChoice _interface;
 
 
@@ -49,8 +48,6 @@ public class TankCon : PlayerBase
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
-        tankRig_L = tankBody.GetChild(0);
-        tankRig_R = tankBody.GetChild(1);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
@@ -159,9 +156,8 @@ public class TankCon : PlayerBase
             }
             if (Input.GetKeyUp(KeyCode.F))
             {
-                GunRangeCheckAndSet();//精度
+                perfectHit = true;//精度100％
                 TurnManager.Instance.PlayerMoveVal--;
-                Debug.Log(hithit);
             }
         }
         else
@@ -171,11 +167,6 @@ public class TankCon : PlayerBase
             aimCom.gameObject.SetActive(false);
         }
     }
-
-    /// <summary>
-    /// 命中率を100％にする
-    /// </summary>
-    bool GunRangeCheckAndSet() => hithit = true;
 
     void GunDirctionIsEnemy()
     {

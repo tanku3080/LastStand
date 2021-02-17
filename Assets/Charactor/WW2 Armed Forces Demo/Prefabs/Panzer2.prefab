@@ -580,6 +580,7 @@ GameObject:
   - component: {fileID: 6476311586148651950}
   - component: {fileID: 8399373673533139303}
   - component: {fileID: 438127125791958105}
+  - component: {fileID: 8353012376309034853}
   m_Layer: 8
   m_Name: Panzer2
   m_TagString: Untagged
@@ -692,6 +693,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!65 &8353012376309034853
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4745858458928097138}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.1553073, y: 1.4300315, z: 4.8966737}
+  m_Center: {x: 0.000010609627, y: 0.75845647, z: -0.10968089}
 --- !u!1 &4809641929796896320
 GameObject:
   m_ObjectHideFlags: 0

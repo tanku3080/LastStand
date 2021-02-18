@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
@@ -19,7 +17,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [HideInInspector] public AudioSource sourceBGM;
     [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;//UIHitGameの音らしい
     [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;//UIHitGameの音らしい
     [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
@@ -29,9 +26,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
     [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
-
-    [SerializeField, Header("player音")] public AudioClip mC_playerBGM;
-    [SerializeField, Header("enemy音")] public AudioClip mC_enemyBGM;
 
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
@@ -50,27 +44,26 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 
     void Start()
     {
-        tankChengeObj = GameObject.Find("TankChengeUI");
-        pauseObj = GameObject.Find("PauseUI");
-        endObj = GameObject.Find("TurnendUI");
-        radarObj = GameObject.Find("Radar");
+        if (tankChengeObj == null)
+        {
+            tankChengeObj = GameObject.Find("TankChengeUI");
+            pauseObj = GameObject.Find("PauseUI");
+            endObj = GameObject.Find("TurnendUI");
+            radarObj = GameObject.Find("Radar");
+        }
         ChengeUiPop(false,tankChengeObj);
         ChengeUiPop(false,pauseObj);
         ChengeUiPop(false,endObj);
         ChengeUiPop(false,radarObj);
         source = gameObject.GetComponent<AudioSource>();
-        sourceBGM = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
-        sourceBGM.playOnAwake = false;
-        sourceBGM.loop = true;
         isGameScene = true;
-        //system = GetComponent<EventSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Start" || sceneChecker)
+        if (SceneManager.GetActiveScene().name == "Start")
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
@@ -118,16 +111,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             source.PlayOneShot(click);
             ChengeUiPop(clickC, pauseObj);
-            SelectedObj(pauseObj);
-            if (Input.GetKeyUp(KeyCode.W))
-            {
-                SelectedObj(pauseObj);
-            }
-            if (Input.GetKeyUp(KeyCode.D))
-            {
-                SelectedObj(pauseObj,true);
-            }
-            if (nav.selectOnDown) SelectedObj(pauseObj, true);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
             clickC = false;
@@ -246,10 +229,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     /// <summary>
     /// 確認メッセージが表示される
     /// </summary>
-    public void ChengeUiPop(bool isChenge = false, GameObject uiObj = null) => uiObj.SetActive(isChenge);
-    public void SelectedObj(GameObject o,bool f = false)
+    public void ChengeUiPop(bool isChenge = false, GameObject uiObj = null)
     {
-        EventSystem.current.SetSelectedGameObject(o.transform.GetChild(0).GetChild(f ? 0 : 1).gameObject);
+        uiObj.SetActive(isChenge);
     }
 
     public void TurnEnd()

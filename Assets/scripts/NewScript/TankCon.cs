@@ -12,8 +12,8 @@ public class TankCon : PlayerBase
 
     private GameObject tankGunFire = null;
 
-    [SerializeField] float tankHead_R_SPD = 1.5f;
-    [SerializeField] float tankTurn_Speed = 1.5f;
+    [SerializeField] float tankHead_R_SPD = 5f;
+    [SerializeField] float tankTurn_Speed = 5f;
     [SerializeField] float tankLimitSpeed = 50f;
     [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう
@@ -23,7 +23,7 @@ public class TankCon : PlayerBase
 
 
     //移動制限用
-    [SerializeField] float limitRange = 10f;
+    [SerializeField] float limitRange = 50f;
     bool moveLimit;
 
     Vector2 m_x;
@@ -62,6 +62,7 @@ public class TankCon : PlayerBase
     {
         if (controlAccess)
         {
+            Debug.Log("controlAccess" + controlAccess);
             if (GameManager.Instance.playerIsMove)
             {
                 //マウスを「J」「L」での旋回に変更
@@ -80,21 +81,21 @@ public class TankCon : PlayerBase
                     tankHead.rotation *= rotetion;
                 }
 
-                //未実装
-                if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
-                {
-                    Quaternion rotetion = Quaternion.identity;
-                    var normal = Mathf.Repeat(tankGun.rotation.x, 65);
-                    if (Input.GetKey(KeyCode.I) && normal < 65)
-                    {
-                        rotetion = Quaternion.Euler(Vector3.left);
-                    }
-                    if (Input.GetKey(KeyCode.K) && normal > 0)
-                    {
-                        rotetion = Quaternion.Euler(Vector3.right);
-                    }
-                    tankGun.rotation *= rotetion;
-                }
+                ////未実装
+                //if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
+                //{
+                //    Quaternion rotetion = Quaternion.identity;
+                //    var normal = Mathf.Repeat(tankGun.rotation.x, 65);
+                //    if (Input.GetKey(KeyCode.I) && normal < 65)
+                //    {
+                //        rotetion = Quaternion.Euler(Vector3.left);
+                //    }
+                //    if (Input.GetKey(KeyCode.K) && normal > 0)
+                //    {
+                //        rotetion = Quaternion.Euler(Vector3.right);
+                //    }
+                //    tankGun.rotation *= rotetion;
+                //}
                 if (IsGranded)
                 {
                     float v = Input.GetAxis("Vertical");
@@ -112,13 +113,11 @@ public class TankCon : PlayerBase
                     {
                         float mov = v * playerSpeed / 2;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        //Rd.MovePosition(new  * mov);
                         //MoveLimit(moveLimit);
                     }
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100
                     {
-                        //GunDirctionIsEnemy();
                         TurnManager.Instance.PlayerMoveVal--;
                         GunDirctionIsEnemy();
                     }
@@ -130,11 +129,6 @@ public class TankCon : PlayerBase
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (AimFlag) AimFlag = false;
                 else AimFlag = true;
-            }
-            if (Input.GetKeyUp(KeyCode.F))//精度
-            {
-                GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-                TurnManager.Instance.PlayerMoveVal--;
             }
             AimMove(AimFlag);
         }
@@ -163,7 +157,7 @@ public class TankCon : PlayerBase
             }
             if (Input.GetKeyUp(KeyCode.F))
             {
-                perfectHit = true;//精度100％
+                AccuracyFalg = true;//精度100％
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
                 TurnManager.Instance.PlayerMoveVal--;
             }
@@ -178,29 +172,38 @@ public class TankCon : PlayerBase
 
     void GunDirctionIsEnemy()
     {
-        //向いてるっぽい動きをするが何かがおかしい
-        RaycastHit hit;
-        if (Physics.Raycast(tankGunFire.transform.position, tankGunFire.transform.forward, out hit))
-        {
-            Debug.DrawRay(tankGun.transform.position, tankGun.transform.forward, Color.green);
-            lookChactor = hit.collider.tag == "Enemy" ? true : false;
-            Debug.Log("入った" + lookChactor);
-        }
-        if (lookChactor == false)
-        {
-            var dir = tankHead.position - hit.collider.transform.position;
-            dir.y = 0;
-            transform.rotation = Quaternion.Lerp(tankHead.rotation, Quaternion.LookRotation(dir, Vector3.up), 1.5f);
-            Debug.Log("敵の方向を向いた。");
-        }
-        else Debug.Log("元から向いていた");
-
-
+        perfectHit = true;
+        ////向いてるっぽい動きをするが何かがおかしい
+        //RaycastHit hit;
+        //if (Physics.Raycast(tankGunFire.transform.position, tankGunFire.transform.forward, out hit))
+        //{
+        //    Debug.DrawRay(tankGun.transform.position, tankGun.transform.forward, Color.green);
+        //    lookChactor = hit.collider.tag == "Enemy" ? true : false;
+        //    Debug.Log("入った" + lookChactor);
+        //}
+        //if (lookChactor == false)
+        //{
+        //    var dir = tankHead.position - hit.collider.transform.position;
+        //    dir.y = 0;
+        //    transform.rotation = Quaternion.Lerp(tankHead.rotation, Quaternion.LookRotation(dir, Vector3.up), 1.5f);
+        //    Debug.Log("敵の方向を向いた。");
+        //}
+        //else Debug.Log("元から向いていた");
+        var aim = nearEnemy.transform.position - tankGun.position;
+        var look = Quaternion.LookRotation(aim);
+        tankGun.transform.localRotation = look;
     }
 
 
     void Atack()
     {
+        if (perfectHit || AccuracyFalg || perfectHit && AccuracyFalg)
+        {
+            if (perfectHit && AccuracyFalg)
+            {
+                //近くの敵に名中断を入れる
+            }
+        }
         //posは飛ぶ座標
         Vector3 pos = Random.insideUnitSphere;
         pos.x = tankGunFire.transform.localScale.x / 2;
@@ -225,7 +228,7 @@ public class TankCon : PlayerBase
     //        moveLimitFlag = false;
     //    }
     //    else moveLimitFlag = true;
-    //Trans.position = pos;
+    //    Trans.position = pos;
     //}
 
     private void OnCollisionStay(Collision collision)

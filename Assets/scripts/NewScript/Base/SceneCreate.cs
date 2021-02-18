@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor.EventSystems;
 using UnityEngine.SceneManagement;
 /// <summary>
 /// マネージャークラスが無い場合に動的に生成するスクリプト

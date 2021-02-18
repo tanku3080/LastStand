@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3061141348828962703}
   - component: {fileID: 3061141348828962702}
   m_Layer: 0
-  m_Name: Manager
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,12 +66,8 @@ MonoBehaviour:
   tankChengeSfx: {fileID: 0}
   tankHeadsfx: {fileID: 0}
   atackSfx: {fileID: 0}
-  mC_Start: {fileID: 0}
-  mC_meeting: {fileID: 0}
   mC_playerBGM: {fileID: 0}
   mC_enemyBGM: {fileID: 0}
-  mC_gameClear: {fileID: 0}
-  mC_gameOver: {fileID: 0}
   tankChengeObj: {fileID: 0}
   pauseObj: {fileID: 0}
   endObj: {fileID: 0}
@@ -244,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3061141349253148009
 RectTransform:
   m_ObjectHideFlags: 0

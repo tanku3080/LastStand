@@ -39,6 +39,10 @@ public class TextCon : MonoBehaviour
 
 	void Update()
 	{
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+			SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay,true,true);
+        }
 
         if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 		{

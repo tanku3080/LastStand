@@ -62,7 +62,6 @@ public class TankCon : PlayerBase
     {
         if (controlAccess)
         {
-            Debug.Log("controlAccess" + controlAccess);
             if (GameManager.Instance.playerIsMove)
             {
                 //マウスを「J」「L」での旋回に変更

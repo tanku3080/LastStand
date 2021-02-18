@@ -20,6 +20,7 @@ public class RadarCon : MonoBehaviour
             if (pos < 100) speed = 1f;
             if (pos < 50) speed = 1.5f;
             if (pos <= 0)speed = 2f;
+            Debug.Log(pos);
             image.color = GetAlphaColor(image.color, speed);
         }
     }

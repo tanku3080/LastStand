@@ -78,6 +78,15 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 ButtonSelected();
             }
+
+            if (Input.GetKeyUp(KeyCode.H))
+            {
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
+            }
+            if (Input.GetKeyUp(KeyCode.G))
+            {
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOvar,true,true);
+            }
         }
         if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
         {
@@ -159,7 +168,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             source.PlayOneShot(click);
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
-            ChengeUiPop(clickC);
+            ChengeUiPop(clickC,radarObj);
             clickC = false;
         }
         else if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC == false)

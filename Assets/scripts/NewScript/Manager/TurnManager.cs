@@ -268,6 +268,7 @@ public class TurnManager : Singleton<TurnManager>
 
     public void TurnEnd()//敵側入れてない
     {
+        GameManager.Instance.ChengeUiPop(false,GameManager.Instance.endObj);
         turnFlag++;
         eventF = true;
         if (turnFlag == 1)
@@ -285,12 +286,13 @@ public class TurnManager : Singleton<TurnManager>
         }
         PlayerMoveVal = 5;
         EnemyMoveVal = 5;
+        FirstSet();
     }
 
     public void Back()
     {
         Debug.Log("Test");
-        GameManager.Instance.ButtonSelected();
+        GameManager.Instance.ChengeUiPop(false);
     }
     void TimeLineStop(PlayableDirector stop)
     {

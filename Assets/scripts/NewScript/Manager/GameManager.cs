@@ -8,11 +8,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         Tiger, Panzer2, Shaman, Stuart,
     }
-    public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
     public Renderer[] enemyRender { get; set; }
-    public bool playerIsMove = true, enemyIsMove = false;
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
@@ -51,10 +49,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             endObj = GameObject.Find("TurnendUI");
             radarObj = GameObject.Find("Radar");
         }
-        ChengeUiPop(false,tankChengeObj);
-        ChengeUiPop(false,pauseObj);
-        ChengeUiPop(false,endObj);
-        ChengeUiPop(false,radarObj);
+        ChengePop(false,tankChengeObj);
+        ChengePop(false,pauseObj);
+        ChengePop(false,endObj);
+        ChengePop(false,radarObj);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
@@ -85,7 +83,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             }
             if (Input.GetKeyUp(KeyCode.G))
             {
-                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOvar,true,true);
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
             }
         }
         if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
@@ -119,61 +117,61 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
             source.PlayOneShot(click);
-            ChengeUiPop(clickC, pauseObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, pauseObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
+        else if (Input.GetKeyUp(KeyCode.P) && clickC == false && pauseObj.activeSelf == true)
         {
             source.PlayOneShot(cancel);
-            ChengeUiPop(clickC, pauseObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, pauseObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = true;
         }
-        if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC)
+        if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC)
         {
             source.PlayOneShot(click);
-            ChengeUiPop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, tankChengeObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.Space) && playerSide && clickC == false)
+        else if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC == false && tankChengeObj.activeSelf == true)
         {
             source.PlayOneShot(cancel);
-            ChengeUiPop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, tankChengeObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = true;
         }
-        if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC)
+        if (Input.GetKeyUp(KeyCode.Return) && TurnManager.Instance.playerTurn && clickC)
         {
             source.PlayOneShot(click);
-            ChengeUiPop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, endObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.Return) && playerSide && clickC == false)
+        else if (Input.GetKeyUp(KeyCode.Return) && TurnManager.Instance.playerTurn && clickC == false && endObj.activeSelf == true)
         {
             source.PlayOneShot(cancel);
-            ChengeUiPop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
+            ChengePop(clickC, endObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
             clickC = true;
         }
-        if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC)//レーダー
+        if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC)//レーダー
         {
             source.PlayOneShot(click);
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
-            ChengeUiPop(clickC,radarObj);
+            ChengePop(clickC,radarObj);
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.Q) && playerSide && clickC == false)
+        else if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC == false)
         {
-            ChengeUiPop(clickC, radarObj);
+            ChengePop(clickC, radarObj);
             clickC = true;
         }
     }
@@ -236,16 +234,16 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>
-    /// 確認メッセージが表示される
+    /// 確認メッセージやその他非表示オブジェクトを表示
     /// </summary>
-    public void ChengeUiPop(bool isChenge = false, GameObject uiObj = null)
+    public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        uiObj.SetActive(isChenge);
+        obj.SetActive(isChenge);
     }
 
     public void TurnEnd()
     {
         TurnManager.Instance.playerTurn = true;
-        ChengeUiPop(false);
+        ChengePop(false);
     }
 }

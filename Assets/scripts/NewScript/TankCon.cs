@@ -34,6 +34,8 @@ public class TankCon : PlayerBase
     bool lookChactor;
     //これがtureじゃないとPlayerの操作権はない
     public bool controlAccess = false;
+    //カメラをオンにするのに必要
+    public bool cameraActive = true;
 
     bool perfectHit = false;//命中率
     bool AccuracyFalg = false;//精度
@@ -53,6 +55,7 @@ public class TankCon : PlayerBase
         defaultCon = TurnManager.Instance.DefCon;
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        Debug.Log("this Tank is=" + this.gameObject.name);
         //_interface = GameObject.Find("Inter").GetComponent<InterfaceScripts.ITankChoice>();
         //_interface.TankChoiceStart(gameObject.name);
     }
@@ -62,7 +65,13 @@ public class TankCon : PlayerBase
     {
         if (controlAccess)
         {
-            if (GameManager.Instance.playerIsMove)
+            if (cameraActive)
+            {
+                GameManager.Instance.ChengePop(true,defaultCon.gameObject);
+                GameManager.Instance.ChengePop(true,aimCom.gameObject);
+                cameraActive = false;
+            }
+            if (TurnManager.Instance.playerIsMove)
             {
                 //マウスを「J」「L」での旋回に変更
 
@@ -100,7 +109,7 @@ public class TankCon : PlayerBase
                     float v = Input.GetAxis("Vertical");
                     float h = Input.GetAxis("Horizontal");
 
-                    if (h != 0 && GameManager.Instance.playerIsMove)
+                    if (h != 0 && TurnManager.Instance.playerIsMove)
                     {
                         float rot = h * tankTurn_Speed * Time.deltaTime;
                         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
@@ -146,7 +155,7 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
-            GameManager.Instance.playerIsMove = false;
+            TurnManager.Instance.playerIsMove = false;
             aimCom.gameObject.SetActive(true); ;
             defaultCon.gameObject.SetActive(false);
             if (Input.GetButtonUp("Fire1"))
@@ -163,7 +172,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            GameManager.Instance.playerIsMove = true;
+            TurnManager.Instance.playerIsMove = true;
             defaultCon.gameObject.SetActive(true);
             aimCom.gameObject.SetActive(false);
         }

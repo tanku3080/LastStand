@@ -68,7 +68,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (sphere.radius < 0)
         {
-            GameManager.Instance.playerSide = false;
+            TurnManager.Instance.playerTurn = false;
             anime.StopPlayback();
         }
         sphere.radius -= 0.5f;
@@ -139,7 +139,7 @@ public class PlayerCon : MonoBehaviour
     {
         if (collision.gameObject == sphere)
         {
-            GameManager.Instance.playerSide = false;
+            TurnManager.Instance.playerTurn = false;
         }
     }
 }

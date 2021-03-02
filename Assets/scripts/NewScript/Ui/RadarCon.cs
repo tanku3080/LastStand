@@ -12,7 +12,7 @@ public class RadarCon : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.playerSide)
+        if (TurnManager.Instance.playerTurn)
         {
             float pos = Vector3.Distance(TurnManager.Instance.nowPayer.transform.position,GameManager.Instance.nearEnemy.transform.position);
             if (pos < 500) speed = 0.5f;

@@ -13,7 +13,7 @@ public class TankCon : PlayerBase
     private GameObject tankGunFire = null;
 
     [SerializeField] float tankHead_R_SPD = 5f;
-    [SerializeField] float tankTurn_Speed = 5f;
+    [SerializeField] public float tankTurn_Speed = 5f;
     [SerializeField] float tankLimitSpeed = 50f;
     [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう

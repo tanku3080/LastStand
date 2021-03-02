@@ -35,7 +35,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 
     bool sceneChecker = true;
 
-    bool clickC = true;
+    public bool clickC = true;
     private int nowTurnValue = 0;
     Navigation nav;
     // Start is called before the first frame update

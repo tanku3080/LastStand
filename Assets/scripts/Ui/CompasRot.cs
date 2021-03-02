@@ -11,7 +11,7 @@ public class CompasRot : MonoBehaviour
     {
         if (TurnManager.Instance.playerTurn == true)
         {
-            float mouseX = Input.GetAxis("Horizontal");
+            float mouseX = Input.GetAxis("Horizontal") * TurnManager.Instance.nowPayer.GetComponent<TankCon>().tankTurn_Speed * Time.deltaTime;
             transform.Rotate(0, 0, mouseX);
         }
     }

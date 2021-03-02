@@ -282,12 +282,15 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     public void OkTankChenge() 
     {
-        GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
+        Debug.Log("戦車切替");
         MoveCharaSet(true,false,PlayerMoveVal);
+        GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
+        GameManager.Instance.clickC = true;
     }
     public void NoTankChenge()
     {
         GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
+        GameManager.Instance.clickC = true;
     }
 
     /// <summary>
@@ -297,6 +300,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         Debug.Log("turnEndSart");
         GameManager.Instance.ChengePop(false,GameManager.Instance.endObj);
+        GameManager.Instance.clickC = true;
         turnNum++;
         eventF = true;
         if (turnNum == 1)
@@ -321,6 +325,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         GameManager.Instance.ChengePop(false,GameManager.Instance.tankChengeObj);
         GameManager.Instance.ChengePop(false,GameManager.Instance.endObj);
+        GameManager.Instance.clickC = true;
     }
     void TimeLineStop(PlayableDirector stop)
     {

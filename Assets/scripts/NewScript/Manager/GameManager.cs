@@ -71,7 +71,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
-            nowTurnValue = TurnManager.Instance.nowTurn;
+            nowTurnValue = TurnManager.Instance.generalTurn;
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
@@ -233,10 +233,16 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             case TankChoice.Shaman:
                 charactorHp = 80;
                 charactorSpeed = 21f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
                 break;
             case TankChoice.Stuart:
                 charactorHp = 30;
                 charactorSpeed = 30f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
                 break;
         }
         Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");

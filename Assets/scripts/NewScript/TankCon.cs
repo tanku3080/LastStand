@@ -35,7 +35,6 @@ public class TankCon : PlayerBase
 
     bool perfectHit = false;//命中率
     bool AccuracyFalg = false;//精度
-    InterfaceScripts.ITankChoice _interface;
 
 
     void Start()
@@ -51,9 +50,6 @@ public class TankCon : PlayerBase
         defaultCon = TurnManager.Instance.DefCon;
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
-        Debug.Log("this Tank is=" + this.gameObject.name);
-        //_interface = GameObject.Find("Inter").GetComponent<InterfaceScripts.ITankChoice>();
-        //_interface.TankChoiceStart(gameObject.name);
     }
 
     // Update is called once per frame
@@ -152,10 +148,9 @@ public class TankCon : PlayerBase
         if (aim)
         {
             TurnManager.Instance.playerIsMove = false;
-            //aimCom.gameObject.SetActive(true);
-            //defaultCon.gameObject.SetActive(false);
-            aimCom.Priority = 11;
-            defaultCon.Priority = 10;
+
+            GameManager.Instance.ChengePop(true,aimCom.gameObject);
+            GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             if (Input.GetButtonUp("Fire1"))
             {
                 //攻撃

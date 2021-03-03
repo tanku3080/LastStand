@@ -30,8 +30,8 @@ public class Enemy : EnemyBase
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
         agent = GetComponent<NavMeshAgent>();
-        defaultCon = TurnManager.Instance.DefCon;
-        defaultCon = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
+        defaultCon = TurnManager.Instance.EnemyDefCon;
+        defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
 
         agent.autoBraking = true;
         agent.speed = enemySpeed;
@@ -64,6 +64,7 @@ public class Enemy : EnemyBase
     {
         if (TurnManager.Instance.playerTurn != true)
         {
+            Debug.Log("せんべつ");
             if (patrolPos.Length <= patrolNum)
             {
                 patrolNum = 0;

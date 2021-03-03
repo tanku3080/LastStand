@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine.Playables;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,6 +51,7 @@ public class TurnManager : Singleton<TurnManager>
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
     public CinemachineVirtualCamera EnemyDefCon { get; set; }
+    int charactorNum = 0;
     //現在のキャラ数
     int playerNum = 0;
     int enemyNum = 5;
@@ -97,7 +97,6 @@ public class TurnManager : Singleton<TurnManager>
                 GameManager.Instance.ChengePop(false, playerBGM);
                 GameManager.Instance.ChengePop(false, enemyBGM);
             }
-            //PlayMusic();
             TurnManag();
         }
 
@@ -116,7 +115,7 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(true, enemyBGM);
         }
     }
-
+    bool turnFirstNumFlag = true;
     void TurnManag()
     {
         if (eventF)
@@ -124,8 +123,9 @@ public class TurnManager : Singleton<TurnManager>
             director.stopped += TimeLineStop;
             eventF = false;
         }
-        if (nowTurn == 1)//firstColl
+        if (nowTurn == 1 && turnFirstNumFlag)
         {
+            turnFirstNumFlag = false;
             FirstSet();
         }
         if (timeLlineF)
@@ -144,7 +144,7 @@ public class TurnManager : Singleton<TurnManager>
         if (GameManager.Instance.isGameScene)
         {
             Debug.Log(PlayerMoveVal + "nowT" + nowTurn);
-            text1.text += PlayerMoveVal.ToString();
+            text1.text = PlayerMoveVal.ToString();
             //text1.text = "残り回数" + PlayerMoveVal.ToString();
             if (nowTurn == 1)
             {
@@ -200,8 +200,16 @@ public class TurnManager : Singleton<TurnManager>
             {
                 Debug.Log("case1");
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
-                if (playerCam > players.Count) playerCam = 1;
-                else playerCam += 2;
+                if (playerCam > players.Count)
+                {
+                    playerCam = 1;
+                    playerNum = 0;
+                }
+                else
+                {
+                    playerCam += 2;
+                    playerNum++;
+                }
                 DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
                 AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
                 nowPayer = players[playerNum].gameObject;
@@ -315,7 +323,7 @@ public class TurnManager : Singleton<TurnManager>
             playerTurn = false;
             enemyTurn = true;
         }
-        else if(turnNum == 2)
+        else
         {
             nowTurn++;
             turnNum = 0;
@@ -332,12 +340,13 @@ public class TurnManager : Singleton<TurnManager>
     {
         GameManager.Instance.ChengePop(false,GameManager.Instance.tankChengeObj);
         GameManager.Instance.ChengePop(false,GameManager.Instance.endObj);
+        GameManager.Instance.ChengePop(false, GameManager.Instance.pauseObj);
         GameManager.Instance.clickC = true;
     }
     void TimeLineStop(PlayableDirector stop)
     {
         stop.Stop();
-        controlPanel.SetActive(false);
+        GameManager.Instance.ChengePop(false,controlPanel);
         timeLlineF = false;
     }
     void StartTimeLine()

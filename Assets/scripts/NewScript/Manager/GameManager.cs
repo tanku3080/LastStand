@@ -225,7 +225,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
-                charactorSpeed = 28f;
+                charactorSpeed = 1500f;
+                tankHeadSpeed = 3f;
+                tankTurnSpeed = 10f;
+                tankLimitedSpeed = 1500f;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;

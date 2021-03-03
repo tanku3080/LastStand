@@ -119,10 +119,6 @@ public class TankCon : PlayerBase
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                         //MoveLimit(moveLimit);
                     }
-                    else
-                    {
-                        Debug.Log("deta");
-                    }
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100
                     {

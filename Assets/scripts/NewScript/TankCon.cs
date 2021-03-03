@@ -152,8 +152,10 @@ public class TankCon : PlayerBase
         if (aim)
         {
             TurnManager.Instance.playerIsMove = false;
-            aimCom.gameObject.SetActive(true); ;
-            defaultCon.gameObject.SetActive(false);
+            //aimCom.gameObject.SetActive(true);
+            //defaultCon.gameObject.SetActive(false);
+            aimCom.Priority = 11;
+            defaultCon.Priority = 10;
             if (Input.GetButtonUp("Fire1"))
             {
                 //攻撃

@@ -199,6 +199,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 
     public int charactorHp;
     public float charactorSpeed;
+    public float tankHeadSpeed;
+    public float tankTurnSpeed;
+    public float tankLimitedSpeed;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -215,7 +218,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             case TankChoice.Tiger:
                 charactorHp = 100;
-                charactorSpeed = 20f;
+                charactorSpeed = 1000f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;

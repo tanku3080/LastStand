@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Cinemachine;
-using UnityEngine.Events;
 public class TankCon : PlayerBase
 {
     //ティーガー戦車は上下に0から∔65度
@@ -12,9 +11,6 @@ public class TankCon : PlayerBase
 
     private GameObject tankGunFire = null;
 
-    [SerializeField] float tankHead_R_SPD = 5f;
-    [SerializeField] public float tankTurn_Speed = 5f;
-    [SerializeField] float tankLimitSpeed = 50f;
     [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう
     [SerializeField] CinemachineVirtualCamera defaultCon;
@@ -119,9 +115,13 @@ public class TankCon : PlayerBase
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
-                        float mov = v * playerSpeed / 2;// * Time.deltaTime;
+                        float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                         //MoveLimit(moveLimit);
+                    }
+                    else
+                    {
+                        Debug.Log("deta");
                     }
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100

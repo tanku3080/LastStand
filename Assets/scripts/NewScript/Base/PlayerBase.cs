@@ -3,6 +3,9 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorAtac
 {
     public int playerLife;
     public float playerSpeed;
+    public float tankHead_R_SPD;
+    public float tankTurn_Speed;
+    public float tankLimitSpeed;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

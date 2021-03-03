@@ -69,6 +69,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (controlPanel == null)
         {
+            Debug.Log("新規作成");
             controlPanel = GameObject.Find("TurnPanel");
             turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
             turnText.GetComponent<TextMeshProUGUI>();
@@ -84,15 +85,15 @@ public class TurnManager : Singleton<TurnManager>
     }
 
     // Update is called once per frame
-    bool flag = true;
+    bool firstCollFlag = true;//初回のみ呼び出される
     void Update()
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
             //以下の条件式はテスト用にのみ適用
-            if (flag && SceneManager.GetActiveScene().name == "TestMap")
+            if (firstCollFlag && SceneManager.GetActiveScene().name == "TestMap")
             {
-                flag = false;
+                firstCollFlag = false;
                 GameManager.Instance.ChengePop(false, playerBGM);
                 GameManager.Instance.ChengePop(false, enemyBGM);
             }
@@ -150,6 +151,12 @@ public class TurnManager : Singleton<TurnManager>
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
+                    GameManager.Instance.TankChoiceStart(item.name);
+                    item.playerLife = GameManager.Instance.charactorHp;
+                    item.playerSpeed = GameManager.Instance.charactorSpeed;
+                    item.tankHead_R_SPD = GameManager.Instance.tankHeadSpeed;
+                    item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
+                    item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {

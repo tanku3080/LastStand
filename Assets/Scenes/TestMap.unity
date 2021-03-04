@@ -786,8 +786,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 488327282}
-  m_LocalRotation: {x: 0.14521313, y: -0.000000047178286, z: 0.000000006924302, w: 0.98940045}
-  m_LocalPosition: {x: 15.2580595, y: 4.919235, z: -54.50326}
+  m_LocalRotation: {x: -0.017364908, y: -0.004052907, z: -0.00007038956, w: 0.99984103}
+  m_LocalPosition: {x: 14.988058, y: 2.4392354, z: -43.703262}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -888,6 +888,12 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaDirect: 0.5
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
+--- !u!1 &801687421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2674679315596644422, guid: eff84882db7e6c042b0fbf1be50e5e58,
+    type: 3}
+  m_PrefabInstance: {fileID: 7772974173470164654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &856333896 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3061141348828962698, guid: 7ca0e3d5099418d428f20f8a36062026,
@@ -936,7 +942,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1512
+  m_Name: pb_Mesh-1510
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1586,6 +1592,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLife: 10
   enemySpeed: 5
+  ETankHead_R_SPD: 0
+  ETankTurn_Speed: 0
+  ETankLimitSpeed: 0
+  ETankLimitRange: 0
   agent: {fileID: 1505879006}
   defaultCon: {fileID: 1546592892}
   patrolPos:
@@ -2035,6 +2045,16 @@ PrefabInstance:
       propertyPath: dontDestroy
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3061141348828962698, guid: 7ca0e3d5099418d428f20f8a36062026,
+        type: 3}
+      propertyPath: limitedBar
+      value: 
+      objectReference: {fileID: 801687421}
+    - target: {fileID: 3061141348828962698, guid: 7ca0e3d5099418d428f20f8a36062026,
+        type: 3}
+      propertyPath: TankSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d61c5ee91c0a0d4982c204aadce58d5, type: 3}
     - target: {fileID: 3061141348828962699, guid: 7ca0e3d5099418d428f20f8a36062026,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2493,10 +2513,25 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 44.75
       objectReference: {fileID: 0}
+    - target: {fileID: 7772974173339104667, guid: eff84882db7e6c042b0fbf1be50e5e58,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772974173339104667, guid: eff84882db7e6c042b0fbf1be50e5e58,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7772974173339104669, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7772974173339104669, guid: eff84882db7e6c042b0fbf1be50e5e58,
+        type: 3}
+      propertyPath: m_Name
+      value: LImitBar
       objectReference: {fileID: 0}
     - target: {fileID: 7772974173385368152, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}

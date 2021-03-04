@@ -1,72 +1,181 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
+public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 {
     public enum TankChoice
     {
-        Tiger, Panzer2, Panzer4, KV2, H35, Shaman, Stuart, S35, T34_76,
+        Tiger, Panzer2, Shaman, Stuart,
     }
-    public enum Now
-    {
-        Wait,Move,Change,Atack,UIPOP
-    }
-    public bool enemySide = false, playerSide = true;
     public bool enemyAtackStop = false;
     public bool GameUi = false;
-    //切替テスト用に作った
-    public bool tankchenger = false;
     public Renderer[] enemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField,Tooltip("UIclickボタン")] public AudioClip sfx;
-    [SerializeField, Header("meeting音")] public AudioClip mC_meeting;
-    [SerializeField, Header("ゲームクリア音")] public AudioClip mC_gameClear;
-    [SerializeField, Header("ゲームオーバー音")] public AudioClip mC_gameOver;
-    [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
+    [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;//UIHitGameの音らしい
+    [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;//UIHitGameの音らしい
+    [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
+    [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
+    [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
+    [SerializeField, Tooltip("移動")] public AudioClip TankSfx;
+    [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
+    [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
+    [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
 
+    [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
+    [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
+    [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
+    [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
+    [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
+    [SerializeField, HideInInspector] public GameObject nearEnemy = null;
+    //ゲームシーンかの判定(ターンマネージャー限定)
+    [SerializeField, HideInInspector] public bool isGameScene;
+
+    bool sceneChecker = true;
+
+    public bool clickC = true;
+    private int nowTurnValue = 0;
+    Navigation nav;
     // Start is called before the first frame update
 
     void Start()
     {
-        TankChengeUiPop(false);
+        if (tankChengeObj == null)
+        {
+            tankChengeObj = GameObject.Find("TankChengeUI");
+            pauseObj = GameObject.Find("PauseUI");
+            endObj = GameObject.Find("TurnendUI");
+            radarObj = GameObject.Find("Radar");
+            limitedBar = GameObject.Find("MoveLimitBar");
+        }
+        ChengePop(false,tankChengeObj);
+        ChengePop(false,pauseObj);
+        ChengePop(false,endObj);
+        ChengePop(false,radarObj);
+        ChengePop(false,limitedBar);
         source = gameObject.GetComponent<AudioSource>();
-        source.Play();
+        source.playOnAwake = false;
+        isGameScene = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay")
+        if (SceneManager.GetActiveScene().name == "Start")
         {
-            if (Input.GetKeyUp(KeyCode.P) && playerSide)
+            if (Input.GetKeyUp(KeyCode.Return))
             {
-
+                source.PlayOneShot(click);
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting, true, true);
             }
-            if (Input.GetKeyUp(KeyCode.Space))
+        }
+        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
+        {
+            nowTurnValue = TurnManager.Instance.generalTurn;
+            if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
-                TankChengeUiPop(true);
+                ButtonSelected();
+            }
+
+            if (Input.GetKeyUp(KeyCode.H))
+            {
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
+            }
+            if (Input.GetKeyUp(KeyCode.G))
+            {
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
+            }
+        }
+        if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
+        {
+            if (Input.GetKeyUp(KeyCode.Return))
+            {
+                source.PlayOneShot(click);
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
             }
         }
     }
 
-    public void NowSet(Now now)
+    GameObject SerchTag(GameObject nowObj)
     {
-        switch (now)
+        float nearDis = 0;
+        GameObject targetObj = null;
+        foreach (Enemy obj in TurnManager.Instance.enemys)
         {
-            case Now.Wait:
-                break;
-            case Now.Move:
-                break;
-            case Now.Change:
-                break;
-            case Now.Atack:
-                break;
-            case Now.UIPOP:
-                break;
+            var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
+            if (nearDis == 0 || nearDis > timDis)
+            {
+                nearDis = timDis;
+                targetObj = obj.gameObject;
+            }
+        }
+        return targetObj;
+    }
+
+    public void ButtonSelected()
+    {
+        if (Input.GetKeyUp(KeyCode.P) && clickC)
+        {
+            source.PlayOneShot(click);
+            ChengePop(clickC, pauseObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.P) && clickC == false && pauseObj.activeSelf == true)
+        {
+            source.PlayOneShot(cancel);
+            ChengePop(clickC, pauseObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC)
+        {
+            source.PlayOneShot(click);
+            ChengePop(clickC, tankChengeObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC == false && tankChengeObj.activeSelf == true)
+        {
+            source.PlayOneShot(cancel);
+            ChengePop(clickC, tankChengeObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Return) && TurnManager.Instance.playerTurn && clickC)
+        {
+            source.PlayOneShot(click);
+            ChengePop(clickC, endObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Return) && TurnManager.Instance.playerTurn && clickC == false && endObj.activeSelf == true)
+        {
+            source.PlayOneShot(cancel);
+            ChengePop(clickC, endObj);
+            TurnManager.Instance.playerIsMove = !clickC;
+            TurnManager.Instance.enemyIsMove = !clickC;
+            clickC = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC)//レーダー
+        {
+            source.PlayOneShot(click);
+            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
+            ChengePop(clickC,radarObj);
+            clickC = false;
+        }
+        else if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC == false)
+        {
+            ChengePop(clickC, radarObj);
+            clickC = true;
         }
     }
 
@@ -75,24 +184,28 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
     {
         TurnManager.Instance.players.Clear();
         TurnManager.Instance.enemys.Clear();
-        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
+        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
     }
 
     ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
     public void Restart()
     {
-        source.PlayOneShot(sfx);
+        source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay, true, true);
     }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()
     {
-        source.PlayOneShot(sfx);
+        source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 
     public int charactorHp;
     public float charactorSpeed;
+    public float tankHeadSpeed;
+    public float tankTurnSpeed;
+    public float tankLimitedSpeed;
+    public float tankLimitedRange;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -103,66 +216,54 @@ public class GameManager : Singleton<GameManager>,InterfaceScripts.ITankChoice
         while (num != tank.ToString())
         {
             tank++;
-            Debug.Log("次の奴");
         }
         switch (tank)
         {
             case TankChoice.Tiger:
                 charactorHp = 100;
-                charactorSpeed = 20f;
+                charactorSpeed = 1000f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
+                tankLimitedRange = 1000f;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
-                charactorSpeed = 28f;
-                break;
-            case TankChoice.Panzer4:
-                charactorHp = 75;
-                charactorSpeed = 25f;
-                break;
-            case TankChoice.KV2:
-                charactorHp = 100;
-                charactorSpeed = 20f;
-                break;
-            case TankChoice.H35:
-                charactorHp = 40;
-                charactorSpeed = 10f;
+                charactorSpeed = 1500f;
+                tankHeadSpeed = 3f;
+                tankTurnSpeed = 10f;
+                tankLimitedSpeed = 1500f;
+                tankLimitedRange = 1000f;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;
                 charactorSpeed = 21f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
                 break;
             case TankChoice.Stuart:
                 charactorHp = 30;
                 charactorSpeed = 30f;
-                break;
-            case TankChoice.S35:
-                charactorHp = 60;
-                charactorSpeed = 22;
-                break;
-            case TankChoice.T34_76:
-                charactorHp = 90;
-                charactorSpeed = 32f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
                 break;
         }
         Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");
     }
 
     /// <summary>
-    /// 確認メッセージが表示される
+    /// 確認メッセージやその他非表示オブジェクトを表示
     /// </summary>
-    public void TankChengeUiPop(bool isChenge)
+    public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        tankChengeObj.SetActive(isChenge);
+        obj.SetActive(isChenge);
     }
 
-    public void OkTankChenge()
+    public void TurnEnd()
     {
-        tankchenger = true;
-        TankChengeUiPop(false);
-    }
-    public void NoTankChenge()
-    {
-        tankchenger = false;
-        TankChengeUiPop(false);
+        TurnManager.Instance.playerTurn = true;
+        ChengePop(false);
     }
 }

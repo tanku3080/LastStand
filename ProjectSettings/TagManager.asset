@@ -8,8 +8,8 @@ TagManager:
   - Enemy
   - KillZone
   - Bullet
-  - Object
   - Grand
+  - Point
   layers:
   - Default
   - TransparentFX

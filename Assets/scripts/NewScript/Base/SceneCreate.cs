@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor.EventSystems;
 using UnityEngine.SceneManagement;
 /// <summary>
 /// マネージャークラスが無い場合に動的に生成するスクリプト
@@ -12,6 +11,7 @@ public class SceneCreate : MonoBehaviour
     private void Awake()
     {
         //シーン名を取得。今はテストシーンだけの判定にするので意味のない条件式を書く
+        //raycasttargetの切替も
         if (SceneManager.GetActiveScene().name == "vvvv")
         {
             var v = GameObject.Find("Uis");

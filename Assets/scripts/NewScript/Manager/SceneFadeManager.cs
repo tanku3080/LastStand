@@ -7,7 +7,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
 {
     public enum SceneName
     {
-        Start,Meeting,GamePlay,GameOvar,GameClear,
+        Start,Meeting,GamePlay,GameOver,GameClear,
     }
     public SceneName scene;
     CanvasGroup group = null;

@@ -5,50 +5,28 @@ public class RadarCon : MonoBehaviour
     public Image image;
     float time = 0;
     float speed;
-    PlayerCon _player;
     void Start()
     {
-        image = GameObject.Find("EnemyPointer").GetComponent<Image>();
-        _player = GameObject.Find("Player").GetComponent<PlayerCon>();
+        image = gameObject.GetComponent<Image>();
     }
 
     private void Update()
     {
-        if (GameManager.Instance.playerSide)
+        if (TurnManager.Instance.playerTurn && gameObject.activeSelf)
         {
-            GameObject poss = _player.Test;
-            float pos = Vector3.Distance(_player.transform.position, poss.transform.position);
-            if (pos < 500)
-            {
-                speed = 0.5f;
-                image.color = GetAlphaColor(image.color);
-            }
-            if (pos < 300)
-            {
-                speed = 0.5f;
-                image.color = GetAlphaColor(image.color);
-            }
-            if (pos < 100)
-            {
-                speed = 1f;
-                image.color = GetAlphaColor(image.color);
-            }
-            if (pos < 50)
-            {
-                speed = 1.5f;
-                image.color = GetAlphaColor(image.color);
-            }
-            if (pos <= 0)
-            {
-                Debug.Log("0又はそれ以下");
-                speed = 2f;
-                image.color = GetAlphaColor(image.color);
-            }
+            float pos = Vector3.Distance(TurnManager.Instance.nowPayer.transform.position,GameManager.Instance.nearEnemy.transform.position);
+            if (pos < 500) speed = 0.5f;
+            if (pos < 300) speed = 0.5f;
+            if (pos < 100) speed = 1f;
+            if (pos < 50) speed = 1.5f;
+            if (pos <= 0)speed = 2f;
+            Debug.Log(pos);
+            image.color = GetAlphaColor(image.color, speed);
         }
     }
-    Color GetAlphaColor(Color color)
+    Color GetAlphaColor(Color color,float spd)
     {
-        time += Time.deltaTime * 5.0f * speed;
+        time += Time.deltaTime * 5.0f * spd;
         color.a = Mathf.Sin(time) * 0.5f + 0.5f;
 
         return color;

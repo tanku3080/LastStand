@@ -1,20 +1,16 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class GameOverCon : MonoBehaviour
 {
     public CanvasGroup canvas;
-    public Button reStart, title;
+    public TextMeshProUGUI title;
     float timer = 0;
     void Start()
     {
         canvas.GetComponent<CanvasGroup>();
-        reStart.GetComponent<Button>();
-        title.GetComponent<Button>();
+        title.GetComponent<TextMeshProUGUI>();
         canvas.alpha = 0;
-        reStart.interactable = false;
-        title.interactable = false;
-        GameManager.Instance.source.Play();
     }
 
     // Update is called once per frame
@@ -23,8 +19,6 @@ public class GameOverCon : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > 5)
         {
-            reStart.interactable = true;
-            title.interactable = true;
             canvas.alpha = 1;
             
         }

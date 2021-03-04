@@ -8,8 +8,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         Tiger, Panzer2, Shaman, Stuart,
     }
-    public bool enemyAtackStop = false;
-    public bool GameUi = false;
+    [SerializeField,HideInInspector] public bool enemyAtackStop = false;
+    [SerializeField,HideInInspector] public bool GameUi = false;
     public Renderer[] enemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する

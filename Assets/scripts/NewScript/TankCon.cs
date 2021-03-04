@@ -40,6 +40,7 @@ public class TankCon : PlayerBase
 
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
+    AudioSource playerMoveAudio;
 
 
     void Start()
@@ -56,6 +57,9 @@ public class TankCon : PlayerBase
         moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        playerMoveAudio = gameObject.GetComponent<AudioSource>();
+        playerMoveAudio.playOnAwake = false;
+        playerMoveAudio.clip = GameManager.Instance.TankSfx;
     }
 
     // Update is called once per frame
@@ -123,10 +127,12 @@ public class TankCon : PlayerBase
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
+                        playerMoveAudio.Play();
                         float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                         MoveLimit(moveLimit);
                     }
+                    else playerMoveAudio.Stop();
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100
                     {

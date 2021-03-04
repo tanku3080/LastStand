@@ -55,7 +55,7 @@ public class TurnManager : Singleton<TurnManager>
     int charactorNum = 0;
     //現在のキャラ数
     int playerNum = 0;
-    int enemyNum = 5;
+    int enemyNum = 0;
     //カメラ
     int playerCam = 1;
     int enemyCam = 5;
@@ -158,10 +158,19 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankHead_R_SPD = GameManager.Instance.tankHeadSpeed;
                     item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
+                    item.tankLimitRange = GameManager.Instance.tankLimitedRange;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
                     enemys.Add(enemy);
+                    GameManager.Instance.TankChoiceStart(enemy.name);
+                    enemy.enemyLife = GameManager.Instance.charactorHp;
+                    enemy.enemySpeed = GameManager.Instance.charactorSpeed;
+                    enemy.ETankHead_R_SPD = GameManager.Instance.tankHeadSpeed;
+                    enemy.ETankTurn_Speed = GameManager.Instance.tankTurnSpeed;
+                    enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
+                    enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
+
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);
                 playerTurn = true;
@@ -220,7 +229,6 @@ public class TurnManager : Singleton<TurnManager>
                 Debug.Log("case2");
                 nowPayer = players[playerNum].gameObject;
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
-                Debug.Log("戦車切替");
                 DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
                 AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
             }
@@ -246,7 +254,7 @@ public class TurnManager : Singleton<TurnManager>
             if (generalTurn == 1)
             {
                 Debug.Log("敵の初回" + "たーん" + generalTurn);
-                nowEnemy = enemys[enemyCam].gameObject;
+                nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
                 EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
             }
@@ -363,6 +371,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         stop.Stop();
         GameManager.Instance.ChengePop(false,controlPanel);
+        GameManager.Instance.ChengePop(true,GameManager.Instance.limitedBar);
         timeLlineF = false;
     }
     void StartTimeLine()

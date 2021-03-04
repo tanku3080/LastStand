@@ -29,6 +29,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
+    [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     //ゲームシーンかの判定(ターンマネージャー限定)
     [SerializeField, HideInInspector] public bool isGameScene;
@@ -48,11 +49,13 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             pauseObj = GameObject.Find("PauseUI");
             endObj = GameObject.Find("TurnendUI");
             radarObj = GameObject.Find("Radar");
+            limitedBar = GameObject.Find("MoveLimitBar");
         }
         ChengePop(false,tankChengeObj);
         ChengePop(false,pauseObj);
         ChengePop(false,endObj);
         ChengePop(false,radarObj);
+        ChengePop(false,limitedBar);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
@@ -202,6 +205,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public float tankHeadSpeed;
     public float tankTurnSpeed;
     public float tankLimitedSpeed;
+    public float tankLimitedRange;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -212,7 +216,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         while (num != tank.ToString())
         {
             tank++;
-            Debug.Log("次の奴");
         }
         switch (tank)
         {
@@ -222,6 +225,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankHeadSpeed = 2.5f;
                 tankTurnSpeed = 5f;
                 tankLimitedSpeed = 1000f;
+                tankLimitedRange = 1000f;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
@@ -229,6 +233,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankHeadSpeed = 3f;
                 tankTurnSpeed = 10f;
                 tankLimitedSpeed = 1500f;
+                tankLimitedRange = 1000f;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;

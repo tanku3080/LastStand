@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using Cinemachine;
 public class TankCon : PlayerBase
 {
@@ -35,6 +36,10 @@ public class TankCon : PlayerBase
 
     bool perfectHit = false;//命中率
     bool AccuracyFalg = false;//精度
+    bool limitRangeFlag = true;
+
+    //以下は移動制限
+    [HideInInspector] public Slider moveLimitRangeBar;
 
 
     void Start()
@@ -48,6 +53,7 @@ public class TankCon : PlayerBase
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
+        moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
     }
@@ -57,6 +63,12 @@ public class TankCon : PlayerBase
     {
         if (controlAccess)
         {
+            if (limitRangeFlag)
+            {
+                limitRangeFlag = false;
+                moveLimitRangeBar.maxValue = 1000;
+                moveLimitRangeBar.value = tankLimitRange;
+            }
             if (cameraActive)
             {
                 GameManager.Instance.ChengePop(true,defaultCon.gameObject);
@@ -106,14 +118,14 @@ public class TankCon : PlayerBase
                         float rot = h * tankTurn_Speed * Time.deltaTime;
                         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                         Rd.MoveRotation(Rd.rotation * rotetion);
-                        //MoveLimit(moveLimit);//問題あり
+                        MoveLimit(moveLimit);//問題あり
                     }
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
                         float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        //MoveLimit(moveLimit);
+                        MoveLimit(moveLimit);
                     }
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100
@@ -218,19 +230,28 @@ public class TankCon : PlayerBase
     /// <summary>
     /// 移動制限をつけるメソッド
     /// </summary>
-    //void MoveLimit(bool moveLimitFlag = false)
-    //{
-    //    Vector3 pos = Trans.position;
-    //    if (limitRange > 0)
-    //    {
-    //        pos.x = Mathf.Clamp(pos.x, 0, limitRange);
-    //        pos.z = Mathf.Clamp(pos.z, 0, limitRange);
-    //        limitRange -= 1 * Time.deltaTime;
-    //        moveLimitFlag = false;
-    //    }
-    //    else moveLimitFlag = true;
-    //    Trans.position = pos;
-    //}
+    void MoveLimit(bool moveLimitFlag = false)
+    {
+        if (moveLimitRangeBar.value > moveLimitRangeBar.minValue)
+        {
+            moveLimitRangeBar.value -= 1;
+        }
+        else
+        {
+            //これだと砲塔が動かなくなる
+            controlAccess = false;
+        }
+        //Vector3 pos = Trans.position;
+        //if (limitRange > 0)
+        //{
+        //    pos.x = Mathf.Clamp(pos.x, 0, limitRange);
+        //    pos.z = Mathf.Clamp(pos.z, 0, limitRange);
+        //    limitRange -= 1 * Time.deltaTime;
+        //    moveLimitFlag = false;
+        //}
+        //else moveLimitFlag = true;
+        //Trans.position = pos;
+    }
 
     private void OnCollisionStay(Collision collision)
     {

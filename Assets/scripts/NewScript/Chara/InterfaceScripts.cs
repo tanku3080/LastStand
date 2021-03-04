@@ -6,8 +6,8 @@ public class InterfaceScripts:MonoBehaviour
     {
         void TankChoiceStart(string num);
     }
-    public interface ICharactorAtack
+    public interface ICharactorDamage
     {
-        void Atack(int damager);
+        void Damage(int damager);
     }
 }

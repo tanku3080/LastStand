@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using Cinemachine;
 public class Enemy : EnemyBase
@@ -64,7 +63,6 @@ public class Enemy : EnemyBase
     {
         if (TurnManager.Instance.playerTurn != true)
         {
-            Debug.Log("せんべつ");
             if (patrolPos.Length <= patrolNum)
             {
                 patrolNum = 0;

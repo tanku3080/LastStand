@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorAtack
+public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamage
 {
     public int enemyLife;
     public float enemySpeed;
+    public float ETankHead_R_SPD;
+    public float ETankTurn_Speed;
+    public float ETankLimitSpeed;
+    public float ETankLimitRange;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
@@ -20,7 +24,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorAtack
         mesh.enabled = false;
     }
 
-    public void Atack(int damager)
+    public void Damage(int damager)
     {
         enemyLife -= damager;
     }

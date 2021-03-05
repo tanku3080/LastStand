@@ -205,48 +205,66 @@ public class TurnManager : Singleton<TurnManager>
         Debug.Log($"playerT{playerTurn},playerIs{player},now{generalTurn}");
         if (playerTurn && player)
         {
+            if (charaIsDie)//死んで呼ばれた場合
+            {
+                Debug.Log("case3");
+                CharactorDie(true);
+                return;
+            }
             if (moveV > 0)
             {
                 Debug.Log("case1");
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
-                if (playerCam > players.Count)
+                if (playerNum > players.Count)
                 {
                     playerCam = 1;
                     playerNum = 0;
+                }
+                else if (playerNum > players.Count)
+                {
+                    return;
                 }
                 else
                 {
                     playerCam += 2;
                     playerNum++;
                 }
-                DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
-                AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
-                nowPayer = players[playerNum].gameObject;
-                nowPayer.GetComponent<TankCon>().controlAccess = true;
+                moveV -= 1;
             }
-            if (generalTurn == 1)
-            {
-                Debug.Log("case2");
-                nowPayer = players[playerNum].gameObject;
-                nowPayer.GetComponent<TankCon>().controlAccess = true;
-                DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
-                AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
-            }
-           
-            if (charaIsDie)//死んで呼ばれた場合
-            {
-                Debug.Log("case3");
-                CharactorDie(true);
-            }
+            //if (generalTurn == 1)
+            //{
+            //    //最初のターン限定で呼ばれるが、省略する。呼ないはずの箇所で呼ばれたらコメントアウト削除
+            //    nowPayer = players[playerNum].gameObject;
+            //    nowPayer.GetComponent<TankCon>().controlAccess = true;
+            //    DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            //    AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+            //}
+            nowPayer = players[playerNum].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
+            DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+
             player = false;
-            playerNum++;
+            //playerNum++;
         }
 
         if (enemyTurn && enemy)
         {
             if (moveV > 0)
             {
-                enemyCam++;
+                Debug.Log("EnemyCase1");
+                if (enemyNum > enemys.Count)
+                {
+                    enemyCam = 5;
+                    enemyNum = 0;
+                }
+                else if (enemys.Count == 0) return;
+                else
+                {
+                    enemyCam++;
+                    enemyNum++;
+                }
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
                 EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
                 nowEnemy = enemys[enemyCam].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
@@ -261,7 +279,6 @@ public class TurnManager : Singleton<TurnManager>
             else if (charaIsDie)
             {
                 CharactorDie(false, true);
-                enemyCam++;
                 EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
                 nowEnemy = enemys[enemyCam].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;

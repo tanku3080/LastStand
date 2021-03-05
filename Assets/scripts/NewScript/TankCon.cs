@@ -70,7 +70,7 @@ public class TankCon : PlayerBase
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
-                moveLimitRangeBar.maxValue = 1000;
+                moveLimitRangeBar.maxValue = tankLimitRange;
                 moveLimitRangeBar.value = tankLimitRange;
             }
             if (cameraActive)

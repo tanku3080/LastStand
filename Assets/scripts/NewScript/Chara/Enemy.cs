@@ -9,6 +9,9 @@ public class Enemy : EnemyBase
     }
     EnemyState state;
     public NavMeshAgent agent;
+    [SerializeField] float moveLimited;
+    [SerializeField] float moveNowValue;
+    bool moveLimitGetFlag = true;
     [SerializeField] CinemachineVirtualCamera defaultCon = null;
     Transform tankHead = null;
     Transform tankGun = null;
@@ -34,7 +37,7 @@ public class Enemy : EnemyBase
 
         agent.autoBraking = true;
         agent.speed = enemySpeed;
-        state = EnemyState.Patrol;
+        state = EnemyState.Idol;
     }
 
     private void Update()
@@ -44,6 +47,10 @@ public class Enemy : EnemyBase
             switch (state)
             {
                 case EnemyState.Idol:
+                    if (TurnManager.Instance.enemyTurn)
+                    {
+
+                    }
                     break;
                 case EnemyState.Patrol:
                     EnemyPatrol();

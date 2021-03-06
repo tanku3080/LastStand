@@ -145,7 +145,7 @@ public class Enemy : EnemyBase
     {
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("プレイヤーに接触成功");
+            isPlayer = true;
         }
     }
 }

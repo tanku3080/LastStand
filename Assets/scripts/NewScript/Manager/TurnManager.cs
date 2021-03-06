@@ -177,7 +177,7 @@ public class TurnManager : Singleton<TurnManager>
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);
                 playerTurn = true;
-                MoveCharaSet(true, true);
+                MoveCharaSet(true, false);
             }
             else
             {

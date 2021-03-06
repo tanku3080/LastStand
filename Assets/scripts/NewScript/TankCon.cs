@@ -14,8 +14,8 @@ public class TankCon : PlayerBase
 
     [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう
-    [SerializeField] CinemachineVirtualCamera defaultCon;
-    [SerializeField] CinemachineVirtualCamera aimCom;
+    [SerializeField] public CinemachineVirtualCamera defaultCon;
+    [SerializeField] public CinemachineVirtualCamera aimCom;
 
     //移動制限用
     [SerializeField] float limitRange = 50f;

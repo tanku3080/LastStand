@@ -256,7 +256,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankSearchRanges = 100f;
                 break;
         }
-        Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");
     }
 
     /// <summary>

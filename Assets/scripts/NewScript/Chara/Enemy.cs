@@ -10,7 +10,7 @@ public class Enemy : EnemyBase
     EnemyState state;
     public NavMeshAgent agent;
     bool moveLimitGetFlag = true;
-    [SerializeField] CinemachineVirtualCamera defaultCon = null;
+    [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     Transform tankHead = null;
     Transform tankGun = null;
     GameObject tankGunFire = null;
@@ -49,6 +49,7 @@ public class Enemy : EnemyBase
     {
         if (controlAccess)
         {
+            Debug.Log("EnemyAccess");
             Rd.isKinematic = false;
             switch (state)//idolを全ての終着点に
             {
@@ -95,6 +96,7 @@ public class Enemy : EnemyBase
             if (agent.remainingDistance < 0.5f) patrolNum++;
             agent.SetDestination(patrolPos[patrolNum].transform.position);
             if (agent.velocity.magnitude > 0) EnemyMoveLimit();
+            Debug.Log($"nowEnemyMoveVal{enemyMoveNowValue}");
         }
         else if (isPlayer)
         {

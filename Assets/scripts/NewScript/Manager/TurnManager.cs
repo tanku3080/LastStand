@@ -218,19 +218,17 @@ public class TurnManager : Singleton<TurnManager>
             {
                 Debug.Log("case1");
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
-                if (playerNum > players.Count)
+                if (playerNum >= players.Count)//問題個所はここ
                 {
+                    Debug.Log("修正");
                     playerCam = 1;
                     playerNum = 0;
-                }
-                else if (playerNum > players.Count)
-                {
-                    return;
                 }
                 else
                 {
                     playerCam += 2;
-                    playerNum++;
+                    playerNum += 1;
+                    Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
                 moveV -= 1;
             }
@@ -248,7 +246,7 @@ public class TurnManager : Singleton<TurnManager>
             AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
 
             player = false;
-            //playerNum++;
+            playerNum++;
         }
 
         if (enemyTurn && enemy)

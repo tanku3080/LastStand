@@ -39,6 +39,7 @@ public class TurnManager : Singleton<TurnManager>
             playerMoveValue = value;
         }
     }
+    //敵の値はプレイヤーより一つ小さくする
     private int enemyMoveValue = 4;
     public int EnemyMoveVal
     {
@@ -159,6 +160,7 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     item.tankLimitRange = GameManager.Instance.tankLimitedRange;
+                    item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,0.1f, GameManager.Instance.tankSearchRanges);
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
@@ -170,6 +172,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.ETankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
+                    enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 0.1f, GameManager.Instance.tankSearchRanges);
 
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);
@@ -205,39 +208,43 @@ public class TurnManager : Singleton<TurnManager>
         Debug.Log($"playerT{playerTurn},playerIs{player},now{generalTurn}");
         if (playerTurn && player)
         {
+            if (charaIsDie)//死んで呼ばれた場合
+            {
+                Debug.Log("case3");
+                CharactorDie(true);
+                return;
+            }
             if (moveV > 0)
             {
                 Debug.Log("case1");
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
-                if (playerCam > players.Count)
+                if (playerNum >= players.Count)//問題個所はここ
                 {
+                    Debug.Log("修正");
                     playerCam = 1;
                     playerNum = 0;
                 }
                 else
                 {
                     playerCam += 2;
-                    playerNum++;
+                    playerNum += 1;
+                    Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
-                DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
-                AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
-                nowPayer = players[playerNum].gameObject;
-                nowPayer.GetComponent<TankCon>().controlAccess = true;
+                moveV -= 1;
             }
-            if (generalTurn == 1)
-            {
-                Debug.Log("case2");
-                nowPayer = players[playerNum].gameObject;
-                nowPayer.GetComponent<TankCon>().controlAccess = true;
-                DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
-                AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
-            }
-           
-            if (charaIsDie)//死んで呼ばれた場合
-            {
-                Debug.Log("case3");
-                CharactorDie(true);
-            }
+            //if (generalTurn == 1)
+            //{
+            //    //最初のターン限定で呼ばれるが、省略する。呼ないはずの箇所で呼ばれたらコメントアウト削除
+            //    nowPayer = players[playerNum].gameObject;
+            //    nowPayer.GetComponent<TankCon>().controlAccess = true;
+            //    DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            //    AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+            //}
+            nowPayer = players[playerNum].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
+            DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
+            AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+
             player = false;
             playerNum++;
         }
@@ -246,7 +253,19 @@ public class TurnManager : Singleton<TurnManager>
         {
             if (moveV > 0)
             {
-                enemyCam++;
+                Debug.Log("EnemyCase1");
+                if (enemyNum > enemys.Count)
+                {
+                    enemyCam = 5;
+                    enemyNum = 0;
+                }
+                else if (enemys.Count == 0) return;
+                else
+                {
+                    enemyCam++;
+                    enemyNum++;
+                }
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
                 EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
                 nowEnemy = enemys[enemyCam].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
@@ -261,7 +280,6 @@ public class TurnManager : Singleton<TurnManager>
             else if (charaIsDie)
             {
                 CharactorDie(false, true);
-                enemyCam++;
                 EnemyDefCon = GameObject.Find($"CM vcam{enemyCam}").GetComponent<CinemachineVirtualCamera>();
                 nowEnemy = enemys[enemyCam].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
@@ -340,7 +358,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.clickC = true;
         charactorTurnNum++;
         PlayerMoveVal = 5;
-        EnemyMoveVal = 5;
+        EnemyMoveVal = 4;
         if (charactorTurnNum == 1)
         {
             playerTurn = false;

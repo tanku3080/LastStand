@@ -17,8 +17,6 @@ public class TankCon : PlayerBase
     [SerializeField] CinemachineVirtualCamera defaultCon;
     [SerializeField] CinemachineVirtualCamera aimCom;
 
-
-
     //移動制限用
     [SerializeField] float limitRange = 50f;
     bool moveLimit;
@@ -40,6 +38,7 @@ public class TankCon : PlayerBase
 
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
+    AudioSource playerMoveAudio;
 
 
     void Start()
@@ -56,23 +55,29 @@ public class TankCon : PlayerBase
         moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        borderLine = tankHead.GetComponent<BoxCollider>();
+        borderLine.isTrigger = true;
+        playerMoveAudio = gameObject.GetComponent<AudioSource>();
+        playerMoveAudio.playOnAwake = false;
+        playerMoveAudio.clip = GameManager.Instance.TankSfx;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Rd.isKinematic = false;
         if (controlAccess)
         {
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
-                moveLimitRangeBar.maxValue = 1000;
+                moveLimitRangeBar.maxValue = tankLimitRange;
                 moveLimitRangeBar.value = tankLimitRange;
             }
             if (cameraActive)
             {
-                GameManager.Instance.ChengePop(true,defaultCon.gameObject);
-                GameManager.Instance.ChengePop(true,aimCom.gameObject);
+                GameManager.Instance.ChengePop(true, defaultCon.gameObject);
+                GameManager.Instance.ChengePop(true, aimCom.gameObject);
                 cameraActive = false;
             }
             if (TurnManager.Instance.playerIsMove)
@@ -123,10 +128,12 @@ public class TankCon : PlayerBase
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
+                        playerMoveAudio.Play();
                         float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                         MoveLimit(moveLimit);
                     }
+                    else playerMoveAudio.Stop();
 
                     if (Input.GetKeyUp(KeyCode.R))//命中率を100
                     {
@@ -144,6 +151,7 @@ public class TankCon : PlayerBase
             }
             AimMove(AimFlag);
         }
+        else Rd.isKinematic = true;
 
 
         if (playerLife <= 0)
@@ -258,6 +266,13 @@ public class TankCon : PlayerBase
         if (collision.gameObject.tag == "Grand")
         {
             IsGranded = true;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            Debug.Log("接触成功");
         }
     }
     void OnCollisionExit(Collision collision)

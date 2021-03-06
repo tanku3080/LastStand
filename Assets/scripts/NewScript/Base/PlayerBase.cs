@@ -7,6 +7,8 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public float tankTurn_Speed;
     public float tankLimitSpeed;
     public float tankLimitRange;
+    /// <summary>敵を発見する事の出来る範囲</summary>
+    public BoxCollider borderLine = null;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

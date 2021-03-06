@@ -39,6 +39,7 @@ public class TurnManager : Singleton<TurnManager>
             playerMoveValue = value;
         }
     }
+    //敵の値はプレイヤーより一つ小さくする
     private int enemyMoveValue = 4;
     public int EnemyMoveVal
     {
@@ -159,6 +160,7 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     item.tankLimitRange = GameManager.Instance.tankLimitedRange;
+                    item.SearchRange = GameManager.Instance.tankSearchRanges;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
@@ -170,6 +172,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.ETankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
+                    enemy.ESearchRange = GameManager.Instance.tankSearchRanges;
 
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);
@@ -357,7 +360,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.clickC = true;
         charactorTurnNum++;
         PlayerMoveVal = 5;
-        EnemyMoveVal = 5;
+        EnemyMoveVal = 4;
         if (charactorTurnNum == 1)
         {
             playerTurn = false;

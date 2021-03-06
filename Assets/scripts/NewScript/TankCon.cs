@@ -17,8 +17,6 @@ public class TankCon : PlayerBase
     [SerializeField] CinemachineVirtualCamera defaultCon;
     [SerializeField] CinemachineVirtualCamera aimCom;
 
-
-
     //移動制限用
     [SerializeField] float limitRange = 50f;
     bool moveLimit;
@@ -57,6 +55,8 @@ public class TankCon : PlayerBase
         moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        borderLine = tankHead.GetComponent<CapsuleCollider>();
+        borderLine.radius = SearchRange;
         playerMoveAudio = gameObject.GetComponent<AudioSource>();
         playerMoveAudio.playOnAwake = false;
         playerMoveAudio.clip = GameManager.Instance.TankSfx;
@@ -65,6 +65,7 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
+
         if (controlAccess)
         {
             if (limitRangeFlag)
@@ -264,6 +265,10 @@ public class TankCon : PlayerBase
         if (collision.gameObject.tag == "Grand")
         {
             IsGranded = true;
+        }
+        if (borderLine.gameObject.tag == "Enemy")
+        {
+            Debug.Log("EnemyHHHH");
         }
     }
     void OnCollisionExit(Collision collision)

@@ -5,12 +5,10 @@ public class Enemy : EnemyBase
 {
     enum EnemyState
     {
-        Idol,Patrol,AtackMove,Atack,
+        Idol,Patrol,AtackMove,Atack,WaitSearch
     }
     EnemyState state;
     public NavMeshAgent agent;
-    [SerializeField] float moveLimited;
-    [SerializeField] float moveNowValue;
     bool moveLimitGetFlag = true;
     [SerializeField] CinemachineVirtualCamera defaultCon = null;
     Transform tankHead = null;
@@ -21,6 +19,8 @@ public class Enemy : EnemyBase
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
     public bool controlAccess = false;
+
+    private float enemyMoveNowValue;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -34,9 +34,14 @@ public class Enemy : EnemyBase
         agent = GetComponent<NavMeshAgent>();
         defaultCon = TurnManager.Instance.EnemyDefCon;
         defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
+        EborderLine = tankHead.GetComponent<CapsuleCollider>();
+        EborderLine.radius = ESearchRange;
 
         agent.autoBraking = true;
         agent.speed = enemySpeed;
+        agent.angularSpeed = ETankTurn_Speed;
+        enemyMoveNowValue = ETankLimitRange;
+        
         state = EnemyState.Idol;
     }
 
@@ -44,13 +49,20 @@ public class Enemy : EnemyBase
     {
         if (controlAccess)
         {
-            switch (state)
+            switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
-                    if (TurnManager.Instance.enemyTurn)
+                    if (TurnManager.Instance.EnemyMoveVal > 0)
                     {
-
+                        if (isPlayer) state = EnemyState.AtackMove;
+                        else state = EnemyState.Patrol;
                     }
+                    if (enemyMoveNowValue > 0)
+                    {
+                        Debug.Log("EmoveLimited");
+                        TurnManager.Instance.MoveCharaSet(false,true);
+                    }
+
                     break;
                 case EnemyState.Patrol:
                     EnemyPatrol();
@@ -60,7 +72,7 @@ public class Enemy : EnemyBase
                     break;
                 case EnemyState.Atack:
                     break;
-                default:
+                case EnemyState.WaitSearch:
                     break;
             }
         }
@@ -68,7 +80,7 @@ public class Enemy : EnemyBase
 
     void EnemyPatrol()
     {
-        if (TurnManager.Instance.playerTurn != true)
+        if (!isPlayer && enemyMoveNowValue > 0)
         {
             if (patrolPos.Length <= patrolNum)
             {
@@ -77,19 +89,35 @@ public class Enemy : EnemyBase
             }
             if (agent.remainingDistance < 0.5f) patrolNum++;
             agent.SetDestination(patrolPos[patrolNum].transform.position);
+            if (agent.velocity.magnitude > 0) EnemyMoveLimit();
         }
-        else state = EnemyState.AtackMove;
+        else if (isPlayer)
+        {
+            state = EnemyState.Idol;
+        }
+    }
+    void EnemyMoveLimit()
+    {
+        if (enemyMoveNowValue > 0)
+        {
+            enemyMoveNowValue -= 1;
+        }
     }
     void EnemyAtackMove()
     {
-
+        if (isPlayer)
+        {
+            GameObject nearP = NearPlayer();
+            float result = Mathf.Floor(Random.Range(0.0f, 1.0f));
+            //消える条件は「Playerのターンで移動して逃げた」「破壊した」の二種類
+            isPlayer = false;
+        }
+        else state = EnemyState.Idol;
     }
 
     /// <summary>
     /// 一番近い敵のオブジェクトを探す
     /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
     GameObject NearPlayer()
     {
         float keepPos = 0;

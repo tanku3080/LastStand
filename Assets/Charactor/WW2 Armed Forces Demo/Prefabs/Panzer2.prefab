@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 940224541748008019}
   - component: {fileID: 334633799239995869}
   - component: {fileID: 4213028700940392783}
+  - component: {fileID: 1778616720723373551}
   m_Layer: 8
   m_Name: Panzer_II_F_Turret
   m_TagString: Untagged
@@ -500,6 +501,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &1778616720723373551
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3393708110179397556}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 100
+  m_Height: 0
+  m_Direction: 1
+  m_Center: {x: 0.000000029802322, y: 0.28069928, z: 0.05000341}
 --- !u!1 &4098720253327861521
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,9 +689,11 @@ MonoBehaviour:
   tankTurn_Speed: 1.5
   tankLimitSpeed: 50
   tankLimitRange: 0
+  SearchRange: 0
   nearEnemy: {fileID: 0}
   defaultCon: {fileID: 7576060103055054428}
   aimCom: {fileID: 8274577534991772504}
+  borderLine: {fileID: 0}
   limitRange: 10
   controlAccess: 0
   cameraActive: 1

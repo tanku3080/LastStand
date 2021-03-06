@@ -34,8 +34,8 @@ public class Enemy : EnemyBase
         agent = GetComponent<NavMeshAgent>();
         defaultCon = TurnManager.Instance.EnemyDefCon;
         defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
-        EborderLine = tankHead.GetComponent<CapsuleCollider>();
-        EborderLine.radius = ESearchRange;
+        EborderLine = tankHead.GetComponent<BoxCollider>();
+        EborderLine.isTrigger = true;
 
         agent.autoBraking = true;
         agent.speed = enemySpeed;
@@ -49,6 +49,7 @@ public class Enemy : EnemyBase
     {
         if (controlAccess)
         {
+            Rd.isKinematic = false;
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
@@ -75,6 +76,10 @@ public class Enemy : EnemyBase
                 case EnemyState.WaitSearch:
                     break;
             }
+        }
+        else
+        {
+            Rd.isKinematic = true;
         }
     }
 
@@ -134,5 +139,13 @@ public class Enemy : EnemyBase
 
         }
         return target;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("プレイヤーに接触成功");
+        }
     }
 }

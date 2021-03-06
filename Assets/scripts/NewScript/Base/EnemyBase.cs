@@ -9,8 +9,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public float ETankLimitSpeed;
     public float ETankLimitRange;
     /// <summary>プレイヤーを発見する事の出来る範囲</summary>
-    public float ESearchRange;
-    public CapsuleCollider EborderLine = null;
+    public BoxCollider EborderLine = null;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

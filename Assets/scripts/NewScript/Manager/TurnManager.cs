@@ -160,7 +160,7 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     item.tankLimitRange = GameManager.Instance.tankLimitedRange;
-                    item.SearchRange = GameManager.Instance.tankSearchRanges;
+                    item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,0.1f, GameManager.Instance.tankSearchRanges);
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
@@ -172,7 +172,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.ETankTurn_Speed = GameManager.Instance.tankTurnSpeed;
                     enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
-                    enemy.ESearchRange = GameManager.Instance.tankSearchRanges;
+                    enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 0.1f, GameManager.Instance.tankSearchRanges);
 
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);

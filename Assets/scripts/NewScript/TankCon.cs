@@ -55,8 +55,8 @@ public class TankCon : PlayerBase
         moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
-        borderLine = tankHead.GetComponent<CapsuleCollider>();
-        borderLine.radius = SearchRange;
+        borderLine = tankHead.GetComponent<BoxCollider>();
+        borderLine.isTrigger = true;
         playerMoveAudio = gameObject.GetComponent<AudioSource>();
         playerMoveAudio.playOnAwake = false;
         playerMoveAudio.clip = GameManager.Instance.TankSfx;
@@ -65,7 +65,7 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-
+        Rd.isKinematic = false;
         if (controlAccess)
         {
             if (limitRangeFlag)
@@ -76,8 +76,8 @@ public class TankCon : PlayerBase
             }
             if (cameraActive)
             {
-                GameManager.Instance.ChengePop(true,defaultCon.gameObject);
-                GameManager.Instance.ChengePop(true,aimCom.gameObject);
+                GameManager.Instance.ChengePop(true, defaultCon.gameObject);
+                GameManager.Instance.ChengePop(true, aimCom.gameObject);
                 cameraActive = false;
             }
             if (TurnManager.Instance.playerIsMove)
@@ -151,6 +151,7 @@ public class TankCon : PlayerBase
             }
             AimMove(AimFlag);
         }
+        else Rd.isKinematic = true;
 
 
         if (playerLife <= 0)
@@ -266,9 +267,12 @@ public class TankCon : PlayerBase
         {
             IsGranded = true;
         }
-        if (borderLine.gameObject.tag == "Enemy")
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Enemy")
         {
-            Debug.Log("EnemyHHHH");
+            Debug.Log("接触成功");
         }
     }
     void OnCollisionExit(Collision collision)

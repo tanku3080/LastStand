@@ -8,9 +8,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public float tankLimitSpeed;
     public float tankLimitRange;
     /// <summary>敵を発見する事の出来る範囲</summary>
-    public float SearchRange;
-    /// <summary>敵との視認の可否を判定するための物</summary>
-    public CapsuleCollider borderLine = null;
+    public BoxCollider borderLine = null;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

@@ -268,11 +268,13 @@ public class TankCon : PlayerBase
             IsGranded = true;
         }
     }
+
+    //敵を見つけた際に使う物
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Enemy")
         {
-            Debug.Log("接触成功");
+            TurnManager.Instance.FoundEnemy = true;
         }
     }
     void OnCollisionExit(Collision collision)

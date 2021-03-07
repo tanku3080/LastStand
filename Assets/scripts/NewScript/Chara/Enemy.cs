@@ -11,8 +11,6 @@ public class Enemy : EnemyBase
     public NavMeshAgent agent;
     bool moveLimitGetFlag = true;
     [SerializeField] public CinemachineVirtualCamera defaultCon = null;
-    Transform tankHead = null;
-    Transform tankGun = null;
     GameObject tankGunFire = null;
     Transform tankBody = null;
     bool isPlayer = false;
@@ -21,6 +19,8 @@ public class Enemy : EnemyBase
     public bool controlAccess = false;
 
     private float enemyMoveNowValue;
+
+    bool firstSetUpFlag = true;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -31,25 +31,33 @@ public class Enemy : EnemyBase
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
+        leftTank = tankBody.GetChild(0);
+        rightTank = tankBody.GetChild(1);
         agent = GetComponent<NavMeshAgent>();
         defaultCon = TurnManager.Instance.EnemyDefCon;
         defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
+        EnemyEnebled(TurnManager.Instance.FoundEnemy);
 
         agent.autoBraking = true;
-        agent.speed = enemySpeed;
-        agent.angularSpeed = ETankTurn_Speed;
-        enemyMoveNowValue = ETankLimitRange;
         
         state = EnemyState.Idol;
+
     }
 
     private void Update()
     {
+        EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
-            Debug.Log("EnemyAccess");
+            if (firstSetUpFlag)
+            {
+                agent.speed = enemySpeed;
+                agent.angularSpeed = ETankTurn_Speed;
+                enemyMoveNowValue = ETankLimitRange;
+                firstSetUpFlag = false;
+            }
             Rd.isKinematic = false;
             switch (state)//idolを全ての終着点に
             {
@@ -59,7 +67,7 @@ public class Enemy : EnemyBase
                         if (isPlayer) state = EnemyState.AtackMove;
                         else state = EnemyState.Patrol;
                     }
-                    if (enemyMoveNowValue > 0)
+                    if (enemyMoveNowValue <= 0)
                     {
                         Debug.Log("EmoveLimited");
                         TurnManager.Instance.MoveCharaSet(false,true);
@@ -96,7 +104,6 @@ public class Enemy : EnemyBase
             if (agent.remainingDistance < 0.5f) patrolNum++;
             agent.SetDestination(patrolPos[patrolNum].transform.position);
             if (agent.velocity.magnitude > 0) EnemyMoveLimit();
-            Debug.Log($"nowEnemyMoveVal{enemyMoveNowValue}");
         }
         else if (isPlayer)
         {
@@ -112,6 +119,7 @@ public class Enemy : EnemyBase
     }
     void EnemyAtackMove()
     {
+        Debug.Log("enmey AtckMove");
         if (isPlayer)
         {
             GameObject nearP = NearPlayer();
@@ -149,5 +157,14 @@ public class Enemy : EnemyBase
         {
             isPlayer = true;
         }
+    }
+
+    public void EnemyEnebled(bool f)
+    {
+        gameObject.GetComponent<MeshRenderer>().enabled = f;
+        tankGun.GetComponent<MeshRenderer>().enabled = f;
+        tankHead.GetComponent<MeshRenderer>().enabled = f;
+        leftTank.GetComponent<MeshRenderer>().enabled = f;
+        rightTank.GetComponent<MeshRenderer>().enabled = f;
     }
 }

@@ -180,7 +180,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>ゲームクリア時に呼び出す</summary>
-    void EndStage()
+    public void EndStage()
     {
         TurnManager.Instance.players.Clear();
         TurnManager.Instance.enemys.Clear();

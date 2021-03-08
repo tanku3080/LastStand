@@ -94,18 +94,25 @@ public class TurnManager : Singleton<TurnManager>
         }
 
     }
-
+    private bool playerMPlay = false;
+    private bool enemyMPlay = false;
     void PlayMusic()
     {
+        if (playerMPlay || enemyMPlay)
+        {
+            return;
+        }
         if (playerTurn)
         {
             GameManager.Instance.ChengePop(true,playerBGM);
             GameManager.Instance.ChengePop(false, enemyBGM);
+            playerMPlay = true;
         }
         if (enemyTurn)
         {
             GameManager.Instance.ChengePop(false, playerBGM);
             GameManager.Instance.ChengePop(true, enemyBGM);
+            enemyMPlay = true;
         }
     }
     bool turnFirstNumFlag = true;
@@ -186,6 +193,7 @@ public class TurnManager : Singleton<TurnManager>
             }
             playerTurn = true;
             GameManager.Instance.isGameScene = false;
+            PlayMusic();
         }
     }
 

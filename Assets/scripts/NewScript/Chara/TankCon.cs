@@ -123,7 +123,7 @@ public class TankCon : PlayerBase
                         float rot = h * tankTurn_Speed * Time.deltaTime;
                         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                         Rd.MoveRotation(Rd.rotation * rotetion);
-                        MoveLimit(moveLimit);//問題あり
+                        MoveLimit(moveLimit);
                     }
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)

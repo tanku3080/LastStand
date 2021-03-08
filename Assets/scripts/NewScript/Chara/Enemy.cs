@@ -41,6 +41,7 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
 
         agent.autoBraking = true;
+        agent.updatePosition = false;
         
         state = EnemyState.Idol;
 
@@ -96,13 +97,25 @@ public class Enemy : EnemyBase
     {
         if (!isPlayer && enemyMoveNowValue > 0)
         {
-            if (patrolPos.Length <= patrolNum)
+            if (patrolPos.Length -1 == patrolNum)
             {
                 patrolNum = 0;
-                Debug.Log("NamberReset" + patrolNum);
             }
-            if (agent.remainingDistance < 0.5f) patrolNum++;
-            agent.SetDestination(patrolPos[patrolNum].transform.position);
+            if (agent.remainingDistance < 0.5f && !agent.pathPending) patrolNum++;
+
+            //平地限定？
+            Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
+            float angle = Vector3.Angle(pointDir,Trans.forward);
+            if (angle != 0)
+            {
+                Quaternion rotetion = Quaternion.Euler(0, pointDir.y * Time.deltaTime, 0);
+                Rd.MoveRotation(Rd.rotation * rotetion);
+            }
+            else
+            {
+                agent.SetDestination(patrolPos[patrolNum].transform.position);
+                agent.nextPosition = Trans.position;
+            }
             if (agent.velocity.magnitude > 0) EnemyMoveLimit();
         }
         else if (isPlayer)

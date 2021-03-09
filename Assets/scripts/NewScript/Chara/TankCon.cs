@@ -17,14 +17,8 @@ public class TankCon : PlayerBase
     [SerializeField] public CinemachineVirtualCamera aimCom;
     //移動制限用
     [SerializeField] float limitRange = 50f;
-    bool moveLimit;
 
-    Vector2 m_x;
-    Vector2 m_y;
-    bool moveF = false;
     bool AimFlag = false;
-    //向いているかチェック
-    bool lookChactor;
     //これがtureじゃないとPlayerの操作権はない
     public bool controlAccess = false;
     //カメラをオンにするのに必要
@@ -121,7 +115,7 @@ public class TankCon : PlayerBase
                         float rot = h * tankTurn_Speed * Time.deltaTime;
                         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                         Rd.MoveRotation(Rd.rotation * rotetion);
-                        MoveLimit(moveLimit);
+                        MoveLimit();
                     }
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
@@ -129,7 +123,7 @@ public class TankCon : PlayerBase
                         TankMoveSFXPlay(true,false);
                         float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        MoveLimit(moveLimit);
+                        MoveLimit();
                     }
                     else TankMoveSFXPlay(false,true);
                 }
@@ -249,22 +243,36 @@ public class TankCon : PlayerBase
             if (perfectHit && turretCorrection)
             {
                 //命中率が100％で向きも向いている完璧な状態
+                TurnManager.Instance.nowEnemy.GetComponent<Enemy>().Damage(tankDamage);
+
+            }
+            else if (perfectHit && turretCorrection == false)//命中率のみ
+            {
+            }
+            else//向きのみ
+            {
+
             }
         }
-        //posは飛ぶ座標
-        Vector3 pos = Random.insideUnitSphere;
-        pos.x = tankGunFire.transform.localScale.x / 2;
-        pos.y = tankGunFire.transform.localScale.y / 2;
-        GameObject t = Instantiate(Resources.Load<GameObject>("A"),tankGunFire.transform);
-        t.AddComponent<Rigidbody>().AddForce(tankGunFire.transform.forward * 1000f,ForceMode.Impulse);
-        t.transform.TransformVector(pos);
+        else
+        {
+            //posは飛ぶ座標
+            Vector3 pos = Random.insideUnitSphere;
+            pos.x = tankGunFire.transform.localScale.x / 2;
+            pos.y = tankGunFire.transform.localScale.y / 2;
+            GameObject t = Instantiate(Resources.Load<GameObject>("A"), tankGunFire.transform);
+            t.AddComponent<Rigidbody>().AddForce(tankGunFire.transform.forward * 1000f, ForceMode.Impulse);
+            t.transform.TransformVector(pos);
+        }
+        perfectHit = false;
+        turretCorrection = false;
 
     }
 
     /// <summary>
     /// 移動制限をつけるメソッド
     /// </summary>
-    void MoveLimit(bool moveLimitFlag = false)
+    void MoveLimit()
     {
         if (moveLimitRangeBar.value > moveLimitRangeBar.minValue)
         {
@@ -275,17 +283,8 @@ public class TankCon : PlayerBase
             //これだと砲塔が動かなくなる
             controlAccess = false;
         }
-        //Vector3 pos = Trans.position;
-        //if (limitRange > 0)
-        //{
-        //    pos.x = Mathf.Clamp(pos.x, 0, limitRange);
-        //    pos.z = Mathf.Clamp(pos.z, 0, limitRange);
-        //    limitRange -= 1 * Time.deltaTime;
-        //    moveLimitFlag = false;
-        //}
-        //else moveLimitFlag = true;
-        //Trans.position = pos;
     }
+
 
     private void OnCollisionStay(Collision collision)
     {

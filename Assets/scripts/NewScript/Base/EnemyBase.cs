@@ -14,6 +14,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     protected Transform rightTank;
     /// <summary>プレイヤーを発見する事の出来る範囲</summary>
     public BoxCollider EborderLine = null;
+    public int eTankDamage;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

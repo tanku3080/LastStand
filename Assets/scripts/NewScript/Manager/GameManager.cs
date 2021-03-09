@@ -208,6 +208,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public float tankLimitedSpeed;
     public float tankLimitedRange;
     public float tankSearchRanges;
+    public int tankDamage;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -229,6 +230,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
+                tankDamage = 35;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
@@ -238,6 +240,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1500f;
                 tankLimitedRange = 100000f;
                 tankSearchRanges = 100f;
+                tankDamage = 20;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;
@@ -247,6 +250,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
+                tankDamage = 35;
                 break;
             case TankChoice.Stuart:
                 charactorHp = 30;
@@ -255,6 +259,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankTurnSpeed = 5f;
                 tankLimitedSpeed = 100000f;
                 tankSearchRanges = 100f;
+                tankDamage = 20;
                 break;
         }
     }

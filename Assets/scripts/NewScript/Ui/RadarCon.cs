@@ -20,14 +20,22 @@ public class RadarCon : MonoBehaviour
             if (pos < 100) speed = 1f;
             if (pos < 50) speed = 1.5f;
             if (pos <= 0)speed = 2f;
-            Debug.Log(pos);
             image.color = GetAlphaColor(image.color, speed);
         }
     }
     Color GetAlphaColor(Color color,float spd)
     {
-        time += Time.deltaTime * 5.0f * spd;
-        color.a = Mathf.Sin(time) * 0.5f + 0.5f;
+        if (color.a == 255f)
+        {
+            Debug.Log("risetto");
+            //適切な音楽が無い
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+        }
+        else
+        {
+            time += Time.deltaTime * 5.0f * spd;
+            color.a = Mathf.Sin(time) * 0.5f + 0.5f;
+        }
 
         return color;
     }

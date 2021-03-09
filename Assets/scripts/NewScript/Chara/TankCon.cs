@@ -12,7 +12,6 @@ public class TankCon : PlayerBase
 
     private GameObject tankGunFire = null;
 
-    [SerializeField, HideInInspector] GameObject nearEnemy = null;
     //バーチャルカメラよう
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
@@ -178,9 +177,16 @@ public class TankCon : PlayerBase
             }
             if (Input.GetKeyUp(KeyCode.F))
             {
-                AccuracyFalg = true;//精度100％
-                GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-                TurnManager.Instance.PlayerMoveVal--;
+                if (TurnManager.Instance.FoundEnemy)
+                {
+                    AccuracyFalg = true;//精度100％
+                    GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+                    TurnManager.Instance.PlayerMoveVal--;
+                    Quaternion rotetion = Quaternion.Euler(0, tankHead_R_SPD, 0);
+                    Rd.MoveRotation(GameManager.Instance.nearEnemy.transform.rotation * rotetion);
+
+                }
+                else return;
             }
         }
         else
@@ -210,7 +216,7 @@ public class TankCon : PlayerBase
         //    Debug.Log("敵の方向を向いた。");
         //}
         //else Debug.Log("元から向いていた");
-        var aim = nearEnemy.transform.position - tankGun.position;
+        var aim = GameManager.Instance.nearEnemy.transform.position - tankGun.position;
         var look = Quaternion.LookRotation(aim);
         tankGun.transform.localRotation = look;
     }
@@ -222,7 +228,7 @@ public class TankCon : PlayerBase
         {
             if (perfectHit && AccuracyFalg)
             {
-                //近くの敵に名中断を入れる
+                //命中率が100％で向きも向いている完璧な状態
             }
         }
         //posは飛ぶ座標

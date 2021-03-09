@@ -75,6 +75,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
             nowTurnValue = TurnManager.Instance.generalTurn;
+            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
+
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
@@ -168,7 +170,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC)//レーダー
         {
             source.PlayOneShot(click);
-            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
             ChengePop(clickC,radarObj);
             clickC = false;
         }

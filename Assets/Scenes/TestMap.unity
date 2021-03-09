@@ -893,6 +893,12 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaDirect: 0.5
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
+--- !u!1 &581735327 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1420725983996907831, guid: eff84882db7e6c042b0fbf1be50e5e58,
+    type: 3}
+  m_PrefabInstance: {fileID: 7772974173470164654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &801687421 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2674679315596644422, guid: eff84882db7e6c042b0fbf1be50e5e58,
@@ -1219,7 +1225,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 50410ad3e8416d947a9b3bc18aedc67a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 35553e747dd30634da6b96b356745936, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -1346,7 +1352,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1e69668668d2d7a4ea120ecf74357ba9, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 0447f797cc0337f4a8ef73bc124554fc, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2032,6 +2038,11 @@ PrefabInstance:
       propertyPath: TankSfx
       value: 
       objectReference: {fileID: 8300000, guid: 9d61c5ee91c0a0d4982c204aadce58d5, type: 3}
+    - target: {fileID: 3061141348828962698, guid: 7ca0e3d5099418d428f20f8a36062026,
+        type: 3}
+      propertyPath: specialObj
+      value: 
+      objectReference: {fileID: 581735327}
     - target: {fileID: 3061141348828962699, guid: 7ca0e3d5099418d428f20f8a36062026,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2426,6 +2437,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6096861059569846640, guid: eff84882db7e6c042b0fbf1be50e5e58,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6388927841744812020, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -2465,6 +2481,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7670341367019118047, guid: eff84882db7e6c042b0fbf1be50e5e58,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7772974171805605970, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}

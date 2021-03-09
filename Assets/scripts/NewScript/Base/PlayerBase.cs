@@ -10,6 +10,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     /// <summary>敵を発見する事の出来る範囲</summary>
     public BoxCollider borderLine = null;
 
+
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;

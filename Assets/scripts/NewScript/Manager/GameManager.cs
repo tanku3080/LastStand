@@ -31,6 +31,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
     [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
+    [HideInInspector] public Image hittingTargetR = null;
+    [HideInInspector] public Image turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     //ゲームシーンかの判定(ターンマネージャー限定)
     [SerializeField, HideInInspector] public bool isGameScene;
@@ -51,11 +53,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             limitedBar = GameObject.Find("MoveLimitBar");
             specialObj = GameObject.Find("specialStatusUI");
         }
-        ChengePop(false,tankChengeObj);
-        ChengePop(false,pauseObj);
-        ChengePop(false,endObj);
-        ChengePop(false,radarObj);
-        ChengePop(false,limitedBar);
+        hittingTargetR = specialObj.transform.GetChild(0).GetComponent<Image>();
+        turretCorrectionF = specialObj.transform.GetChild(1).GetComponent<Image>();
+        ChengePop(false);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
@@ -260,7 +260,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>
-    /// 確認メッセージやその他非表示オブジェクトを表示。第二引数がNUllの場合全てのUIをチェックするので処理が重くなる
+    /// 確認メッセージやその他非表示オブジェクトを表示。第二引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
@@ -271,6 +271,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             radarObj.SetActive(isChenge);
             limitedBar.SetActive(isChenge);
             endObj.SetActive(isChenge);
+            hittingTargetR.gameObject.SetActive(isChenge);
+            turretCorrectionF.gameObject.SetActive(isChenge);
         }
         else obj.SetActive(isChenge);
 

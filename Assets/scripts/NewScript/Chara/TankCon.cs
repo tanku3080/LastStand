@@ -15,7 +15,6 @@ public class TankCon : PlayerBase
     //バーチャルカメラよう
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
-
     //移動制限用
     [SerializeField] float limitRange = 50f;
     bool moveLimit;
@@ -32,7 +31,7 @@ public class TankCon : PlayerBase
     public bool cameraActive = true;
 
     bool perfectHit = false;//命中率
-    bool AccuracyFlag = false;//精度
+    bool turretCorrection = false;//精度
     bool limitRangeFlag = true;
 
     //以下は移動制限
@@ -133,13 +132,6 @@ public class TankCon : PlayerBase
                         MoveLimit(moveLimit);
                     }
                     else TankMoveSFXPlay(false,true);
-
-                    if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
-                    {
-                        if (perfectHit) perfectHit = false;
-                        else perfectHit = true;
-                        GunDirctionIsEnemy(perfectHit);
-                    }
                 }
             }
             //右クリック
@@ -195,10 +187,16 @@ public class TankCon : PlayerBase
                 if (TurnManager.Instance.FoundEnemy)
                 {
                     TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                    if (AccuracyFlag) AccuracyFlag = false;
-                    else AccuracyFlag = true; //精度100％
-                    GunAccuracy(AccuracyFlag);
+                    if (turretCorrection) turretCorrection = false;
+                    else turretCorrection = true; //精度100％
+                    GunAccuracy(turretCorrection);
                 }
+            }
+            if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
+            {
+                if (perfectHit) perfectHit = false;
+                else perfectHit = true;
+                GunDirctionIsEnemy(perfectHit);
             }
         }
         else
@@ -215,33 +213,40 @@ public class TankCon : PlayerBase
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             tankHead.LookAt(GameManager.Instance.nearEnemy.transform,Vector3.up);
+            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF.gameObject);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
+            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF.gameObject);
         }
     }
 
     /// <summary>
-    /// 命中率を100にするので照準を向けるとかの目に見える動作は無し
+    /// 命中率を100にする
     /// </summary>
     void GunDirctionIsEnemy(bool flag)
     {
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
+            GameManager.Instance.ChengePop(true,GameManager.Instance.hittingTargetR.gameObject);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
         }
-        else GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
+        else
+        {
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR.gameObject);
+        }
     }
 
 
     void Atack()
     {
-        if (perfectHit || AccuracyFlag || perfectHit && AccuracyFlag)
+        if (perfectHit || turretCorrection || perfectHit && turretCorrection)
         {
-            if (perfectHit && AccuracyFlag)
+            if (perfectHit && turretCorrection)
             {
                 //命中率が100％で向きも向いている完璧な状態
             }

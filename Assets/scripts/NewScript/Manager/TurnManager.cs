@@ -29,7 +29,7 @@ public class TurnManager : Singleton<TurnManager>
     private int playerMoveValue = 5;
     [SerializeField] GameObject playerBGM = null;
     [SerializeField] GameObject enemyBGM = null;
-    Text text1 = null;
+    public Text text1 = null;
     public int PlayerMoveVal
     {
         get { return playerMoveValue; }
@@ -106,12 +106,14 @@ public class TurnManager : Singleton<TurnManager>
         {
             GameManager.Instance.ChengePop(true,playerBGM);
             GameManager.Instance.ChengePop(false, enemyBGM);
+            enemyMPlay = false;
             playerMPlay = true;
         }
         if (enemyTurn)
         {
-            GameManager.Instance.ChengePop(false, playerBGM);
             GameManager.Instance.ChengePop(true, enemyBGM);
+            GameManager.Instance.ChengePop(false, playerBGM);
+            playerMPlay = false;
             enemyMPlay = true;
         }
     }
@@ -143,7 +145,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (GameManager.Instance.isGameScene)
         {
-            text1.text = playerMoveValue.ToString();
+            MoveCounterText(text1);
             //初回のみ
             if (generalTurn == 1)
             {
@@ -195,6 +197,11 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.isGameScene = false;
             PlayMusic();
         }
+    }
+
+    public void MoveCounterText(Text text)
+    {
+        text.text = "残り" + PlayerMoveVal.ToString();
     }
 
     void TurnTextMove()
@@ -291,7 +298,6 @@ public class TurnManager : Singleton<TurnManager>
             enemy = false;
             enemyNum++;
         }
-        PlayMusic();
     }
     /// <summary>
     /// 死んだ場合の処理
@@ -337,7 +343,7 @@ public class TurnManager : Singleton<TurnManager>
         else
         {
             PlayerMoveVal--;
-            text1.text = playerMoveValue.ToString();
+            MoveCounterText(text1);
             MoveCharaSet(true, false, playerMoveValue);
         }
         GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
@@ -397,6 +403,7 @@ public class TurnManager : Singleton<TurnManager>
             eventF = true;
             return;
         }
+        PlayMusic();
     }
 
     public void Back()

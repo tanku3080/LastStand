@@ -127,17 +127,18 @@ public class TankCon : PlayerBase
                     //前進後退
                     if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
-                        playerMoveAudio.Play();
+                        TankMoveSFXPlay(true,false);
                         float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
                         Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                         MoveLimit(moveLimit);
                     }
-                    else playerMoveAudio.Stop();
+                    else TankMoveSFXPlay(false,true);
 
-                    if (Input.GetKeyUp(KeyCode.R))//命中率を100
+                    if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
                     {
-                        TurnManager.Instance.PlayerMoveVal--;
-                        GunDirctionIsEnemy();
+                        if (perfectHit) perfectHit = false;
+                        else perfectHit = true;
+                        GunDirctionIsEnemy(perfectHit);
                     }
                 }
             }
@@ -158,6 +159,20 @@ public class TankCon : PlayerBase
             PlayerDie(Renderer);
         }
     }
+
+    void TankMoveSFXPlay(bool isPlay = false,bool isStop = false)
+    {
+        if (isPlay)
+        {
+            playerMoveAudio.Play();
+            isPlay = false;
+        }
+        if (isStop)
+        {
+            playerMoveAudio.Stop();
+            isStop = false;
+        }
+    }
     /// <summary>
     /// aimFlagがtrueならtrue
     /// </summary>
@@ -171,14 +186,15 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             if (Input.GetButtonUp("Fire1"))
             {
+                TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
                 //攻撃
                 Atack();
             }
-            if (Input.GetKeyUp(KeyCode.F))
+            if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
             {
                 if (TurnManager.Instance.FoundEnemy)
                 {
-                    Debug.Log("haitta");
+                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
                     if (AccuracyFlag) AccuracyFlag = false;
                     else AccuracyFlag = true; //精度100％
                     GunAccuracy(AccuracyFlag);
@@ -207,30 +223,17 @@ public class TankCon : PlayerBase
     }
 
     /// <summary>
-    /// 命中率
+    /// 命中率を100にするので照準を向けるとかの目に見える動作は無し
     /// </summary>
-    void GunDirctionIsEnemy()
+    void GunDirctionIsEnemy(bool flag)
     {
-        perfectHit = true;
-        ////向いてるっぽい動きをするが何かがおかしい
-        //RaycastHit hit;
-        //if (Physics.Raycast(tankGunFire.transform.position, tankGunFire.transform.forward, out hit))
-        //{
-        //    Debug.DrawRay(tankGun.transform.position, tankGun.transform.forward, Color.green);
-        //    lookChactor = hit.collider.tag == "Enemy" ? true : false;
-        //    Debug.Log("入った" + lookChactor);
-        //}
-        //if (lookChactor == false)
-        //{
-        //    var dir = tankHead.position - hit.collider.transform.position;
-        //    dir.y = 0;
-        //    transform.rotation = Quaternion.Lerp(tankHead.rotation, Quaternion.LookRotation(dir, Vector3.up), 1.5f);
-        //    Debug.Log("敵の方向を向いた。");
-        //}
-        //else Debug.Log("元から向いていた");
-        var aim = GameManager.Instance.nearEnemy.transform.position - tankGun.position;
-        var look = Quaternion.LookRotation(aim);
-        tankGun.transform.localRotation = look;
+        if (flag)
+        {
+            TurnManager.Instance.PlayerMoveVal--;
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+        }
+        else GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
     }
 
 

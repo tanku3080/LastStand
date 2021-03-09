@@ -30,11 +30,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
+    [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     //ゲームシーンかの判定(ターンマネージャー限定)
     [SerializeField, HideInInspector] public bool isGameScene;
-
-    bool sceneChecker = true;
 
     public bool clickC = true;
     private int nowTurnValue = 0;
@@ -50,6 +49,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             endObj = GameObject.Find("TurnendUI");
             radarObj = GameObject.Find("Radar");
             limitedBar = GameObject.Find("MoveLimitBar");
+            specialObj = GameObject.Find("specialStatusUI");
         }
         ChengePop(false,tankChengeObj);
         ChengePop(false,pauseObj);
@@ -260,11 +260,20 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>
-    /// 確認メッセージやその他非表示オブジェクトを表示
+    /// 確認メッセージやその他非表示オブジェクトを表示。第二引数がNUllの場合全てのUIをチェックするので処理が重くなる
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        obj.SetActive(isChenge);
+        if (obj == null)
+        {
+            tankChengeObj.SetActive(isChenge);
+            pauseObj.SetActive(isChenge);
+            radarObj.SetActive(isChenge);
+            limitedBar.SetActive(isChenge);
+            endObj.SetActive(isChenge);
+        }
+        else obj.SetActive(isChenge);
+
     }
 
     public void TurnEnd()

@@ -293,6 +293,11 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 940224541748008019, guid: 7c4525d5a46da0b47bbbdfd14c376381,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1778616720723373551, guid: 7c4525d5a46da0b47bbbdfd14c376381,
         type: 3}
       propertyPath: m_Radius

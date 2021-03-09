@@ -32,7 +32,7 @@ public class TankCon : PlayerBase
     public bool cameraActive = true;
 
     bool perfectHit = false;//命中率
-    bool AccuracyFalg = false;//精度
+    bool AccuracyFlag = false;//精度
     bool limitRangeFlag = true;
 
     //以下は移動制限
@@ -158,7 +158,6 @@ public class TankCon : PlayerBase
             PlayerDie(Renderer);
         }
     }
-
     /// <summary>
     /// aimFlagがtrueならtrue
     /// </summary>
@@ -179,14 +178,11 @@ public class TankCon : PlayerBase
             {
                 if (TurnManager.Instance.FoundEnemy)
                 {
-                    AccuracyFalg = true;//精度100％
-                    GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-                    TurnManager.Instance.PlayerMoveVal--;
-                    Quaternion rotetion = Quaternion.Euler(0, tankHead_R_SPD, 0);
-                    Rd.MoveRotation(GameManager.Instance.nearEnemy.transform.rotation * rotetion);
-
+                    Debug.Log("haitta");
+                    if (AccuracyFlag) AccuracyFlag = false;
+                    else AccuracyFlag = true; //精度100％
+                    GunAccuracy(AccuracyFlag);
                 }
-                else return;
             }
         }
         else
@@ -197,6 +193,22 @@ public class TankCon : PlayerBase
         }
     }
 
+    void GunAccuracy(bool flag)
+    {
+        if (flag)
+        {
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+            tankHead.LookAt(GameManager.Instance.nearEnemy.transform,Vector3.up);
+        }
+        else
+        {
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
+        }
+    }
+
+    /// <summary>
+    /// 命中率
+    /// </summary>
     void GunDirctionIsEnemy()
     {
         perfectHit = true;
@@ -224,9 +236,9 @@ public class TankCon : PlayerBase
 
     void Atack()
     {
-        if (perfectHit || AccuracyFalg || perfectHit && AccuracyFalg)
+        if (perfectHit || AccuracyFlag || perfectHit && AccuracyFlag)
         {
-            if (perfectHit && AccuracyFalg)
+            if (perfectHit && AccuracyFlag)
             {
                 //命中率が100％で向きも向いている完璧な状態
             }

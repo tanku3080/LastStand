@@ -24,6 +24,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
     [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
+    [SerializeField, Tooltip("攻撃音")] public AudioClip atack;
 
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
@@ -31,8 +32,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
     [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
-    [HideInInspector] public Image hittingTargetR = null;
-    [HideInInspector] public Image turretCorrectionF = null;
+    [HideInInspector] public GameObject hittingTargetR = null;
+    [HideInInspector] public GameObject turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     //ゲームシーンかの判定(ターンマネージャー限定)
     [SerializeField, HideInInspector] public bool isGameScene;
@@ -53,8 +54,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             limitedBar = GameObject.Find("MoveLimitBar");
             specialObj = GameObject.Find("specialStatusUI");
         }
-        hittingTargetR = specialObj.transform.GetChild(0).GetComponent<Image>();
-        turretCorrectionF = specialObj.transform.GetChild(1).GetComponent<Image>();
+        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
+        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
         ChengePop(false);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;

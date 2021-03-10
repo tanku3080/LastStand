@@ -7,12 +7,11 @@ public class TankCon : PlayerBase
     //AddRelativeForceを使えば斜面での移動に最適らしい
     //xの射角は入れない
     Transform tankHead = null;
-    Transform tankGun = null;
+    private Transform tankGun = null;
     private Transform tankBody = null;
 
-    private GameObject tankGunFire = null;
+    public GameObject tankGunFire = null;
 
-    //バーチャルカメラよう
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
     //移動制限用
@@ -26,7 +25,8 @@ public class TankCon : PlayerBase
 
     bool perfectHit = false;//命中率
     bool turretCorrection = false;//精度
-    bool limitRangeFlag = true;
+    bool limitRangeFlag = true;//移動制限値
+    public bool atackCheck = false;
 
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
@@ -41,6 +41,7 @@ public class TankCon : PlayerBase
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
+        
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
@@ -52,6 +53,7 @@ public class TankCon : PlayerBase
         playerMoveAudio = gameObject.GetComponent<AudioSource>();
         playerMoveAudio.playOnAwake = false;
         playerMoveAudio.clip = GameManager.Instance.TankSfx;
+        GameManager.Instance.ChengePop(false,tankGunFire.transform.GetChild(0).gameObject);
     }
 
     // Update is called once per frame
@@ -207,12 +209,12 @@ public class TankCon : PlayerBase
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             tankHead.LookAt(GameManager.Instance.nearEnemy.transform,Vector3.up);
-            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF.gameObject);
+            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF.gameObject);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.turretCorrectionF);
         }
     }
 
@@ -224,26 +226,26 @@ public class TankCon : PlayerBase
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            GameManager.Instance.ChengePop(true,GameManager.Instance.hittingTargetR.gameObject);
+            GameManager.Instance.ChengePop(true,GameManager.Instance.hittingTargetR);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR.gameObject);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
         }
     }
 
-
     void Atack()
     {
+        atackCheck = true;
         if (perfectHit || turretCorrection || perfectHit && turretCorrection)
         {
             if (perfectHit && turretCorrection)
             {
-                //命中率が100％で向きも向いている完璧な状態
-                TurnManager.Instance.nowEnemy.GetComponent<Enemy>().Damage(tankDamage);
+                //命中率が100％で向きも向いている完璧な状態で近くの敵にしか反応しないはずの処理
+                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage);
 
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
@@ -260,12 +262,15 @@ public class TankCon : PlayerBase
             Vector3 pos = Random.insideUnitSphere;
             pos.x = tankGunFire.transform.localScale.x / 2;
             pos.y = tankGunFire.transform.localScale.y / 2;
-            GameObject t = Instantiate(Resources.Load<GameObject>("A"), tankGunFire.transform);
+            GameObject t = Instantiate(Resources.Load<GameObject>("A"),transform);
             t.AddComponent<Rigidbody>().AddForce(tankGunFire.transform.forward * 1000f, ForceMode.Impulse);
             t.transform.TransformVector(pos);
         }
-        perfectHit = false;
-        turretCorrection = false;
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
+        TurnManager.Instance.ParticleSet(true);
+        GunDirctionIsEnemy(perfectHit = false);
+        GunAccuracy(turretCorrection = false);
+        atackCheck = false;
 
     }
 

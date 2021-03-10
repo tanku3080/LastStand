@@ -8,6 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class TurnManager : Singleton<TurnManager>
 {
+    public enum ParticleStatus
+    {
+        Hit,Destroy,MiddleDmage,BigDamage
+    }
     public bool enemyTurn = false;
     public bool playerTurn = false;
     public bool playerIsMove = false, enemyIsMove = false;
@@ -76,12 +80,13 @@ public class TurnManager : Singleton<TurnManager>
             turnText.GetComponent<TextMeshProUGUI>();
             moveIconParent = GameObject.Find("MoveCounterUI");
         }
-        text1 = moveIconParent.transform.GetChild(0).GetComponent<Text>();
+        text1 = moveIconParent.transform.GetChild(0).GetChild(0).GetComponent<Text>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(false,moveIconParent);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
+        ParticleSet(false);
 
     }
 
@@ -203,7 +208,7 @@ public class TurnManager : Singleton<TurnManager>
 
     public void MoveCounterText(Text text)
     {
-        text.text = "残り" + PlayerMoveVal.ToString();
+        text.text = "MOVE: " + PlayerMoveVal.ToString();
     }
 
     void TurnTextMove()
@@ -406,6 +411,27 @@ public class TurnManager : Singleton<TurnManager>
             return;
         }
         PlayMusic();
+    }
+
+    public void ParticleSet(bool isPlay)
+    {
+        if (isPlay)
+        {
+            if (playerTurn)
+            {
+                if (nowPayer.GetComponent<TankCon>().atackCheck)
+                {
+                    var t = nowPayer.GetComponent<TankCon>().tankGunFire.transform.GetChild(0).gameObject;
+                    GameManager.Instance.ChengePop(true,t);
+                    t.GetComponent<ParticleSystem>().Play();
+                    isPlay = false;
+                }
+            }
+        }
+        else
+        {
+
+        }
     }
 
     public void Back()

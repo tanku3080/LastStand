@@ -53,7 +53,7 @@ public class TankCon : PlayerBase
         playerMoveAudio = gameObject.GetComponent<AudioSource>();
         playerMoveAudio.playOnAwake = false;
         playerMoveAudio.clip = GameManager.Instance.TankSfx;
-        GameManager.Instance.ChengePop(false,tankGunFire.transform.GetChild(0).gameObject);
+        limitCounter = 0;
     }
 
     // Update is called once per frame
@@ -161,6 +161,7 @@ public class TankCon : PlayerBase
             isStop = false;
         }
     }
+    private int limitCounter = 0;
     /// <summary>
     /// aimFlagがtrueならtrue
     /// </summary>
@@ -174,9 +175,18 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             if (Input.GetButtonUp("Fire1"))
             {
-                TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                //攻撃
-                Atack();
+                if (atackCount > limitCounter)
+                {
+                    limitCounter++;
+                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                    //攻撃
+                    Atack();
+                }
+                else
+                {
+                    TurnManager.Instance.AnnounceStart("Attack Limit");
+                    TurnManager.Instance.MoveCharaSet(true,false,TurnManager.Instance.PlayerMoveVal);
+                }
             }
             if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
             {
@@ -236,10 +246,9 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
         }
     }
-
+    private int result = 0;
     void Atack()
     {
-        atackCheck = true;
         if (perfectHit || turretCorrection || perfectHit && turretCorrection)
         {
             if (perfectHit && turretCorrection)
@@ -258,20 +267,17 @@ public class TankCon : PlayerBase
         }
         else
         {
-            //posは飛ぶ座標
-            Vector3 pos = Random.insideUnitSphere;
-            pos.x = tankGunFire.transform.localScale.x / 2;
-            pos.y = tankGunFire.transform.localScale.y / 2;
-            GameObject t = Instantiate(Resources.Load<GameObject>("A"),transform);
-            t.AddComponent<Rigidbody>().AddForce(tankGunFire.transform.forward * 1000f, ForceMode.Impulse);
-            t.transform.TransformVector(pos);
+            if (Random.Range(0,100) > 50)
+            {
+                
+            }
+            GameObject t = Instantiate(Resources.Load<GameObject>("A"), transform);
+            t.GetComponent<Bullet>().Shot();
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        TurnManager.Instance.ParticleSet(true);
+        tankGunFire = ParticleScript.Instance.ParticleSystemSet(ParticleScript.ParticleStatus.Fire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
-        atackCheck = false;
-
     }
 
     /// <summary>

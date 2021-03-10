@@ -34,6 +34,9 @@ public class TurnManager : Singleton<TurnManager>
     [SerializeField] GameObject playerBGM = null;
     [SerializeField] GameObject enemyBGM = null;
     public Text text1 = null;
+    //アナウンス用
+    [SerializeField, HideInInspector] public Image announceImage = null;
+    [SerializeField, HideInInspector] public Text annouceText = null;
     public int PlayerMoveVal
     {
         get { return playerMoveValue; }
@@ -80,13 +83,14 @@ public class TurnManager : Singleton<TurnManager>
             turnText.GetComponent<TextMeshProUGUI>();
             moveIconParent = GameObject.Find("MoveCounterUI");
         }
+        announceImage = GameManager.Instance.announceObj.transform.GetChild(0).GetComponent<Image>();
+        annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
         text1 = moveIconParent.transform.GetChild(0).GetChild(0).GetComponent<Text>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(false,moveIconParent);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
-        ParticleSet(false);
 
     }
 
@@ -166,6 +170,7 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankLimitRange = GameManager.Instance.tankLimitedRange;
                     item.tankDamage = GameManager.Instance.tankDamage;
                     item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,0.1f, GameManager.Instance.tankSearchRanges);
+                    item.atackCount = GameManager.Instance.atackCounter;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
@@ -179,6 +184,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
                     enemy.eTankDamage = GameManager.Instance.tankDamage;
                     enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 0.1f, GameManager.Instance.tankSearchRanges);
+                    enemy.eAtackCount = GameManager.Instance.atackCounter;
                 }
                 GameManager.Instance.ChengePop(true,moveIconParent);
                 nowPayer = players[playerNum].gameObject;
@@ -413,27 +419,6 @@ public class TurnManager : Singleton<TurnManager>
         PlayMusic();
     }
 
-    public void ParticleSet(bool isPlay)
-    {
-        if (isPlay)
-        {
-            if (playerTurn)
-            {
-                if (nowPayer.GetComponent<TankCon>().atackCheck)
-                {
-                    var t = nowPayer.GetComponent<TankCon>().tankGunFire.transform.GetChild(0).gameObject;
-                    GameManager.Instance.ChengePop(true,t);
-                    t.GetComponent<ParticleSystem>().Play();
-                    isPlay = false;
-                }
-            }
-        }
-        else
-        {
-
-        }
-    }
-
     public void Back()
     {
         GameManager.Instance.ChengePop(false,GameManager.Instance.tankChengeObj);
@@ -452,5 +437,18 @@ public class TurnManager : Singleton<TurnManager>
     {
         GameManager.Instance.ChengePop(true,controlPanel);
         director.Play();
+    }
+
+    public void AnnounceStart(string n)
+    {
+        GameManager.Instance.ChengePop(true,GameManager.Instance.announceObj);
+        float a = announceImage.color.a;
+        a = 255f;
+        annouceText.text = n;
+        while (a != 0)
+        {
+            a = -1 * Time.deltaTime;
+        }
+        GameManager.Instance.ChengePop(false,GameManager.Instance.announceObj);
     }
 }

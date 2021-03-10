@@ -30,6 +30,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
+    [SerializeField, Header("アナウンスUI")] public GameObject announceObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
     [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
     [HideInInspector] public GameObject hittingTargetR = null;
@@ -53,6 +54,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             radarObj = GameObject.Find("Radar");
             limitedBar = GameObject.Find("MoveLimitBar");
             specialObj = GameObject.Find("specialStatusUI");
+            announceObj = GameObject.Find("announceUI");
         }
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
         turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
@@ -210,6 +212,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public float tankLimitedRange;
     public float tankSearchRanges;
     public int tankDamage;
+    public int atackCounter;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -232,6 +235,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
                 tankDamage = 35;
+                atackCounter = 1;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
@@ -242,6 +246,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedRange = 100000f;
                 tankSearchRanges = 100f;
                 tankDamage = 20;
+                atackCounter = 2;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;
@@ -252,6 +257,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
                 tankDamage = 35;
+                atackCounter = 1;
                 break;
             case TankChoice.Stuart:
                 charactorHp = 30;
@@ -261,6 +267,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 100000f;
                 tankSearchRanges = 100f;
                 tankDamage = 20;
+                atackCounter = 2;
                 break;
         }
     }
@@ -279,6 +286,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             endObj.SetActive(isChenge);
             hittingTargetR.gameObject.SetActive(isChenge);
             turretCorrectionF.gameObject.SetActive(isChenge);
+            announceObj.gameObject.SetActive(isChenge);
         }
         else obj.SetActive(isChenge);
 

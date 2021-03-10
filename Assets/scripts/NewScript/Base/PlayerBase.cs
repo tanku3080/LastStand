@@ -8,6 +8,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public float tankLimitSpeed;
     public float tankLimitRange;
     public int tankDamage;
+    public int atackCount;
     /// <summary>敵を発見する事の出来る範囲</summary>
     public BoxCollider borderLine = null;
 

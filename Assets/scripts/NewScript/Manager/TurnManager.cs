@@ -33,7 +33,7 @@ public class TurnManager : Singleton<TurnManager>
     private int playerMoveValue = 5;
     [SerializeField] GameObject playerBGM = null;
     [SerializeField] GameObject enemyBGM = null;
-    public Text text1 = null;
+    [SerializeField,HideInInspector] public Text text1 = null;
     //アナウンス用
     [SerializeField, HideInInspector] public Image announceImage = null;
     [SerializeField, HideInInspector] public Text annouceText = null;
@@ -439,16 +439,14 @@ public class TurnManager : Singleton<TurnManager>
         director.Play();
     }
 
-    public void AnnounceStart(string n)
+    public void AnnounceStart(string n = null)
     {
-        GameManager.Instance.ChengePop(true,GameManager.Instance.announceObj);
-        float a = announceImage.color.a;
-        a = 255f;
+        GameManager.Instance.ChengePop(true, GameManager.Instance.announceObj);
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
         annouceText.text = n;
-        while (a != 0)
-        {
-            a = -1 * Time.deltaTime;
-        }
-        GameManager.Instance.ChengePop(false,GameManager.Instance.announceObj);
+        Invoke("OneUseMethod",3f);
     }
+    /// <summary>AnnounceStartのInvokeでしか使わない</summary>
+    private void OneUseMethod() => GameManager.Instance.ChengePop(false, GameManager.Instance.announceObj);
+
 }

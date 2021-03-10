@@ -27,6 +27,7 @@ public class TankCon : PlayerBase
     bool turretCorrection = false;//精度
     bool limitRangeFlag = true;//移動制限値
     public bool atackCheck = false;
+    bool MoveAudioFlag;
 
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
@@ -52,6 +53,7 @@ public class TankCon : PlayerBase
         borderLine.isTrigger = true;
         playerMoveAudio = gameObject.GetComponent<AudioSource>();
         playerMoveAudio.playOnAwake = false;
+        playerMoveAudio.loop = true;
         playerMoveAudio.clip = GameManager.Instance.TankSfx;
         limitCounter = 0;
     }
@@ -62,6 +64,8 @@ public class TankCon : PlayerBase
         Rd.isKinematic = false;
         if (controlAccess)
         {
+            if (MoveAudioFlag) TankMoveSFXPlay(true,false);
+            else TankMoveSFXPlay(false,true);
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
@@ -109,25 +113,30 @@ public class TankCon : PlayerBase
                 //}
                 if (IsGranded)
                 {
-                    float v = Input.GetAxis("Vertical");
-                    float h = Input.GetAxis("Horizontal");
 
-                    if (h != 0 && TurnManager.Instance.playerIsMove)
+                    if (TurnManager.Instance.playerIsMove)
                     {
-                        float rot = h * tankTurn_Speed * Time.deltaTime;
-                        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                        Rd.MoveRotation(Rd.rotation * rotetion);
-                        MoveLimit();
+                        float v = Input.GetAxis("Vertical");
+                        float h = Input.GetAxis("Horizontal");
+                        if (h != 0)
+                        {
+                            MoveAudioFlag = true;
+                            float rot = h * tankTurn_Speed * Time.deltaTime;
+                            Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                            Rd.MoveRotation(Rd.rotation * rotetion);
+                            MoveLimit();
+                        }
+                        else MoveAudioFlag = false;
+                        //前進後退
+                        if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
+                        {
+                            MoveAudioFlag = true;
+                            float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
+                            Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                            MoveLimit();
+                        }
+                        else MoveAudioFlag = false;
                     }
-                    //前進後退
-                    if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
-                    {
-                        TankMoveSFXPlay(true,false);
-                        float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
-                        Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        MoveLimit();
-                    }
-                    else TankMoveSFXPlay(false,true);
                 }
             }
             //右クリック
@@ -150,15 +159,13 @@ public class TankCon : PlayerBase
 
     void TankMoveSFXPlay(bool isPlay = false,bool isStop = false)
     {
-        if (isPlay)
+        if (isPlay && MoveAudioFlag)
         {
             playerMoveAudio.Play();
-            isPlay = false;
         }
-        if (isStop)
+        if (isStop && MoveAudioFlag == false)
         {
             playerMoveAudio.Stop();
-            isStop = false;
         }
     }
     private int limitCounter = 0;
@@ -184,8 +191,7 @@ public class TankCon : PlayerBase
                 }
                 else
                 {
-                    TurnManager.Instance.AnnounceStart("Attack Limit");
-                    TurnManager.Instance.MoveCharaSet(true,false,TurnManager.Instance.PlayerMoveVal);
+                    TurnManager.Instance.AnnounceStart("Atack Limit");
                 }
             }
             if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
@@ -246,23 +252,23 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
         }
     }
-    private int result = 0;
     void Atack()
     {
+        float hitResult;
         if (perfectHit || turretCorrection || perfectHit && turretCorrection)
         {
             if (perfectHit && turretCorrection)
             {
                 //命中率が100％で向きも向いている完璧な状態で近くの敵にしか反応しないはずの処理
-                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage);
 
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
+                hitResult = HitCalculation();
             }
             else//向きのみ
             {
-
+                //命中率の計算のみ
             }
         }
         else
@@ -271,7 +277,7 @@ public class TankCon : PlayerBase
             {
                 
             }
-            GameObject t = Instantiate(Resources.Load<GameObject>("A"), transform);
+            GameObject t = Instantiate(Resources.Load<GameObject>("A"),tankGunFire.transform.position,Quaternion.identity);
             t.GetComponent<Bullet>().Shot();
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
@@ -279,6 +285,10 @@ public class TankCon : PlayerBase
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
     }
+
+    /// <summary>命中率の計算を入れる</summary>
+    /// <returns></returns>
+    private float HitCalculation() => 15f;
 
     /// <summary>
     /// 移動制限をつけるメソッド

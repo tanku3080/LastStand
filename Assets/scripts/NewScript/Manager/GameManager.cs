@@ -85,6 +85,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 ButtonSelected();
             }
 
+            //テスト用
             if (Input.GetKeyUp(KeyCode.H))
             {
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
@@ -93,6 +94,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
             }
+            //以上
         }
         if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
         {

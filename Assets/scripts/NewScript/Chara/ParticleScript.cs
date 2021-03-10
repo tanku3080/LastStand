@@ -9,6 +9,7 @@ public class ParticleScript : Singleton<ParticleScript>
         Fire,Hit,Explosion,None
     }
     ParticleSystem system = null;
+    GameObject t = null;
     void Start()
     {
     }
@@ -16,6 +17,10 @@ public class ParticleScript : Singleton<ParticleScript>
     // Update is called once per frame
     void Update()
     {
+        if (system != null && system.isStopped)
+        {
+            Destroy(t);
+        }
     }
     /// <summary>
     /// 生成の設定
@@ -25,7 +30,6 @@ public class ParticleScript : Singleton<ParticleScript>
     /// <returns></returns>
     public GameObject ParticleSystemSet(ParticleStatus status = ParticleStatus.None)
     {
-        GameObject t = null;
         switch (status)
         {
             case ParticleStatus.Fire:
@@ -38,6 +42,7 @@ public class ParticleScript : Singleton<ParticleScript>
             case ParticleStatus.None:
                 break;
         }
+        system = t.GetComponent<ParticleSystem>();
         return t;
     }
 }

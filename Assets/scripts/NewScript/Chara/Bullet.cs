@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
     }
     private void Update()
     {
-        if (Time.deltaTime > 3f)
+        if (Time.deltaTime > 2f)
         {
             Destroy(gameObject);
         }
@@ -20,11 +20,13 @@ public class Bullet : MonoBehaviour
     {
         if (TurnManager.Instance.playerTurn && collision.gameObject.tag == "Enemy")
         {
+            collision.gameObject.GetComponent<Enemy>().Damage(TurnManager.Instance.nowPayer.GetComponent<TankCon>().tankDamage);
             ParticleScript.Instance.ParticleSystemSet(ParticleScript.ParticleStatus.Hit);
             Destroy(gameObject);
         }
         if (TurnManager.Instance.enemyTurn && collision.gameObject.tag == "Player")
         {
+            collision.gameObject.GetComponent<TankCon>().Damage(TurnManager.Instance.nowEnemy.GetComponent<Enemy>().eTankDamage);
             ParticleScript.Instance.ParticleSystemSet(ParticleScript.ParticleStatus.Hit);
             Destroy(gameObject);
         }

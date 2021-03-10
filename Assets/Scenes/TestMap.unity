@@ -892,7 +892,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1530
+  m_Name: pb_Mesh-1502
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1296,6 +1296,7 @@ MonoBehaviour:
   ETankLimitRange: 0
   EborderLine: {fileID: 0}
   eTankDamage: 0
+  eAtackCount: 0
   agent: {fileID: 1505879006}
   defaultCon: {fileID: 1546592892}
   patrolPos:
@@ -1657,6 +1658,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 7772974173470164654}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2031943813 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5750550705582004047, guid: eff84882db7e6c042b0fbf1be50e5e58,
+    type: 3}
+  m_PrefabInstance: {fileID: 7772974173470164654}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3061141349148344770
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1764,6 +1771,11 @@ PrefabInstance:
       propertyPath: atack
       value: 
       objectReference: {fileID: 8300000, guid: 8c786e07379d16c47a26c5fec26e2c43, type: 3}
+    - target: {fileID: 3061141348828962698, guid: 7ca0e3d5099418d428f20f8a36062026,
+        type: 3}
+      propertyPath: announceObj
+      value: 
+      objectReference: {fileID: 2031943813}
     - target: {fileID: 3061141348828962699, guid: 7ca0e3d5099418d428f20f8a36062026,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -62,6 +62,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
+        DontDestroyOnLoad(tankChengeObj.transform.parent);
     }
 
     // Update is called once per frame

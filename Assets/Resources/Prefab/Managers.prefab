@@ -240,6 +240,7 @@ MonoBehaviour:
   pauseObj: {fileID: 0}
   endObj: {fileID: 0}
   radarObj: {fileID: 0}
+  announceObj: {fileID: 0}
   limitedBar: {fileID: 0}
   specialObj: {fileID: 0}
   hittingTargetR: {fileID: 0}
@@ -255,6 +256,7 @@ MonoBehaviour:
   tankLimitedRange: 0
   tankSearchRanges: 0
   tankDamage: 0
+  atackCounter: 0
 --- !u!82 &3061141348828962696
 AudioSource:
   m_ObjectHideFlags: 0
@@ -393,6 +395,8 @@ MonoBehaviour:
   playerBGM: {fileID: 0}
   enemyBGM: {fileID: 0}
   text1: {fileID: 0}
+  announceImage: {fileID: 0}
+  annouceText: {fileID: 0}
   FoundEnemy: 0
 --- !u!114 &3061141348828962702
 MonoBehaviour:

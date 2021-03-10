@@ -46,7 +46,6 @@ public class TextCon : MonoBehaviour
 
         if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 		{
-			Debug.Log("呼ばれた");
             SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay, true, true);
         }
 		// 文字の表示が完了してるならクリック時に次の行を表示する

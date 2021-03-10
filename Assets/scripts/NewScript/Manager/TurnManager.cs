@@ -23,9 +23,9 @@ public class TurnManager : Singleton<TurnManager>
     //現在の操作キャラ
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
-    [SerializeField] GameObject turnText = null;
+    private GameObject turnText = null;
     //移動回数
-    [SerializeField] GameObject moveIconParent = null;
+    [SerializeField] GameObject moveValue = null;
     //以下はtimeLine   
     private PlayableDirector director;
     public GameObject controlPanel;
@@ -42,7 +42,7 @@ public class TurnManager : Singleton<TurnManager>
         get { return playerMoveValue; }
         set
         {
-            if (value == 0) GameManager.Instance.ChengePop(true,GameManager.Instance.endObj);
+            if (value == 0) AnnounceStart("Move Value Zero");
             playerMoveValue = value;
         }
     }
@@ -59,7 +59,6 @@ public class TurnManager : Singleton<TurnManager>
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
     public CinemachineVirtualCamera EnemyDefCon { get; set; }
-    int charactorNum = 0;
     //現在のキャラ数
     int playerNum = 0;
     int enemyNum = 0;
@@ -81,14 +80,16 @@ public class TurnManager : Singleton<TurnManager>
             controlPanel = GameObject.Find("TurnPanel");
             turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
             turnText.GetComponent<TextMeshProUGUI>();
-            moveIconParent = GameObject.Find("MoveCounterUI");
+            moveValue = GameObject.Find("MoveCounterUI");
         }
         announceImage = GameManager.Instance.announceObj.transform.GetChild(0).GetComponent<Image>();
         annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
-        text1 = moveIconParent.transform.GetChild(0).GetChild(0).GetComponent<Text>();
+        text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
+        turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
+        turnText.GetComponent<TextMeshProUGUI>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
         GameManager.Instance.ChengePop(false,controlPanel);
-        GameManager.Instance.ChengePop(false,moveIconParent);
+        GameManager.Instance.ChengePop(false,moveValue);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
 
@@ -154,10 +155,12 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (GameManager.Instance.isGameScene)
         {
+            //Camera.main.farClipPlane = 500f;
             MoveCounterText(text1);
             //初回のみ
             if (generalTurn == 1)
             {
+                Debug.Log("呼ばれた");
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
@@ -186,7 +189,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 0.1f, GameManager.Instance.tankSearchRanges);
                     enemy.eAtackCount = GameManager.Instance.atackCounter;
                 }
-                GameManager.Instance.ChengePop(true,moveIconParent);
+                GameManager.Instance.ChengePop(true,moveValue);
                 nowPayer = players[playerNum].gameObject;
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
@@ -351,7 +354,7 @@ public class TurnManager : Singleton<TurnManager>
         if (playerNum == players.Count)
         {
             //新しいpanelを用意する必要がある
-            TurnEnd();
+            AnnounceStart("Rest Zero");
         }
         else
         {

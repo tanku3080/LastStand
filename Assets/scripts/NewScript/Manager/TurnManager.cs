@@ -160,7 +160,6 @@ public class TurnManager : Singleton<TurnManager>
             //初回のみ
             if (generalTurn == 1)
             {
-                Debug.Log("呼ばれた");
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
@@ -211,7 +210,6 @@ public class TurnManager : Singleton<TurnManager>
             }
             playerTurn = true;
             GameManager.Instance.isGameScene = false;
-            PlayMusic();
         }
     }
 
@@ -419,7 +417,6 @@ public class TurnManager : Singleton<TurnManager>
             eventF = true;
             return;
         }
-        PlayMusic();
     }
 
     public void Back()

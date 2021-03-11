@@ -96,21 +96,6 @@ public class TankCon : PlayerBase
                     tankHead.rotation *= rotetion;
                 }
 
-                ////未実装
-                //if (Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.K))
-                //{
-                //    Quaternion rotetion = Quaternion.identity;
-                //    var normal = Mathf.Repeat(tankGun.rotation.x, 65);
-                //    if (Input.GetKey(KeyCode.I) && normal < 65)
-                //    {
-                //        rotetion = Quaternion.Euler(Vector3.left);
-                //    }
-                //    if (Input.GetKey(KeyCode.K) && normal > 0)
-                //    {
-                //        rotetion = Quaternion.Euler(Vector3.right);
-                //    }
-                //    tankGun.rotation *= rotetion;
-                //}
                 if (IsGranded)
                 {
 
@@ -148,7 +133,11 @@ public class TankCon : PlayerBase
             }
             AimMove(AimFlag);
         }
-        else Rd.isKinematic = true;
+        else
+        {
+            limitCounter = 0;
+            Rd.isKinematic = true;
+        }
 
 
         if (playerLife <= 0)
@@ -216,6 +205,9 @@ public class TankCon : PlayerBase
             TurnManager.Instance.playerIsMove = true;
             defaultCon.gameObject.SetActive(true);
             aimCom.gameObject.SetActive(false);
+            var p = tankGun.transform.rotation;
+            p.x = 0;
+            p.z = 0;
         }
     }
 
@@ -254,41 +246,60 @@ public class TankCon : PlayerBase
     }
     void Atack()
     {
-        float hitResult;
-        if (perfectHit || turretCorrection || perfectHit && turretCorrection)
+        RaycastHit rayhit;
+        if (perfectHit || perfectHit && turretCorrection)
         {
             if (perfectHit && turretCorrection)
             {
-                //命中率が100％で向きも向いている完璧な状態で近くの敵にしか反応しないはずの処理
-
+                tankDamage *= 2;
+                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage);
+                tankDamage /= 2;
+                Debug.Log("EnemyLife" + GameManager.Instance.nearEnemy.gameObject.GetComponent<Enemy>().enemyLife);
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
-                hitResult = HitCalculation();
-            }
-            else//向きのみ
-            {
-                //命中率の計算のみ
+                if (Physics.Raycast(tankGunFire.transform.position,Vector3.forward,out rayhit,tankLimitRange))
+                {
+                    if (rayhit.collider.tag == "Enemy")
+                    {
+                        rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                        Debug.Log("EnemyLife" + rayhit.collider.gameObject.GetComponent<Enemy>().enemyLife);
+                    }
+                }
             }
         }
         else
         {
-            if (Random.Range(0,100) > 50)
+            if (Physics.Raycast(tankGunFire.transform.position,Vector3.forward,out rayhit,tankLimitRange))
             {
-                
+                if (rayhit.collider.tag == "Enemy")
+                {
+                    if (HitCalculation()) rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                    else rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                    Debug.Log("EnemyLife" + rayhit.collider.gameObject.GetComponent<Enemy>().enemyLife);
+                }
             }
-            GameObject t = Instantiate(Resources.Load<GameObject>("A"),tankGunFire.transform.position,Quaternion.identity);
-            t.GetComponent<Bullet>().Shot();
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        tankGunFire = ParticleScript.Instance.ParticleSystemSet(ParticleScript.ParticleStatus.Fire);
+        //tankGunFire = Instantiate((GameObject)Resources.Load("GunFirering"));
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
     }
 
-    /// <summary>命中率の計算を入れる</summary>
+    void Particle()
+    {
+
+    }
+
+    /// <summary>命中率の結果を真偽値で入れる</summary>
     /// <returns></returns>
-    private float HitCalculation() => 15f;
+    private bool HitCalculation()
+    {
+        bool result;
+        if (Random.Range(0, 100) > 50) result = true;
+        else result = false;
+        return result;
+    }
 
     /// <summary>
     /// 移動制限をつけるメソッド

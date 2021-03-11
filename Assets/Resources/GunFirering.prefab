@@ -24018,7 +24018,8 @@ GameObject:
   - component: {fileID: 8355951631860514508}
   - component: {fileID: 8355951631842163596}
   - component: {fileID: 8355951631842247212}
-  - component: {fileID: 8355951631867565832}
+  - component: {fileID: 9008948414480782296}
+  - component: {fileID: 328399935382142744}
   m_Layer: 0
   m_Name: GunFirering
   m_TagString: Untagged
@@ -28796,7 +28797,19 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &8355951631867565832
+--- !u!114 &9008948414480782296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8355951631860474604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c7e1de88620fc43823a453bed22c1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &328399935382142744
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

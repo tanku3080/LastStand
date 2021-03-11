@@ -20,7 +20,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
     [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
     [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
-    [SerializeField, Tooltip("移動")] public AudioClip TankSfx;
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
     [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
@@ -56,6 +55,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             specialObj = GameObject.Find("specialStatusUI");
             announceObj = GameObject.Find("announceUI");
         }
+        ChengePop(false,GameObject.Find("TankMoveSouce"));
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
         turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
         ChengePop(false);

@@ -19,8 +19,10 @@ public class Enemy : EnemyBase
     public bool controlAccess = false;
 
     private float enemyMoveNowValue;
+    private int counter = 0;
 
     bool firstSetUpFlag = true;
+    bool atackFlag = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -63,15 +65,20 @@ public class Enemy : EnemyBase
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
+                    if (eAtackCount == counter || enemyMoveNowValue <= 0)
+                    {
+                        TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                    }
+
                     if (TurnManager.Instance.EnemyMoveVal > 0)
                     {
                         if (isPlayer) state = EnemyState.AtackMove;
                         else state = EnemyState.Patrol;
                     }
-                    if (enemyMoveNowValue <= 0)
+                    if (atackFlag && eAtackCount > counter)
                     {
-                        Debug.Log("EmoveLimited");
-                        TurnManager.Instance.MoveCharaSet(false,true);
+                        atackFlag = false;
+                        state = EnemyState.Atack;
                     }
 
                     break;
@@ -82,6 +89,7 @@ public class Enemy : EnemyBase
                     EnemyAtackMove();
                     break;
                 case EnemyState.Atack:
+                    PlayerAtack();
                     break;
                 case EnemyState.WaitSearch:
                     break;
@@ -105,17 +113,14 @@ public class Enemy : EnemyBase
 
             //平地限定？
             Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
-            float angle = Vector3.Angle(pointDir,Trans.forward);
-            if (angle != 0)
+            Quaternion rotetp = Quaternion.LookRotation(pointDir);
+            float angle = Vector3.Angle(pointDir, Trans.forward);
+            if (angle < 0)
             {
-                Quaternion rotetion = Quaternion.Euler(0, pointDir.y * Time.deltaTime, 0);
-                Rd.MoveRotation(Rd.rotation * rotetion);
+                Trans.position += Trans.forward * ETankTurn_Speed * Time.deltaTime;
             }
-            else
-            {
-                agent.SetDestination(patrolPos[patrolNum].transform.position);
-                agent.nextPosition = Trans.position;
-            }
+            agent.SetDestination(patrolPos[patrolNum].transform.position);
+            agent.nextPosition = Trans.position;
             if (agent.velocity.magnitude > 0) EnemyMoveLimit();
         }
         else if (isPlayer)
@@ -136,11 +141,40 @@ public class Enemy : EnemyBase
         if (isPlayer)
         {
             GameObject nearP = NearPlayer();
-            float result = Mathf.Floor(Random.Range(0.0f, 1.0f));
-            //消える条件は「Playerのターンで移動して逃げた」「破壊した」の二種類
-            isPlayer = false;
+            Vector3 pointDir = nearP.transform.position - Trans.position;
+            Quaternion rotetp = Quaternion.LookRotation(pointDir);
+            float angle = Vector3.Angle(pointDir, Trans.forward);
+            if (angle < 0)
+            {
+                Trans.position += Trans.forward * ETankTurn_Speed * Time.deltaTime;
+            }
+            agent.SetDestination(nearP.transform.position);
+            agent.nextPosition = Trans.position;
+            if (agent.remainingDistance < 10f)
+            {
+
+                agent.isStopped = true;
+                atackFlag = true;
+                state = EnemyState.Idol;
+            }
         }
         else state = EnemyState.Idol;
+    }
+
+    void PlayerAtack()
+    {
+        GameObject p = NearPlayer();
+        float result = Random.Range(0,100);
+        if (result < 49)//成功
+        {
+            p.GetComponent<TankCon>().Damage(eTankDamage);
+        }
+        if (result < 10)//クリティカル
+        {
+            p.GetComponent<TankCon>().Damage(eTankDamage * 2);
+        }
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
+        counter++;
     }
 
     /// <summary>
@@ -164,11 +198,18 @@ public class Enemy : EnemyBase
         return target;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
             isPlayer = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            isPlayer = false;
         }
     }
 

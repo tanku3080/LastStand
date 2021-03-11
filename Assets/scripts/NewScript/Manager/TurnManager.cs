@@ -33,6 +33,7 @@ public class TurnManager : Singleton<TurnManager>
     private int playerMoveValue = 5;
     [SerializeField] GameObject playerBGM = null;
     [SerializeField] GameObject enemyBGM = null;
+    [SerializeField] public GameObject tankMove = null;
     [SerializeField,HideInInspector] public Text text1 = null;
     //アナウンス用
     [SerializeField, HideInInspector] public Image announceImage = null;
@@ -100,6 +101,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
+            PlayMusic();
             TurnManag();
         }
 
@@ -284,6 +286,12 @@ public class TurnManager : Singleton<TurnManager>
             if (moveV > 0)
             {
                 Debug.Log("EnemyCase1");
+                if (enemys.Count == enemyNum)
+                {
+                    enemyCam = 5;
+                    enemyNum = 0;
+                    TurnEnd();
+                }
                 if (enemyNum > enemys.Count)
                 {
                     Debug.Log("敵修正");

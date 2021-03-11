@@ -28,10 +28,10 @@ public class TankCon : PlayerBase
     bool limitRangeFlag = true;//移動制限値
     public bool atackCheck = false;
     bool MoveAudioFlag;
+    bool isMoving = false;
 
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
-    AudioSource playerMoveAudio;
 
 
     void Start()
@@ -41,8 +41,8 @@ public class TankCon : PlayerBase
         Renderer = GetComponent<MeshRenderer>();
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
-        tankGunFire = tankGun.GetChild(0).transform.gameObject;
-        
+        tankGunFire = tankGun.GetChild(0).gameObject;
+        GameManager.Instance.ChengePop(false,tankGunFire);
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
@@ -51,10 +51,6 @@ public class TankCon : PlayerBase
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
         borderLine = tankHead.GetComponent<BoxCollider>();
         borderLine.isTrigger = true;
-        playerMoveAudio = gameObject.GetComponent<AudioSource>();
-        playerMoveAudio.playOnAwake = false;
-        playerMoveAudio.loop = true;
-        playerMoveAudio.clip = GameManager.Instance.TankSfx;
         limitCounter = 0;
     }
 
@@ -64,8 +60,6 @@ public class TankCon : PlayerBase
         Rd.isKinematic = false;
         if (controlAccess)
         {
-            if (MoveAudioFlag) TankMoveSFXPlay(true,false);
-            else TankMoveSFXPlay(false,true);
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
@@ -105,13 +99,13 @@ public class TankCon : PlayerBase
                         float h = Input.GetAxis("Horizontal");
                         if (h != 0)
                         {
-                            MoveAudioFlag = true;
+                            TankMoveSFXPlay(isMoving);
                             float rot = h * tankTurn_Speed * Time.deltaTime;
                             Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                             Rd.MoveRotation(Rd.rotation * rotetion);
                             MoveLimit();
                         }
-                        else MoveAudioFlag = false;
+                        else TankMoveSFXPlay(isMoving = false);
                         //前進後退
                         if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                         {
@@ -124,6 +118,7 @@ public class TankCon : PlayerBase
                     }
                 }
             }
+
             //右クリック
             if (Input.GetButtonUp("Fire2"))
             {
@@ -146,15 +141,17 @@ public class TankCon : PlayerBase
         }
     }
 
-    void TankMoveSFXPlay(bool isPlay = false,bool isStop = false)
+    void TankMoveSFXPlay(bool move)
     {
-        if (isPlay && MoveAudioFlag)
+        if (move && MoveAudioFlag)
         {
-            playerMoveAudio.Play();
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
+            MoveAudioFlag = false;
         }
-        if (isStop && MoveAudioFlag == false)
+        else
         {
-            playerMoveAudio.Stop();
+            GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
+            MoveAudioFlag = true;
         }
     }
     private int limitCounter = 0;
@@ -258,7 +255,7 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
-                if (Physics.Raycast(tankGunFire.transform.position,Vector3.forward,out rayhit,tankLimitRange))
+                if (Physics.Raycast(tankGun.transform.position,Vector3.forward,out rayhit,tankLimitRange))
                 {
                     if (rayhit.collider.tag == "Enemy")
                     {
@@ -270,7 +267,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            if (Physics.Raycast(tankGunFire.transform.position,Vector3.forward,out rayhit,tankLimitRange))
+            if (Physics.Raycast(tankGun.transform.position,Vector3.forward,out rayhit,tankLimitRange))
             {
                 if (rayhit.collider.tag == "Enemy")
                 {
@@ -281,14 +278,9 @@ public class TankCon : PlayerBase
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        //tankGunFire = Instantiate((GameObject)Resources.Load("GunFirering"));
+        GameManager.Instance.ChengePop(true,tankGunFire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
-    }
-
-    void Particle()
-    {
-
     }
 
     /// <summary>命中率の結果を真偽値で入れる</summary>

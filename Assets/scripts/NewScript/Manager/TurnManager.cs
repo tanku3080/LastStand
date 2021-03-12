@@ -108,25 +108,36 @@ public class TurnManager : Singleton<TurnManager>
     }
     private bool playerMPlay = false;
     private bool enemyMPlay = false;
-    void PlayMusic()
+    public void PlayMusic(bool flag = false)
     {
-        if (playerMPlay || enemyMPlay)
+        if (flag)
         {
-            return;
-        }
-        if (playerTurn)
-        {
-            GameManager.Instance.ChengePop(true,playerBGM);
+
+            GameManager.Instance.ChengePop(false,playerBGM);
             GameManager.Instance.ChengePop(false, enemyBGM);
             enemyMPlay = false;
-            playerMPlay = true;
-        }
-        if (enemyTurn)
-        {
-            GameManager.Instance.ChengePop(true, enemyBGM);
-            GameManager.Instance.ChengePop(false, playerBGM);
             playerMPlay = false;
-            enemyMPlay = true;
+        }
+        else
+        {
+            if (playerMPlay || enemyMPlay)
+            {
+                return;
+            }
+            if (playerTurn)
+            {
+                GameManager.Instance.ChengePop(true, playerBGM);
+                GameManager.Instance.ChengePop(false, enemyBGM);
+                enemyMPlay = false;
+                playerMPlay = true;
+            }
+            if (enemyTurn)
+            {
+                GameManager.Instance.ChengePop(true, enemyBGM);
+                GameManager.Instance.ChengePop(false, playerBGM);
+                playerMPlay = false;
+                enemyMPlay = true;
+            }
         }
     }
     bool turnFirstNumFlag = true;
@@ -196,8 +207,10 @@ public class TurnManager : Singleton<TurnManager>
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
                 nowPayer.GetComponent<Rigidbody>().isKinematic = true;
+                DefCon = nowPayer.GetComponent<CinemachineVirtualCamera>();
                 DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
                 AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+                GameManager.Instance.ChengePop(false,AimCon.gameObject);
 
                 nowEnemy = enemys[enemyNum].gameObject;
                 GameManager.Instance.ChengePop(true, nowEnemy.GetComponent<Enemy>().defaultCon.gameObject);

@@ -68,6 +68,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().name != "GamePlay" || SceneManager.GetActiveScene().name != "TestMap")
+        {
+            TurnManager.Instance.PlayMusic(true);
+        }
         if (SceneManager.GetActiveScene().name == "Start")
         {
             if (Input.GetKeyUp(KeyCode.Return))

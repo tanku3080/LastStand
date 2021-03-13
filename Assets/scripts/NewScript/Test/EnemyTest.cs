@@ -44,7 +44,6 @@ public class EnemyTest : EnemyBase
         Anime = gameObject.GetComponent<Animator>();
         Trans = gameObject.GetComponent<Transform>();
         tankHead = Trans.GetChild(1);
-        Debug.Log(tankHead);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
@@ -75,16 +74,17 @@ public class EnemyTest : EnemyBase
             if(controllAcsess) controllAcsess = false;
             else controllAcsess = true;
         }
-        if (Input.GetKeyUp(KeyCode.P))
-        {
-            if (isPlayer) isPlayer = false;
-            else isPlayer = true;
-        }
         
         if (controllAcsess)
         {
             if (isGranded)
             {
+                //if (nowLimitRange <= 0)
+                //{
+                //    controllAcsess = false;
+                //    Debug.Log("TurnEnd");
+                //    return;
+                //}
                 switch (state)//原点回帰
                 {
                     case State.Idol:
@@ -95,6 +95,7 @@ public class EnemyTest : EnemyBase
                         Moving();
                         break;
                     case State.Atack:
+                        Atack();
                         break;
                 }
             }
@@ -115,8 +116,8 @@ public class EnemyTest : EnemyBase
                 //今回の場合は予めオブジェクトを一つ用意した。
                 Vector3 pointDir = target.transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
-                tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation,rotetion,ETankHead_R_SPD * Time.deltaTime);
-                float angle = Vector3.Angle(pointDir,tankGun.forward);
+                tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
+                float angle = Vector3.Angle(pointDir, tankGun.forward);
                 if (angle < 3) isPlayer = true;
                 MoveLimit();
             }
@@ -128,7 +129,7 @@ public class EnemyTest : EnemyBase
 
                 Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, Trans.forward);
-                float a = Vector3.Distance(patrolPos[patrolNum].transform.position,Trans.position);
+                float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
                 if (angle < 3)
                 {
                     if (agentSetUpFlag)
@@ -148,26 +149,38 @@ public class EnemyTest : EnemyBase
                 MoveLimit();
             }
         }
-        else
-        {
-            state = State.Idol;
-        }
+        else state = State.Idol;
     }
     private void AgentParamSet(bool f)
     {
-        Debug.Log("ParametorSet");
         agent.speed = f ? enemySpeed / 2 : 0;
         agent.angularSpeed = f ? ETankTurn_Speed : 0;
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
-
+    int atackCounter = 1;
     void Atack()
     {
-        Debug.Log("はいっちゃった。。。");
-        float t = Time.deltaTime;
-        float rot = ETankTurn_Speed * Time.deltaTime;
-        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-        Rd.MoveRotation(Rd.rotation * rotetion);
+        if (atackCounter > 0)
+        {
+            float result = Random.Range(0, 100);
+            Debug.Log("けっか" + result);
+            if (result < 50)//成功
+            {
+                Debug.Log("通常判定");
+                target.GetComponent<TargetScript>().Damage(eTankDamage);
+            }
+            else if (result < 10)//クリティカル
+            {
+                Debug.Log("クリティカル");
+                target.GetComponent<TargetScript>().Damage(eTankDamage * 2);
+            }
+            if (result > 50)
+            {
+                Debug.Log("はずれ");
+            }
+            atackCounter--;
+        }
+
     }
 
         /// <summary>
@@ -186,11 +199,17 @@ public class EnemyTest : EnemyBase
         }
     }
 
+
+
+
+
+
+
+
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Grand") isGranded = true;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")

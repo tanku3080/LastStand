@@ -248,9 +248,7 @@ public class TankCon : PlayerBase
         {
             if (perfectHit && turretCorrection)
             {
-                tankDamage *= 2;
-                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage);
-                tankDamage /= 2;
+                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage * 2);
                 Debug.Log("EnemyLife" + GameManager.Instance.nearEnemy.gameObject.GetComponent<Enemy>().enemyLife);
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ

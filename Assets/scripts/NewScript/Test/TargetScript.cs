@@ -4,7 +4,7 @@ using UnityEngine;
 public class TargetScript : MonoBehaviour
 {
     [SerializeField] int hp = 1000;
-    private int nowHp;
+    public int nowHp;
     private void Start()
     {
         nowHp = hp;

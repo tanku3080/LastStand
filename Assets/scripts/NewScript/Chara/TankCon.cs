@@ -33,6 +33,8 @@ public class TankCon : PlayerBase
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
 
+    RaycastHit hit;
+
 
     void Start()
     {
@@ -243,7 +245,6 @@ public class TankCon : PlayerBase
     }
     void Atack()
     {
-        RaycastHit rayhit;
         if (perfectHit || perfectHit && turretCorrection)
         {
             if (perfectHit && turretCorrection)
@@ -253,26 +254,20 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
-                if (Physics.Raycast(tankGun.transform.position,Vector3.forward,out rayhit,tankLimitRange))
+                if (RayStart(tankGun.transform.position))
                 {
-                    if (rayhit.collider.tag == "Enemy")
-                    {
-                        rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                        Debug.Log("EnemyLife" + rayhit.collider.gameObject.GetComponent<Enemy>().enemyLife);
-                    }
+                    hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                    Debug.Log("EnemyLife" + hit.collider.gameObject.GetComponent<Enemy>().enemyLife);
                 }
             }
         }
         else
         {
-            if (Physics.Raycast(tankGun.transform.position,Vector3.forward,out rayhit,tankLimitRange))
+            if (RayStart(tankGun.transform.position))
             {
-                if (rayhit.collider.tag == "Enemy")
-                {
-                    if (HitCalculation()) rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                    else rayhit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
-                    Debug.Log("EnemyLife" + rayhit.collider.gameObject.GetComponent<Enemy>().enemyLife);
-                }
+                if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                Debug.Log("EnemyLife" + hit.collider.gameObject.GetComponent<Enemy>().enemyLife);
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
@@ -290,6 +285,24 @@ public class TankCon : PlayerBase
         if (Random.Range(0, 100) > 50) result = true;
         else result = false;
         return result;
+    }
+
+    /// <summary>rayを飛ばして当たっているか判定</summary>
+    /// <param name="atackPoint">rayの発生地点</param>
+    /// <param name="num">当たっているか判定するオブジェクトのTag名。初期値はEnemy</param>
+    bool RayStart(Vector3 atackPoint, string num = "Enemy")
+    {
+        bool f = false;
+        if (Physics.Raycast(atackPoint, transform.forward, out hit, tankLimitRange))
+        {
+            if (hit.collider.tag == num)
+            {
+                Debug.Log("ヤッターマン");
+                f = true;
+            }
+            Debug.DrawRay(atackPoint, transform.forward * tankLimitRange, Color.red, 10);
+        }
+        return f;
     }
 
     /// <summary>

@@ -20,21 +20,23 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
     [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
     [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
-    [SerializeField, Tooltip("移動")] public AudioClip TankSfx;
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
     [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
+    [SerializeField, Tooltip("攻撃音")] public AudioClip atack;
 
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
     [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
+    [SerializeField, Header("アナウンスUI")] public GameObject announceObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
+    [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
+    [HideInInspector] public GameObject hittingTargetR = null;
+    [HideInInspector] public GameObject turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     //ゲームシーンかの判定(ターンマネージャー限定)
     [SerializeField, HideInInspector] public bool isGameScene;
-
-    bool sceneChecker = true;
 
     public bool clickC = true;
     private int nowTurnValue = 0;
@@ -50,20 +52,27 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             endObj = GameObject.Find("TurnendUI");
             radarObj = GameObject.Find("Radar");
             limitedBar = GameObject.Find("MoveLimitBar");
+            specialObj = GameObject.Find("specialStatusUI");
+            announceObj = GameObject.Find("announceUI");
         }
-        ChengePop(false,tankChengeObj);
-        ChengePop(false,pauseObj);
-        ChengePop(false,endObj);
-        ChengePop(false,radarObj);
-        ChengePop(false,limitedBar);
+        ////多分、移動時の音楽の事だと思う
+        //ChengePop(false,GameObject.Find("TankMoveSouce"));
+        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
+        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
+        ChengePop(false);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
+        DontDestroyOnLoad(tankChengeObj.transform.parent);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().name != "GamePlay" || SceneManager.GetActiveScene().name != "TestMap")
+        {
+            TurnManager.Instance.PlayMusic(true);
+        }
         if (SceneManager.GetActiveScene().name == "Start")
         {
             if (Input.GetKeyUp(KeyCode.Return))
@@ -75,11 +84,14 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
             nowTurnValue = TurnManager.Instance.generalTurn;
+            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
+
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
             }
 
+            //テスト用
             if (Input.GetKeyUp(KeyCode.H))
             {
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
@@ -88,6 +100,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
             }
+            //以上
         }
         if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
         {
@@ -168,7 +181,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC)//レーダー
         {
             source.PlayOneShot(click);
-            nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
             ChengePop(clickC,radarObj);
             clickC = false;
         }
@@ -180,7 +192,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>ゲームクリア時に呼び出す</summary>
-    void EndStage()
+    public void EndStage()
     {
         TurnManager.Instance.players.Clear();
         TurnManager.Instance.enemys.Clear();
@@ -207,6 +219,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public float tankLimitedSpeed;
     public float tankLimitedRange;
     public float tankSearchRanges;
+    public int tankDamage;
+    public int atackCounter;
     /// <summary>
     /// 戦車を選択
     /// </summary>
@@ -228,6 +242,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
+                tankDamage = 35;
+                atackCounter = 1;
                 break;
             case TankChoice.Panzer2:
                 charactorHp = 50;
@@ -237,6 +253,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1500f;
                 tankLimitedRange = 100000f;
                 tankSearchRanges = 100f;
+                tankDamage = 20;
+                atackCounter = 2;
                 break;
             case TankChoice.Shaman:
                 charactorHp = 80;
@@ -246,6 +264,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 50f;
+                tankDamage = 35;
+                atackCounter = 1;
                 break;
             case TankChoice.Stuart:
                 charactorHp = 30;
@@ -254,17 +274,30 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankTurnSpeed = 5f;
                 tankLimitedSpeed = 100000f;
                 tankSearchRanges = 100f;
+                tankDamage = 20;
+                atackCounter = 2;
                 break;
         }
-        Debug.Log($"name{tank}hp={charactorHp}speed{charactorSpeed}");
     }
 
     /// <summary>
-    /// 確認メッセージやその他非表示オブジェクトを表示
+    /// 確認メッセージやその他非表示オブジェクトを表示。第二引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        obj.SetActive(isChenge);
+        if (obj == null)
+        {
+            tankChengeObj.SetActive(isChenge);
+            pauseObj.SetActive(isChenge);
+            radarObj.SetActive(isChenge);
+            limitedBar.SetActive(isChenge);
+            endObj.SetActive(isChenge);
+            hittingTargetR.gameObject.SetActive(isChenge);
+            turretCorrectionF.gameObject.SetActive(isChenge);
+            announceObj.gameObject.SetActive(isChenge);
+        }
+        else obj.SetActive(isChenge);
+
     }
 
     public void TurnEnd()

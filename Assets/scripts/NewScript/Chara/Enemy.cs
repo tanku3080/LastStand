@@ -5,22 +5,27 @@ public class Enemy : EnemyBase
 {
     enum EnemyState
     {
-        Idol,Patrol,AtackMove,Atack,WaitSearch
+        Idol,Move,Atack
     }
     EnemyState state;
     public NavMeshAgent agent;
     bool moveLimitGetFlag = true;
-    [SerializeField] CinemachineVirtualCamera defaultCon = null;
-    Transform tankHead = null;
-    Transform tankGun = null;
+    [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     GameObject tankGunFire = null;
     Transform tankBody = null;
     bool isPlayer = false;
+    //接触判定で見つけた場合
+    bool playerFind = false;
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
     public bool controlAccess = false;
+    private bool isGrand = false;
 
     private float enemyMoveNowValue;
+    private int counter = 0;
+
+    bool agentSetUpFlag = true;
+    bool atackFlag = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -31,50 +36,51 @@ public class Enemy : EnemyBase
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
+        leftTank = tankBody.GetChild(0);
+        rightTank = tankBody.GetChild(1);
         agent = GetComponent<NavMeshAgent>();
         defaultCon = TurnManager.Instance.EnemyDefCon;
         defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
+        EnemyEnebled(TurnManager.Instance.FoundEnemy);
 
         agent.autoBraking = true;
-        agent.speed = enemySpeed;
-        agent.angularSpeed = ETankTurn_Speed;
-        enemyMoveNowValue = ETankLimitRange;
+        AgentParamSet(false);
         
         state = EnemyState.Idol;
+
     }
 
     private void Update()
     {
+        EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
-            Rd.isKinematic = false;
-            switch (state)//idolを全ての終着点に
+            if (isGrand)
             {
-                case EnemyState.Idol:
-                    if (TurnManager.Instance.EnemyMoveVal > 0)
-                    {
-                        if (isPlayer) state = EnemyState.AtackMove;
-                        else state = EnemyState.Patrol;
-                    }
-                    if (enemyMoveNowValue > 0)
-                    {
-                        Debug.Log("EmoveLimited");
-                        TurnManager.Instance.MoveCharaSet(false,true);
-                    }
+                Rd.isKinematic = false;
+                switch (state)//idolを全ての終着点に
+                {
+                    case EnemyState.Idol:
+                        if (eAtackCount <= counter || enemyMoveNowValue <= 0)
+                        {
+                            TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                        }
 
-                    break;
-                case EnemyState.Patrol:
-                    EnemyPatrol();
-                    break;
-                case EnemyState.AtackMove:
-                    EnemyAtackMove();
-                    break;
-                case EnemyState.Atack:
-                    break;
-                case EnemyState.WaitSearch:
-                    break;
+                        if (TurnManager.Instance.EnemyMoveVal > 0)
+                        {
+                            if (isPlayer && eAtackCount > counter) state = EnemyState.Atack;
+                            else state = EnemyState.Move;
+                        }
+                        break;
+                    case EnemyState.Move:
+                        EnemyMove();
+                        break;
+                    case EnemyState.Atack:
+                        PlayerAtack();
+                        break;
+                }
             }
         }
         else
@@ -83,23 +89,57 @@ public class Enemy : EnemyBase
         }
     }
 
-    void EnemyPatrol()
+    private void AgentParamSet(bool f)
+    {
+        agent.speed = f ? enemySpeed / 2 : 0;
+        agent.angularSpeed = f ? ETankTurn_Speed : 0;
+        agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
+    }
+
+    void EnemyMove()
     {
         if (!isPlayer && enemyMoveNowValue > 0)
         {
-            if (patrolPos.Length <= patrolNum)
+            if (playerFind)
             {
-                patrolNum = 0;
-                Debug.Log("NamberReset" + patrolNum);
+                //発見したプレイヤーの中で一番近い物に照準を合わせる
+                //今回の場合は予めオブジェクトを一つ用意した。
+                Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
+                Quaternion rotetion = Quaternion.LookRotation(pointDir);
+                tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
+                float angle = Vector3.Angle(pointDir, tankGun.forward);
+                if (angle < 3) isPlayer = true;
+                EnemyMoveLimit();
             }
-            if (agent.remainingDistance < 0.5f) patrolNum++;
-            agent.SetDestination(patrolPos[patrolNum].transform.position);
-            if (agent.velocity.magnitude > 0) EnemyMoveLimit();
+            else
+            {
+                if (patrolPos.Length < patrolNum) patrolNum = 0;
+                Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
+                Quaternion rotetion = Quaternion.LookRotation(pointDir);
+
+                Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
+                float angle = Vector3.Angle(pointDir, Trans.forward);
+                float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
+                if (angle < 3)
+                {
+                    if (agentSetUpFlag)
+                    {
+                        agentSetUpFlag = false;
+                        AgentParamSet(true);
+                    }
+                    agent.SetDestination(patrolPos[patrolNum].transform.position);
+                    agent.nextPosition = Trans.position;
+                }
+                else if (angle != 3 && a < 10)
+                {
+                    agentSetUpFlag = true;
+                    AgentParamSet(false);
+                    patrolNum++;
+                }
+                EnemyMoveLimit();
+            }
         }
-        else if (isPlayer)
-        {
-            state = EnemyState.Idol;
-        }
+        else if (isPlayer) state = EnemyState.Idol;
     }
     void EnemyMoveLimit()
     {
@@ -108,16 +148,25 @@ public class Enemy : EnemyBase
             enemyMoveNowValue -= 1;
         }
     }
-    void EnemyAtackMove()
+
+    void PlayerAtack()
     {
-        if (isPlayer)
+        float result = Random.Range(0,100);
+        if (result < 50)//成功
         {
-            GameObject nearP = NearPlayer();
-            float result = Mathf.Floor(Random.Range(0.0f, 1.0f));
-            //消える条件は「Playerのターンで移動して逃げた」「破壊した」の二種類
-            isPlayer = false;
+            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
         }
-        else state = EnemyState.Idol;
+        else if (result < 10)//クリティカル
+        {
+            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
+        }
+        if (result > 50)
+        {
+            Debug.Log("はずれ");
+        }
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
+        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
+        counter++;
     }
 
     /// <summary>
@@ -141,11 +190,28 @@ public class Enemy : EnemyBase
         return target;
     }
 
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.tag == "Grand") isGrand = true;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("プレイヤーに接触成功");
+            playerFind = true;
         }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player") isPlayer = false;
+    }
+    public void EnemyEnebled(bool f)
+    {
+        gameObject.GetComponent<MeshRenderer>().enabled = f;
+        tankGun.GetComponent<MeshRenderer>().enabled = f;
+        tankHead.GetComponent<MeshRenderer>().enabled = f;
+        leftTank.GetComponent<MeshRenderer>().enabled = f;
+        rightTank.GetComponent<MeshRenderer>().enabled = f;
     }
 }

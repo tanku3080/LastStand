@@ -20,6 +20,8 @@ public class EnemyTest : EnemyBase
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
     [SerializeField] GameObject target = null;
+    /// <summary>敵を発見した際の地点で見失った際に使う</summary>
+    private Vector3 playerFindPos = Vector3.zero;
     bool playerFind = false;
     float nowLimitRange = 0f;
     bool controllAcsess = false;
@@ -112,18 +114,18 @@ public class EnemyTest : EnemyBase
                 Debug.Log("発見");
                 Vector3 dis = target.transform.position - Trans.position;
                 Quaternion rotet = Quaternion.LookRotation(dis);
-                tankGun.rotation = Quaternion.Slerp(Trans.rotation,rotet,ETankHead_R_SPD * Time.deltaTime);
+                tankGun.rotation = Quaternion.Slerp(Trans.rotation, rotet, ETankHead_R_SPD * Time.deltaTime);
                 isPlayer = true;
             }
             else
             {
                 if (patrolPos.Length < patrolNum) patrolNum = 0;
-                var point = patrolPos[patrolNum].transform.position;
-                Vector3 pointDir = point - Trans.position;
+                Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
-                
+
                 Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                float angle = Vector3.Angle(pointDir,Trans.forward);
+                float angle = Vector3.Angle(pointDir, Trans.forward);
+                float a = Vector3.Distance(patrolPos[patrolNum].transform.position,Trans.position);
                 if (angle < 3)
                 {
                     if (agentSetUpFlag)
@@ -133,17 +135,19 @@ public class EnemyTest : EnemyBase
                     }
                     agent.SetDestination(patrolPos[patrolNum].transform.position);
                     agent.nextPosition = Trans.position;
-                    float a = Vector3.Distance(Trans.position, patrolPos[patrolNum].transform.position);
-                    if (!agent.pathPending && agent.remainingDistance > 5f && a < 5f)
-                    {
-                        Debug.Log("変更２");
-                        AgentParamSet(false);
-                        patrolNum++;
-                    }
+                }
+                else if (angle != 3 && a < 10)
+                {
+                    agentSetUpFlag = true;
+                    AgentParamSet(false);
+                    patrolNum++;
                 }
             }
         }
-        else state = State.Idol;
+        else
+        {
+            state = State.Idol;
+        }
     }
     private void AgentParamSet(bool f)
     {
@@ -179,7 +183,11 @@ public class EnemyTest : EnemyBase
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Player") playerFind = true;
+        if (collision.gameObject.tag == "Player")
+        {
+            playerFindPos = collision.gameObject.transform.position;
+            playerFind = true;
+        }
         if (collision.gameObject.tag == "Grand") isGranded = true;
     }
 }

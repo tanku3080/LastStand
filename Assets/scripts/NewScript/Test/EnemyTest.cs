@@ -18,13 +18,13 @@ public class EnemyTest : EnemyBase
     Transform tankBody = null;
     bool isPlayer = false;
     [SerializeField] GameObject[] patrolPos;
-    int patrolNum = 1;
+    int patrolNum = 0;
     [SerializeField] GameObject target = null;
     bool playerFind = false;
     float nowLimitRange = 0f;
     bool controllAcsess = false;
     bool isGranded = false;
-    bool firstUseFlag = true;
+    private bool agentSetUpFlag = true;
 
     void Start()
     {
@@ -48,12 +48,10 @@ public class EnemyTest : EnemyBase
         rightTank = tankBody.GetChild(1);
 
         agent = GetComponent<NavMeshAgent>();
-        //navmeshで移動するときに使う
-        agent.speed = 0;
-        agent.angularSpeed = 0;
-        agent.acceleration = 0;
+        
         agent.autoBraking = true;
         agent.stoppingDistance = 0.5f;
+        AgentParamSet(false);
 
         defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
@@ -81,17 +79,24 @@ public class EnemyTest : EnemyBase
         
         if (controllAcsess)
         {
-            switch (state)//原点回帰
+            if (isGranded)
             {
-                case State.Idol:
-                    if (isPlayer) state = State.Atack;
-                    else state = State.Move;
-                    break;
-                case State.Move:
-                    Moving();
-                    break;
-                case State.Atack:
-                    break;
+                switch (state)//原点回帰
+                {
+                    case State.Idol:
+                        if (isPlayer) state = State.Atack;
+                        else state = State.Move;
+                        break;
+                    case State.Move:
+                        Moving();
+                        break;
+                    case State.Atack:
+                        break;
+                }
+            }
+            else
+            {
+                Trans.position = Vector3.down;
             }
         }
     }
@@ -104,6 +109,7 @@ public class EnemyTest : EnemyBase
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 //今回の場合は予めオブジェクトを一つ用意した。
+                Debug.Log("発見");
                 Vector3 dis = target.transform.position - Trans.position;
                 Quaternion rotet = Quaternion.LookRotation(dis);
                 tankGun.rotation = Quaternion.Slerp(Trans.rotation,rotet,ETankHead_R_SPD * Time.deltaTime);
@@ -111,33 +117,40 @@ public class EnemyTest : EnemyBase
             }
             else
             {
-                if (firstUseFlag)
-                {
-                    Debug.Log("めっしゃ");
-                    if (patrolPos.Length < patrolNum) patrolNum = 0;
-                    firstUseFlag = false;
-                    var path = new NavMeshPath();
-                    NavMesh.CalculatePath(Trans.position, patrolPos[patrolNum].transform.position, NavMesh.AllAreas, path);
-                }
-                var point = agent.steeringTarget;
+                if (patrolPos.Length < patrolNum) patrolNum = 0;
+                var point = patrolPos[patrolNum].transform.position;
                 Vector3 pointDir = point - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
+                
                 Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                float angle = Vector3.Angle(Trans.forward,pointDir);
-                //現状アングルが0だろうとなかろうと移動するのでそれを何とかする
-                if (angle == 0)
+                float angle = Vector3.Angle(pointDir,Trans.forward);
+                if (angle < 3)
                 {
-                    agent.SetDestination(target.transform.position);
-                    agent.nextPosition = Trans.position;
-                    if (agent.isStopped)
+                    if (agentSetUpFlag)
                     {
+                        agentSetUpFlag = false;
+                        AgentParamSet(true);
+                    }
+                    agent.SetDestination(patrolPos[patrolNum].transform.position);
+                    agent.nextPosition = Trans.position;
+                    float a = Vector3.Distance(Trans.position, patrolPos[patrolNum].transform.position);
+                    if (!agent.pathPending && agent.remainingDistance > 5f && a < 5f)
+                    {
+                        Debug.Log("変更２");
+                        AgentParamSet(false);
                         patrolNum++;
-                        firstUseFlag = true;
                     }
                 }
             }
         }
         else state = State.Idol;
+    }
+    private void AgentParamSet(bool f)
+    {
+        Debug.Log("ParametorSet");
+        agent.speed = f ? enemySpeed / 2 : 0;
+        agent.angularSpeed = f ? ETankTurn_Speed : 0;
+        agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
 
     void Atack()
@@ -164,13 +177,9 @@ public class EnemyTest : EnemyBase
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
-        if (other.gameObject.tag == "Player") playerFind = true;
-        if (other.gameObject.tag == "Grand") isGranded = true;
-        else
-        {
-            Debug.Log("接地してない");
-        }
+        if (collision.gameObject.tag == "Player") playerFind = true;
+        if (collision.gameObject.tag == "Grand") isGranded = true;
     }
 }

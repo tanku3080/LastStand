@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Cinemachine;
 
+/// <summary>このスクリプトはテスト用として作っているのでコードが気持ち悪くなる</summary>
 public class EnemyTest : EnemyBase
 {
     enum State
@@ -43,6 +44,7 @@ public class EnemyTest : EnemyBase
         Anime = gameObject.GetComponent<Animator>();
         Trans = gameObject.GetComponent<Transform>();
         tankHead = Trans.GetChild(1);
+        Debug.Log(tankHead);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).transform.gameObject;
         tankBody = Trans.GetChild(0);
@@ -111,11 +113,12 @@ public class EnemyTest : EnemyBase
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 //今回の場合は予めオブジェクトを一つ用意した。
-                Debug.Log("発見");
-                Vector3 dis = target.transform.position - Trans.position;
-                Quaternion rotet = Quaternion.LookRotation(dis);
-                tankGun.rotation = Quaternion.Slerp(Trans.rotation, rotet, ETankHead_R_SPD * Time.deltaTime);
-                isPlayer = true;
+                Vector3 pointDir = target.transform.position - tankHead.position;
+                Quaternion rotetion = Quaternion.LookRotation(pointDir);
+                tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation,rotetion,ETankHead_R_SPD * Time.deltaTime);
+                float angle = Vector3.Angle(pointDir,tankGun.forward);
+                if (angle < 3) isPlayer = true;
+                MoveLimit();
             }
             else
             {
@@ -142,6 +145,7 @@ public class EnemyTest : EnemyBase
                     AgentParamSet(false);
                     patrolNum++;
                 }
+                MoveLimit();
             }
         }
         else
@@ -159,6 +163,7 @@ public class EnemyTest : EnemyBase
 
     void Atack()
     {
+        Debug.Log("はいっちゃった。。。");
         float t = Time.deltaTime;
         float rot = ETankTurn_Speed * Time.deltaTime;
         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
@@ -183,11 +188,19 @@ public class EnemyTest : EnemyBase
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Grand") isGranded = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
         {
-            playerFindPos = collision.gameObject.transform.position;
+            playerFindPos = other.gameObject.transform.position;
             playerFind = true;
         }
-        if (collision.gameObject.tag == "Grand") isGranded = true;
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player") playerFind = false;
     }
 }

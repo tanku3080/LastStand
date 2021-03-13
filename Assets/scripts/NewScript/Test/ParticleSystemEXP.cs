@@ -1,28 +1,33 @@
 ﻿using UnityEngine;
 
-public class ParticleSystemEXP : MonoBehaviour
+public class ParticleSystemEXP : Singleton<ParticleSystemEXP>
 {
-    [SerializeField] ParticleSystem system = null;
-    // Start is called before the first frame update
-    void Start()
+    public enum ParticleStatus
     {
+        GunFire,Hit,Destroy
     }
-
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// パーティクルシステムを再生させる
+    /// </summary>
+    /// <param name="origin">再生させる地点場所</param>
+    /// <param name="status">なんの効果か？</param>
+    public void StartParticle(Transform origin,ParticleStatus status)
     {
-        if (Input.GetKeyUp(KeyCode.Return))
+        string name = null;
+        switch (status)
         {
-            var t = gameObject.transform.GetChild(0);
-            t = Instantiate((GameObject)Resources.Load("GunFirering"),t.position,Quaternion.identity).transform;
-            t.parent = transform;
+            case ParticleStatus.GunFire:
+                name = "GunFirering";
+                break;
+            case ParticleStatus.Hit:
+                name = "Hit";
+                break;
+            case ParticleStatus.Destroy:
+                //入れる物が決まっていない
+                name = "nameless";
+                break;
         }
-
-        if (Input.GetKeyUp(KeyCode.P))
-        {
-            var t = gameObject.transform.GetChild(0);
-            t = Instantiate((GameObject)Resources.Load("Hit"), t.position, Quaternion.identity).transform;
-            t.parent = transform;
-        }
+        origin = Instantiate((GameObject)Resources.Load(name), origin.transform.position, Quaternion.identity).transform;
+        origin.parent = transform;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+/// <summary>各種パーティクルオブジェクトにアタッチするスクリプト</summary>
 public class Particle : MonoBehaviour
 {
     ParticleSystem system;
@@ -13,6 +14,10 @@ public class Particle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (system.isStopped)
+        {
+            Destroy(this.gameObject);
+        }
         //if (system.isStopped)
         //{
         //    system.Clear();

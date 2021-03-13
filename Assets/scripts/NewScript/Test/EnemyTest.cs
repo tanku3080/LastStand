@@ -178,6 +178,7 @@ public class EnemyTest : EnemyBase
             {
                 Debug.Log("はずれ");
             }
+            ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
             atackCounter--;
         }
 

@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 3061141348828962697}
   - component: {fileID: 3061141348828962703}
   - component: {fileID: 3061141348828962702}
-  - component: {fileID: 7280570225046973934}
+  - component: {fileID: 4694808819838322548}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -231,7 +231,6 @@ MonoBehaviour:
   Fsfx: {fileID: 0}
   fire2sfx: {fileID: 0}
   Aimsfx: {fileID: 0}
-  TankSfx: {fileID: 0}
   tankChengeSfx: {fileID: 0}
   tankHeadsfx: {fileID: 0}
   atackSfx: {fileID: 0}
@@ -389,11 +388,11 @@ MonoBehaviour:
   enemys: []
   nowPayer: {fileID: 0}
   nowEnemy: {fileID: 0}
-  turnText: {fileID: 0}
-  moveIconParent: {fileID: 0}
+  moveValue: {fileID: 0}
   controlPanel: {fileID: 0}
   playerBGM: {fileID: 0}
   enemyBGM: {fileID: 0}
+  tankMove: {fileID: 0}
   text1: {fileID: 0}
   announceImage: {fileID: 0}
   annouceText: {fileID: 0}
@@ -410,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db9c9b8f6f6cf5409e10a3dfaccf38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7280570225046973934
+--- !u!114 &4694808819838322548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -419,7 +418,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3061141348828962693}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7198c877482cb84f95d972c04f68fee, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cc656e723b760244acade317831f5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroy: 0

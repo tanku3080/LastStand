@@ -55,7 +55,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             specialObj = GameObject.Find("specialStatusUI");
             announceObj = GameObject.Find("announceUI");
         }
-        ChengePop(false,GameObject.Find("TankMoveSouce"));
+        ////多分、移動時の音楽の事だと思う
+        //ChengePop(false,GameObject.Find("TankMoveSouce"));
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
         turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
         ChengePop(false);

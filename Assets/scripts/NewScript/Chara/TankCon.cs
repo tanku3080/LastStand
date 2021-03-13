@@ -278,6 +278,7 @@ public class TankCon : PlayerBase
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
+        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
         GameManager.Instance.ChengePop(true,tankGunFire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);

@@ -16,19 +16,19 @@ public class TargetScript : MonoBehaviour
     {
         if (nowHp <= 0)
         {
-            Debug.Log("うああああ");
-            DieSet();
-            //Invoke("DieSet",2f);
+            Invoke("DieSet", 1.5f);
         }
     }
     void DieSet()
     {
+        ParticleSystemEXP.Instance.StartParticle(transform,ParticleSystemEXP.ParticleStatus.Destroy);
         manager.Die(gameObject);
     }
 
     public void Damage(int damage)
     {
         nowHp -= damage;
+        ParticleSystemEXP.Instance.StartParticle(transform,ParticleSystemEXP.ParticleStatus.Hit);
         Debug.Log("現在の体力は" + nowHp);
     }
 }

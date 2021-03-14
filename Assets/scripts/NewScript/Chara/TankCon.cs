@@ -161,7 +161,7 @@ public class TankCon : PlayerBase
         if (aim)
         {
             TurnManager.Instance.playerIsMove = false;
-
+            GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             if (Input.GetButtonUp("Fire1"))
@@ -198,6 +198,7 @@ public class TankCon : PlayerBase
         else
         {
             TurnManager.Instance.playerIsMove = true;
+            GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,aimCom.gameObject);
             var p = tankGun.transform.rotation;

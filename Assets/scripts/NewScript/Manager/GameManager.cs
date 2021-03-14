@@ -72,13 +72,13 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
-        DontDestroyOnLoad(tankChengeObj.transform.parent);
+        DontDestroyOnLoad(transform.parent);
     }
     bool oneTimeFlag = true;
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name != "GamePlay" || SceneManager.GetActiveScene().name != "TestMap")
+        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
             if (oneTimeFlag)
             {

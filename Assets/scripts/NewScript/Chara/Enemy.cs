@@ -19,9 +19,9 @@ public class Enemy : EnemyBase
     int patrolNum = 0;
     public bool controlAccess = false;
     private bool isGrand = false;
-
+    
     private float enemyMoveNowValue;
-    private int counter = 0;
+    public int nowCounter = 0;
 
     bool agentSetUpFlag = true;
     bool atackFlag = false;
@@ -46,9 +46,10 @@ public class Enemy : EnemyBase
         AgentParamSet(false);
         
         state = EnemyState.Idol;
+        enemyMoveNowValue = ETankLimitRange;
 
     }
-
+    bool oneFlag = true;
     private void Update()
     {
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
@@ -58,14 +59,16 @@ public class Enemy : EnemyBase
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
-                    if (eAtackCount <= counter || TurnManager.Instance.EnemyMoveVal <= 0)
+                    if (eAtackCount <= nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
                     {
-                        TurnManager.Instance.MoveCharaSet(false, true);
+                        oneFlag = false;
+                        Debug.Log("なんで？");
+                        TurnManager.Instance.MoveCharaSet(false, true,TurnManager.Instance.EnemyMoveVal);
                     }
 
                     if (TurnManager.Instance.EnemyMoveVal > 0)
                     {
-                        if (isPlayer && eAtackCount > counter) state = EnemyState.Atack;
+                        if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
                         else state = EnemyState.Move;
                     }
                     break;
@@ -73,6 +76,7 @@ public class Enemy : EnemyBase
                     EnemyMove();
                     break;
                 case EnemyState.Atack:
+                    Debug.Log("攻撃");
                     PlayerAtack();
                     break;
             }
@@ -85,20 +89,21 @@ public class Enemy : EnemyBase
 
     private void AgentParamSet(bool f)
     {
-        agent.speed = f ? enemySpeed / 2 : 0;
+        agent.speed = f ? enemySpeed / 4 : 0;
         agent.angularSpeed = f ? ETankTurn_Speed : 0;
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
 
     void EnemyMove()
     {
-        if (!isPlayer && enemyMoveNowValue > 0)
+        if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
         {
             if (playerFind)
             {
-                Debug.Log("見つけた");
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 //今回の場合は予めオブジェクトを一つ用意した。
+                AgentParamSet(false);
+                agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
@@ -108,7 +113,6 @@ public class Enemy : EnemyBase
             }
             else
             {
-                Debug.Log("どこ？");
                 if (patrolPos.Length < patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
@@ -148,13 +152,13 @@ public class Enemy : EnemyBase
     void PlayerAtack()
     {
         float result = Random.Range(0,100);
-        if (result < 50)//成功
-        {
-            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
-        }
-        else if (result < 10)//クリティカル
+        if (result < 10)//クリティカル
         {
             NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
+        }
+        else if (result < 50)//成功
+        {
+            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
         }
         if (result > 50)
         {
@@ -162,7 +166,8 @@ public class Enemy : EnemyBase
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
         ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
-        counter++;
+        nowCounter++;
+        state = EnemyState.Idol;
     }
 
     /// <summary>
@@ -203,11 +208,18 @@ public class Enemy : EnemyBase
         if (other.gameObject.tag == "Player")
         {
             playerFind = true;
+            AgentParamSet(false);
+            state = EnemyState.Idol;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player") isPlayer = false;
+        if (other.gameObject.tag == "Player")
+        {
+            isPlayer = false;
+            AgentParamSet(true);
+            state = EnemyState.Idol;
+        }
     }
     public void EnemyEnebled(bool f)
     {

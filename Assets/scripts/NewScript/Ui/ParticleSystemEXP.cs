@@ -23,8 +23,7 @@ public class ParticleSystemEXP : Singleton<ParticleSystemEXP>
                 name = "Hit";
                 break;
             case ParticleStatus.Destroy:
-                //入れる物が決まっていない
-                name = "nameless";
+                name = "Destroy";
                 break;
         }
         origin = Instantiate((GameObject)Resources.Load(name), origin.transform.position, Quaternion.identity).transform;

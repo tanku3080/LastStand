@@ -97,9 +97,9 @@ public class TurnManager : Singleton<TurnManager>
     // Update is called once per frame
     void Update()
     {
+        PlayMusic();
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
-            //PlayMusic();
             TurnManag();
         }
 
@@ -109,35 +109,46 @@ public class TurnManager : Singleton<TurnManager>
     bool flag = true;
     public void PlayMusic()
     {
-        if (flag)
+        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
+            if (flag)
+            {
 
-            GameManager.Instance.ChengePop(false,playerBGM);
+                GameManager.Instance.ChengePop(false, playerBGM);
+                GameManager.Instance.ChengePop(false, enemyBGM);
+                enemyMPlay = false;
+                playerMPlay = false;
+                flag = false;
+            }
+            else
+            {
+                if (playerMPlay && enemyMPlay)
+                {
+                    return;
+                }
+                if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
+                {
+                    GameManager.Instance.ChengePop(true, playerBGM);
+                    GameManager.Instance.ChengePop(false, enemyBGM);
+                    enemyMPlay = false;
+                    playerMPlay = true;
+                }
+                if (enemyTurn && playerMPlay)
+                {
+                    GameManager.Instance.ChengePop(true, enemyBGM);
+                    GameManager.Instance.ChengePop(false, playerBGM);
+                    playerMPlay = false;
+                    enemyMPlay = true;
+                }
+            }
+        }
+        else
+        {
+            GameManager.Instance.ChengePop(false, playerBGM);
             GameManager.Instance.ChengePop(false, enemyBGM);
             enemyMPlay = false;
             playerMPlay = false;
             flag = false;
-        }
-        else
-        {
-            if (playerMPlay && enemyMPlay)
-            {
-                return;
-            }
-            if (playerTurn)
-            {
-                GameManager.Instance.ChengePop(true, playerBGM);
-                GameManager.Instance.ChengePop(false, enemyBGM);
-                enemyMPlay = false;
-                playerMPlay = true;
-            }
-            if (enemyTurn)
-            {
-                GameManager.Instance.ChengePop(true, enemyBGM);
-                GameManager.Instance.ChengePop(false, playerBGM);
-                playerMPlay = false;
-                enemyMPlay = true;
-            }
         }
     }
     bool turnFirstNumFlag = true;
@@ -155,6 +166,7 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (timeLlineF)
         {
+            
             TurnTextMove();
             StartTimeLine();
         }
@@ -168,7 +180,6 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (GameManager.Instance.isGameScene)
         {
-            //Camera.main.farClipPlane = 500f;
             MoveCounterText(text1);
             //初回のみ
             if (generalTurn == 1)
@@ -290,12 +301,8 @@ public class TurnManager : Singleton<TurnManager>
                     enemyNum = 0;
                     TurnEnd();
                 }
-                if (enemyNum > enemys.Count)
-                {
-                    Debug.Log("敵修正");
-                    enemyNum = 0;
-                }
-                else if (enemys.Count == 0) return;
+                else if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+                else if (nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount) TurnEnd();
                 else
                 {
                     enemyNum++;
@@ -381,6 +388,7 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
             GameManager.Instance.ChengePop(false, GameManager.Instance.turretCorrectionF);
             GameManager.Instance.ChengePop(false, GameManager.Instance.announceObj);
+            GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
 
             playerTurn = false;
             enemyTurn = true;
@@ -395,10 +403,10 @@ public class TurnManager : Singleton<TurnManager>
             Debug.Log("全ての陣営が終了");
             generalTurn++;
             enemyTurn = false;
+            playerTurn = true;
+            timeLlineF = true;
             MoveCharaSet(true,false);
             GameManager.Instance.isGameScene = true;//?
-            timeLlineF = true;
-            eventF = true;
             return;
         }
     }
@@ -428,7 +436,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(true, GameManager.Instance.announceObj);
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
         annouceText.text = n;
-        Invoke("OneUseMethod",3f);
+        Invoke("OneUseMethod", 3f);
     }
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
     private void OneUseMethod() => GameManager.Instance.ChengePop(false, GameManager.Instance.announceObj);

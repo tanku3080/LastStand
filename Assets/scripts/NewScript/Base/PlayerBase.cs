@@ -43,7 +43,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
 
     public void Damage(int damage)
     {
-        Debug.Log("なんで？");
+        ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.Hit);
         if (playerLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);

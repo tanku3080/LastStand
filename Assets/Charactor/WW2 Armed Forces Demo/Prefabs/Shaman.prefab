@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 2797362241717919789}
   - component: {fileID: 1588032617007523988}
   - component: {fileID: 40888934370792437}
+  - component: {fileID: 5819920205099797134}
   m_Layer: 0
   m_Name: Shaman
   m_TagString: Enemy
@@ -397,9 +398,32 @@ MonoBehaviour:
   EborderLine: {fileID: 0}
   eTankDamage: 0
   eAtackCount: 0
-  agent: {fileID: 0}
+  agent: {fileID: 5819920205099797134}
   patrolPos: []
   controlAccess: 0
+  nowCounter: 0
+--- !u!195 &5819920205099797134
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335991254495539031}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 2.7635474
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 3.9610343
+  m_BaseOffset: 1.9805171
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &4745900649550006179
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +577,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6395593760920767721}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 2.0161276, y: 0.8369819, z: 2.143672}

@@ -41,7 +41,13 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public bool clickC = true;
     private int nowTurnValue = 0;
     Navigation nav;
-    // Start is called before the first frame update
+
+    override protected void Awake()
+    {
+        //これは必須。start関数内に置いたら処理する前に呼び出されるので現状このように記述する
+        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
+        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
+    }
 
     void Start()
     {
@@ -55,23 +61,30 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             specialObj = GameObject.Find("specialStatusUI");
             announceObj = GameObject.Find("announceUI");
         }
-        ////多分、移動時の音楽の事だと思う
-        //ChengePop(false,GameObject.Find("TankMoveSouce"));
-        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
-        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
-        ChengePop(false);
+        ChengePop(false,tankChengeObj);
+        ChengePop(false, radarObj);
+        ChengePop(false, pauseObj);
+        ChengePop(false, limitedBar);
+        ChengePop(false, endObj);
+        ChengePop(false, hittingTargetR);
+        ChengePop(false, turretCorrectionF);
+        ChengePop(false, announceObj);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
         DontDestroyOnLoad(tankChengeObj.transform.parent);
     }
-
+    bool oneTimeFlag = true;
     // Update is called once per frame
     void Update()
     {
         if (SceneManager.GetActiveScene().name != "GamePlay" || SceneManager.GetActiveScene().name != "TestMap")
         {
-            TurnManager.Instance.PlayMusic(true);
+            if (oneTimeFlag)
+            {
+                oneTimeFlag = false;
+                TurnManager.Instance.PlayMusic();
+            }
         }
         if (SceneManager.GetActiveScene().name == "Start")
         {
@@ -281,28 +294,23 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     /// <summary>
-    /// 確認メッセージやその他非表示オブジェクトを表示。第二引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
+    /// 確認メッセージやその他非表示オブジェクトを表示。第3引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        if (obj == null)
-        {
-            tankChengeObj.SetActive(isChenge);
-            pauseObj.SetActive(isChenge);
-            radarObj.SetActive(isChenge);
-            limitedBar.SetActive(isChenge);
-            endObj.SetActive(isChenge);
-            hittingTargetR.gameObject.SetActive(isChenge);
-            turretCorrectionF.gameObject.SetActive(isChenge);
-            announceObj.gameObject.SetActive(isChenge);
-        }
-        else obj.SetActive(isChenge);
-
+        obj.SetActive(isChenge);
     }
 
     public void TurnEnd()
     {
         TurnManager.Instance.playerTurn = true;
-        ChengePop(false);
+        ChengePop(false, tankChengeObj);
+        ChengePop(false, radarObj);
+        ChengePop(false, pauseObj);
+        ChengePop(false, limitedBar);
+        ChengePop(false, endObj);
+        ChengePop(false, hittingTargetR);
+        ChengePop(false, turretCorrectionF);
+        ChengePop(false, announceObj);
     }
 }

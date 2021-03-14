@@ -14,8 +14,7 @@ public class TankCon : PlayerBase
 
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
-    //移動制限用
-    [SerializeField] float limitRange = 50f;
+
 
     bool AimFlag = false;
     //これがtureじゃないとPlayerの操作権はない
@@ -44,7 +43,7 @@ public class TankCon : PlayerBase
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).gameObject;
-        GameManager.Instance.ChengePop(false,tankGunFire);
+        //GameManager.Instance.ChengePop(false,tankGunFire);
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
@@ -141,16 +140,17 @@ public class TankCon : PlayerBase
 
     void TankMoveSFXPlay(bool move)
     {
-        if (move && MoveAudioFlag)
-        {
-            GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
-            MoveAudioFlag = false;
-        }
-        else
-        {
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
-            MoveAudioFlag = true;
-        }
+        //これは失敗なので保留
+        //if (move && MoveAudioFlag)
+        //{
+        //    GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
+        //    MoveAudioFlag = false;
+        //}
+        //else
+        //{
+        //    GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
+        //    MoveAudioFlag = true;
+        //}
     }
     private int limitCounter = 0;
     /// <summary>
@@ -198,8 +198,8 @@ public class TankCon : PlayerBase
         else
         {
             TurnManager.Instance.playerIsMove = true;
-            defaultCon.gameObject.SetActive(true);
-            aimCom.gameObject.SetActive(false);
+            GameManager.Instance.ChengePop(true,defaultCon.gameObject);
+            GameManager.Instance.ChengePop(false,aimCom.gameObject);
             var p = tankGun.transform.rotation;
             p.x = 0;
             p.z = 0;

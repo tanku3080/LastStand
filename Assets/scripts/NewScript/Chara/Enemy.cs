@@ -10,7 +10,6 @@ public class Enemy : EnemyBase
     EnemyState state;
     public NavMeshAgent agent;
     bool moveLimitGetFlag = true;
-    [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     GameObject tankGunFire = null;
     Transform tankBody = null;
     bool isPlayer = false;
@@ -39,8 +38,6 @@ public class Enemy : EnemyBase
         leftTank = tankBody.GetChild(0);
         rightTank = tankBody.GetChild(1);
         agent = GetComponent<NavMeshAgent>();
-        defaultCon = TurnManager.Instance.EnemyDefCon;
-        defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
         EnemyEnebled(TurnManager.Instance.FoundEnemy);

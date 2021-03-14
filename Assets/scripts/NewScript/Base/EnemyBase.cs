@@ -22,10 +22,6 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public Transform Trans { get; protected set; } = null;
     public MeshRenderer Renderer { get; protected set; } = null;
 
-    private void Start()
-    {
-    }
-
     protected void EnemyDie(MeshRenderer mesh)
     {
         Trans.position = Vector3.one * (Random.Range(1000, 2000));

@@ -437,7 +437,7 @@ MonoBehaviour:
     FieldOfView: 60
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 100
+    FarClipPlane: 3000
     Dutch: 0
     LensShift: {x: 0, y: 0}
   m_Transitions:
@@ -601,7 +601,7 @@ MonoBehaviour:
     FieldOfView: 60
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 100
+    FarClipPlane: 3000
     Dutch: 0
     LensShift: {x: 0, y: 0}
   m_Transitions:
@@ -725,7 +725,6 @@ MonoBehaviour:
   tankGunFire: {fileID: 0}
   defaultCon: {fileID: 7576060103055054428}
   aimCom: {fileID: 8274577534991772504}
-  limitRange: 10
   controlAccess: 0
   cameraActive: 1
   atackCheck: 0

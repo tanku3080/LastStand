@@ -137,10 +137,6 @@ public class TankCon : PlayerBase
         }
 
 
-        if (playerLife <= 0)
-        {
-            PlayerDie(Renderer);
-        }
     }
 
     void TankMoveSFXPlay(bool move)

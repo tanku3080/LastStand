@@ -34,6 +34,12 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
 
     public void Damage(int damager)
     {
+
+        if (enemyLife <= 0)
+        {
+            TurnManager.Instance.CharactorDie(gameObject);
+            EnemyDie(Renderer);
+        }
         enemyLife -= damager;
     }
 }

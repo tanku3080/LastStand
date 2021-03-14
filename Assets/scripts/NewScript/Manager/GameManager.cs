@@ -138,7 +138,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             TurnManager.Instance.enemyIsMove = !clickC;
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.P) && clickC == false && pauseObj.activeSelf == true)
+        else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
             source.PlayOneShot(cancel);
             ChengePop(clickC, pauseObj);

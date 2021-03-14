@@ -76,7 +76,6 @@ public class SceneCreate : MonoBehaviour
             ManagersObj.AddComponent<GameManager>();
             ManagersObj.AddComponent<TurnManager>();
             ManagersObj.AddComponent<SceneFadeManager>();
-            ManagersObj.AddComponent<DieManager>();
             ManagersObj.AddComponent<AudioSource>();
             //以下Canvasオブジェクトにアタッチ
             c.gameObject.layer = 5;

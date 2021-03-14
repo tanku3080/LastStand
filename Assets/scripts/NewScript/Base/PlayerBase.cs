@@ -43,6 +43,12 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
 
     public void Damage(int damage)
     {
+        Debug.Log("なんで？");
+        if (playerLife <= 0)
+        {
+            TurnManager.Instance.CharactorDie(gameObject);
+            PlayerDie(Renderer);
+        }
         playerLife -= damage;
     }
 }

@@ -3,30 +3,31 @@ using UnityEngine;
 
 public class TargetScript : MonoBehaviour
 {
-    [SerializeField] int hp = 1000;
+    [SerializeField] int hp = 10;
     public int nowHp;
+    TestGameanager manager;
     private void Start()
     {
         nowHp = hp;
+        manager = GameObject.Find("ManagerObj").GetComponent<TestGameanager>();
     }
     // Update is called once per frame
     void Update()
     {
-        if (nowHp == 0)
+        if (nowHp <= 0)
         {
             Debug.Log("うああああ");
-            Invoke("Die",2f);
-            Destroy(gameObject);
+            DieSet();
+            //Invoke("DieSet",2f);
         }
     }
-    void Die()
+    void DieSet()
     {
-        Destroy(gameObject);
+        manager.Die(gameObject);
     }
 
     public void Damage(int damage)
     {
-        Debug.Log("与えるダメージ" + damage);
         nowHp -= damage;
         Debug.Log("現在の体力は" + nowHp);
     }

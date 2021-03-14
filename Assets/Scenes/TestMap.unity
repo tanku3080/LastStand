@@ -577,12 +577,12 @@ PrefabInstance:
     - target: {fileID: 4268324642149175846, guid: 03bd5e3ea2209eb49a5742f90b548d10,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000000021492532
+      value: -0.0000000021492532
       objectReference: {fileID: 0}
     - target: {fileID: 4268324642149175846, guid: 03bd5e3ea2209eb49a5742f90b548d10,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -8.1490086e-11
+      value: 8.1490086e-11
       objectReference: {fileID: 0}
     - target: {fileID: 4946670193906062939, guid: 03bd5e3ea2209eb49a5742f90b548d10,
         type: 3}
@@ -668,7 +668,7 @@ PrefabInstance:
     - target: {fileID: 9092621079786991252, guid: 03bd5e3ea2209eb49a5742f90b548d10,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03bd5e3ea2209eb49a5742f90b548d10, type: 3}
@@ -1130,7 +1130,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 857787086}
+      objectReference: {fileID: 857787084}
     - target: {fileID: 7772974173074431857, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1139,7 +1139,7 @@ PrefabInstance:
     - target: {fileID: 7772974173074431857, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameManager, Assembly-CSharp
+      value: TurnManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7772974173093863158, guid: eff84882db7e6c042b0fbf1be50e5e58,
         type: 3}
@@ -1328,7 +1328,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-10302
+  m_Name: pb_Mesh-80782
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1700,34 +1700,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1505879007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505879005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 515503ab8f855b04195e26f5fe77a35f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyLife: 10
-  enemySpeed: 5
-  ETankHead_R_SPD: 0
-  ETankTurn_Speed: 0
-  ETankLimitSpeed: 0
-  ETankLimitRange: 0
-  EborderLine: {fileID: 0}
-  eTankDamage: 0
-  eAtackCount: 0
-  agent: {fileID: 1505879006}
-  patrolPos:
-  - {fileID: 1466395487}
-  - {fileID: 55529370}
-  - {fileID: 389894962}
-  - {fileID: 1214376229}
-  controlAccess: 0
 --- !u!1001 &1530544665
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1737,9 +1709,39 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
         type: 3}
+      propertyPath: patrolPos.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
       propertyPath: EborderLine
       value: 
       objectReference: {fileID: 1387168378}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 1505879006}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
+      propertyPath: patrolPos.Array.data[0]
+      value: 
+      objectReference: {fileID: 1466395487}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
+      propertyPath: patrolPos.Array.data[1]
+      value: 
+      objectReference: {fileID: 55529370}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
+      propertyPath: patrolPos.Array.data[2]
+      value: 
+      objectReference: {fileID: 389894962}
+    - target: {fileID: 40888934370792437, guid: ad899c9168e7f5c4db7f2447350a5249,
+        type: 3}
+      propertyPath: patrolPos.Array.data[3]
+      value: 
+      objectReference: {fileID: 1214376229}
     - target: {fileID: 147720089228135941, guid: ad899c9168e7f5c4db7f2447350a5249,
         type: 3}
       propertyPath: m_Layer

@@ -245,7 +245,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     /// <param name="player">playerの場合はtrue</param>
     /// <param name="enemy">enemyの場合はtrue</param>
-    public void MoveCharaSet(bool player = false,bool enemy = false,int moveV = 0)
+    public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
         if (playerTurn && player)
         {
@@ -255,9 +255,7 @@ public class TurnManager : Singleton<TurnManager>
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
                 if (playerNum >= players.Count)//問題個所はここ
                 {
-                    Debug.Log("修正");
-                    playerCam = 1;
-                    playerNum = 0;
+                    GameManager.Instance.ChengePop(true, GameManager.Instance.endObj);
                 }
                 else
                 {
@@ -282,9 +280,7 @@ public class TurnManager : Singleton<TurnManager>
             if (enemyFirstColl)
             {
                 enemyFirstColl = false;
-                nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
-                VcamChenge();
             }
             if (moveV > 0)
             {
@@ -305,10 +301,9 @@ public class TurnManager : Singleton<TurnManager>
                     enemyNum++;
                 }
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
-                VcamChenge();
             }
             enemy = false;
-            enemyNum++;
+            //enemyNum++;
         }
     }
     /// <summary>
@@ -378,9 +373,20 @@ public class TurnManager : Singleton<TurnManager>
         EnemyMoveVal = 4;
         if (playerTurn)
         {
+            GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.radarObj);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.pauseObj);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.limitedBar);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.endObj);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.announceObj);
+
             playerTurn = false;
             enemyTurn = true;
             timeLlineF = true;
+            nowPayer.GetComponent<TankCon>().controlAccess = false;
+            enemyFirstColl = true;
             MoveCharaSet(false, true);
             return;
         }

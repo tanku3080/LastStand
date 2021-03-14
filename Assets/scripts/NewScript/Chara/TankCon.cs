@@ -58,9 +58,9 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        Rd.isKinematic = false;
         if (controlAccess)
         {
+            Rd.isKinematic = false;
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;

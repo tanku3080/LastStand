@@ -54,30 +54,27 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
-            if (isGrand)
+            Rd.isKinematic = false;
+            switch (state)//idolを全ての終着点に
             {
-                Rd.isKinematic = false;
-                switch (state)//idolを全ての終着点に
-                {
-                    case EnemyState.Idol:
-                        if (eAtackCount <= counter || enemyMoveNowValue <= 0)
-                        {
-                            TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
-                        }
+                case EnemyState.Idol:
+                    if (eAtackCount <= counter || TurnManager.Instance.EnemyMoveVal <= 0)
+                    {
+                        TurnManager.Instance.MoveCharaSet(false, true);
+                    }
 
-                        if (TurnManager.Instance.EnemyMoveVal > 0)
-                        {
-                            if (isPlayer && eAtackCount > counter) state = EnemyState.Atack;
-                            else state = EnemyState.Move;
-                        }
-                        break;
-                    case EnemyState.Move:
-                        EnemyMove();
-                        break;
-                    case EnemyState.Atack:
-                        PlayerAtack();
-                        break;
-                }
+                    if (TurnManager.Instance.EnemyMoveVal > 0)
+                    {
+                        if (isPlayer && eAtackCount > counter) state = EnemyState.Atack;
+                        else state = EnemyState.Move;
+                    }
+                    break;
+                case EnemyState.Move:
+                    EnemyMove();
+                    break;
+                case EnemyState.Atack:
+                    PlayerAtack();
+                    break;
             }
         }
         else
@@ -99,6 +96,7 @@ public class Enemy : EnemyBase
         {
             if (playerFind)
             {
+                Debug.Log("見つけた");
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 //今回の場合は予めオブジェクトを一つ用意した。
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
@@ -110,6 +108,7 @@ public class Enemy : EnemyBase
             }
             else
             {
+                Debug.Log("どこ？");
                 if (patrolPos.Length < patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
@@ -188,10 +187,17 @@ public class Enemy : EnemyBase
     }
 
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "Grand") isGrand = true;
-    }
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    //入れていない
+    //    if (collision.gameObject.tag == "Grand") isGrand = true;
+    //    Debug.Log("入っちゃった");
+    //}
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "Grand") isGrand = false;
+    //    Debug.Log("出ちゃった・・・");
+    //}
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")

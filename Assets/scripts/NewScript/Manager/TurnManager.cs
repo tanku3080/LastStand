@@ -102,6 +102,11 @@ public class TurnManager : Singleton<TurnManager>
         {
             TurnManag();
         }
+        else
+        {
+            GameManager.Instance.ChengePop(false,GameManager.Instance.limitedBar);
+            GameManager.Instance.ChengePop(false,moveValue);
+        }
 
     }
     private bool playerMPlay = false;

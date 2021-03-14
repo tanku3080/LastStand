@@ -72,7 +72,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
-        DontDestroyOnLoad(transform.parent);
+        DontDestroyOnLoad(gameObject);
     }
     bool oneTimeFlag = true;
     // Update is called once per frame

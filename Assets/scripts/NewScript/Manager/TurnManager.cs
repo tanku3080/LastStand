@@ -368,8 +368,8 @@ public class TurnManager : Singleton<TurnManager>
         {
             GameManager.Instance.ChengePop(true,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
-            DefCon = GameObject.Find($"CM vcam{playerCam}").GetComponent<CinemachineVirtualCamera>();
-            AimCon = GameObject.Find($"CM vcam{playerCam++}").GetComponent<CinemachineVirtualCamera>();
+            DefCon = nowPayer.GetComponent<TankCon>().defaultCon.GetComponent<CinemachineVirtualCamera>();
+            AimCon = nowPayer.GetComponent<TankCon>().aimCom.GetComponent<CinemachineVirtualCamera>();
         }
     }
 

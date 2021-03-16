@@ -211,6 +211,8 @@ public class TankCon : PlayerBase
     {
         if (flag)
         {
+            TurnManager.Instance.PlayerMoveVal--;
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             tankHead.LookAt(GameManager.Instance.nearEnemy.transform,Vector3.up);
             GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF);

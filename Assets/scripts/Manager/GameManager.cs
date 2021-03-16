@@ -83,7 +83,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             if (oneTimeFlag)
             {
                 oneTimeFlag = false;
-                TurnManager.Instance.PlayMusic();
             }
         }
         if (SceneManager.GetActiveScene().name == "Start")
@@ -296,7 +295,14 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     /// <summary>
     /// 確認メッセージやその他非表示オブジェクトを表示。第3引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
     /// </summary>
-    public void ChengePop(bool isChenge = false, GameObject obj = null) => obj.SetActive(isChenge);
+    public void ChengePop(bool isChenge = false, GameObject obj = null)
+    {
+        if (obj.name != "EnemyBGM" || obj.name != "playerBGM")
+        {
+            Debug.Log(isChenge ? "アクティブにした" + obj.name : "消した" + obj.name);
+        }
+        obj.SetActive(isChenge);
+    }
 
     public void TurnEnd()
     {

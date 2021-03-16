@@ -14,6 +14,7 @@ public class TankCon : PlayerBase
 
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
+    [SerializeField] AudioSource source = null;
 
 
     bool AimFlag = false;
@@ -43,7 +44,7 @@ public class TankCon : PlayerBase
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).gameObject;
-        //GameManager.Instance.ChengePop(false,tankGunFire);
+        source = gameObject.GetComponent<AudioSource>();
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
@@ -141,16 +142,16 @@ public class TankCon : PlayerBase
     void TankMoveSFXPlay(bool move)
     {
         //これは失敗なので保留
-        //if (move && MoveAudioFlag)
-        //{
-        //    GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
-        //    MoveAudioFlag = false;
-        //}
-        //else
-        //{
-        //    GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
-        //    MoveAudioFlag = true;
-        //}
+        if (move && MoveAudioFlag)
+        {
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
+            MoveAudioFlag = false;
+        }
+        else　if(!move)
+        {
+            GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
+            MoveAudioFlag = true;
+        }
     }
     private int limitCounter = 0;
     /// <summary>

@@ -62,8 +62,6 @@ public class TurnManager : Singleton<TurnManager>
     //現在のキャラ数
     int playerNum = 0;
     int enemyNum = 0;
-    //カメラ
-    int playerCam = 1;
     //timeline
     bool timeLlineF = true;
     bool eventF = true;
@@ -91,27 +89,23 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false,moveValue);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
+        GameManager.Instance.ChengePop(false, GameManager.Instance.limitedBar);
+        GameManager.Instance.ChengePop(false, moveValue);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        PlayMusic();
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
         {
             TurnManag();
-        }
-        else
-        {
-            GameManager.Instance.ChengePop(false,GameManager.Instance.limitedBar);
-            GameManager.Instance.ChengePop(false,moveValue);
         }
 
     }
     private bool playerMPlay = false;
     private bool enemyMPlay = false;
-    bool flag = true;
+    bool flag = true,oneUseFlager = true;
     public void PlayMusic()
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
@@ -137,6 +131,7 @@ public class TurnManager : Singleton<TurnManager>
                     GameManager.Instance.ChengePop(false, enemyBGM);
                     enemyMPlay = false;
                     playerMPlay = true;
+                    oneUseFlager = true;
                 }
                 if (enemyTurn && playerMPlay)
                 {
@@ -147,13 +142,14 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
         }
-        else
+        else if(SceneManager.GetActiveScene().name != "GamePlay" && oneUseFlager || SceneManager.GetActiveScene().name != "TestMap" && oneUseFlager)
         {
             GameManager.Instance.ChengePop(false, playerBGM);
             GameManager.Instance.ChengePop(false, enemyBGM);
             enemyMPlay = false;
             playerMPlay = false;
             flag = false;
+            oneUseFlager = false;
         }
     }
     bool turnFirstNumFlag = true;
@@ -223,11 +219,10 @@ public class TurnManager : Singleton<TurnManager>
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
                 nowPayer.GetComponent<Rigidbody>().isKinematic = true;
-                DefCon = nowPayer.GetComponent<CinemachineVirtualCamera>();
                 DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
                 AimCon = nowPayer.GetComponent<TankCon>().aimCom;
                 GameManager.Instance.ChengePop(false,AimCon.gameObject);
-
+                tankMove = nowPayer.transform.GetChild(3).gameObject;
                 nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
                 playerTurn = true;
@@ -238,13 +233,11 @@ public class TurnManager : Singleton<TurnManager>
             }
             playerTurn = true;
             GameManager.Instance.isGameScene = false;
+            PlayMusic();
         }
     }
 
-    public void MoveCounterText(Text text)
-    {
-        text.text = "MOVE: " + PlayerMoveVal.ToString();
-    }
+    public void MoveCounterText(Text text) => text.text = "MOVE: " + PlayerMoveVal.ToString();
 
     void TurnTextMove()
     {
@@ -263,28 +256,30 @@ public class TurnManager : Singleton<TurnManager>
     /// <param name="enemy">enemyの場合はtrue</param>
     public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
+        PlayMusic();
         if (playerTurn && player)
         {
+            //playerNumの値を加算している処理が不具合の元になりそう
             if (moveV > 0)
             {
                 Debug.Log("case1");
-                nowPayer.GetComponent<TankCon>().controlAccess = false;
                 if (playerNum >= players.Count)//問題個所はここ
                 {
                     GameManager.Instance.ChengePop(true, GameManager.Instance.endObj);
                 }
                 else
                 {
-                    playerCam += 2;
                     playerNum += 1;
+                    moveV -= 1;
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
-                moveV -= 1;
             }
+            nowPayer.GetComponent<TankCon>().controlAccess = false;
             nowPayer = players[playerNum].gameObject;
             nowPayer.GetComponent<TankCon>().controlAccess = true;
-            GameManager.Instance.ChengePop(false,DefCon.gameObject);
-            GameManager.Instance.ChengePop(false,AimCon.gameObject);
+            tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
+            //GameManager.Instance.ChengePop(false, DefCon.gameObject);
+            //GameManager.Instance.ChengePop(false, AimCon.gameObject);
             VcamChenge();
 
             player = false;
@@ -341,15 +336,13 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える/// </summary>
     public void OkTankChenge() 
     {
-        //切り替える戦車がいない場合の処理を書。
+        //切り替える戦車がいない場合の処理。
         if (playerNum == players.Count)
         {
-            //新しいpanelを用意する必要がある
             AnnounceStart("Rest Zero");
         }
         else
         {
-            PlayerMoveVal--;
             MoveCounterText(text1);
             MoveCharaSet(true, false, playerMoveValue);
         }

@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 24261689}
   - component: {fileID: 24261691}
   - component: {fileID: 24261690}
+  - component: {fileID: 24261693}
+  - component: {fileID: 24261692}
   m_Layer: 5
   m_Name: EnterText
   m_TagString: Untagged
@@ -202,6 +204,44 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 24261688}
   m_CullTransparentMesh: 0
+--- !u!95 &24261692
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24261688}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!320 &24261693
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24261688}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 477d1b73c23554b43857f0b6ba35ccb5, type: 2}
+  m_InitialState: 1
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 4265586502782949560, guid: 477d1b73c23554b43857f0b6ba35ccb5, type: 2}
+    value: {fileID: 24261692}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1 &119763982
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +337,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 392.375, y: 156.5}
+  m_AnchoredPosition: {x: 410.375, y: 156.5}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &336715046

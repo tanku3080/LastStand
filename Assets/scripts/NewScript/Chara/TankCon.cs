@@ -207,6 +207,16 @@ public class TankCon : PlayerBase
         }
     }
 
+    void Reload()
+    {
+        //リロード時間を取りたいなぁーと思う
+        if (limitCounter == atackCount)
+        {
+            limitCounter = 0;
+        }
+        else TurnManager.Instance.AnnounceStart("bullets left.");
+    }
+
     void GunAccuracy(bool flag)
     {
         if (flag)

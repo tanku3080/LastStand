@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class God : MonoBehaviour
 {
@@ -12,11 +10,5 @@ public class God : MonoBehaviour
         {
             Instantiate(Resources.Load("Prefab/Managers"), gameObject.transform.parent);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

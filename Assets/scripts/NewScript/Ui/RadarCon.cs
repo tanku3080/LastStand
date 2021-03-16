@@ -29,7 +29,7 @@ public class RadarCon : MonoBehaviour
         {
             Debug.Log("risetto");
             //適切な音楽が無い
-            GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
         }
         else
         {

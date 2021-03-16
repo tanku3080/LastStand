@@ -152,17 +152,23 @@ public class Enemy : EnemyBase
     void PlayerAtack()
     {
         float result = Random.Range(0,100);
-        if (result < 10)//クリティカル
+        float time = Time.deltaTime;
+        Debug.Log(time + "現在");
+        if (time > 1.5f)
         {
-            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
-        }
-        else if (result < 50)//成功
-        {
-            NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
-        }
-        if (result > 50)
-        {
-            Debug.Log("はずれ");
+            Debug.Log("入っちゃった");
+            if (result < 10)//クリティカル
+            {
+                NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
+            }
+            else if (result < 50)//成功
+            {
+                NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
+            }
+            if (result > 50)
+            {
+                Debug.Log("はずれ");
+            }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
         ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
@@ -191,18 +197,6 @@ public class Enemy : EnemyBase
         return target;
     }
 
-
-    //private void OnCollisionStay(Collision collision)
-    //{
-    //    //入れていない
-    //    if (collision.gameObject.tag == "Grand") isGrand = true;
-    //    Debug.Log("入っちゃった");
-    //}
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    if (collision.gameObject.tag == "Grand") isGrand = false;
-    //    Debug.Log("出ちゃった・・・");
-    //}
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")

@@ -31,11 +31,11 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public void Damage(int damager)
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.Hit);
+        enemyLife -= damager;
         if (enemyLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
             EnemyDie(Renderer);
         }
-        enemyLife -= damager;
     }
 }

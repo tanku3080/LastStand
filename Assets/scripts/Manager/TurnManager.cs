@@ -23,6 +23,8 @@ public class TurnManager : Singleton<TurnManager>
     //現在の操作キャラ
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
+    [SerializeField, Header("体力ゲージ")] public GameObject hpBar = null;
+    [SerializeField, HideInInspector] public Image hpGage = null;
     private GameObject turnText = null;
     //移動回数
     [SerializeField] GameObject moveValue = null;
@@ -31,8 +33,8 @@ public class TurnManager : Singleton<TurnManager>
     public GameObject controlPanel;
     //キャラの行動回数
     private int playerMoveValue = 5;
-    [SerializeField] GameObject playerBGM = null;
-    [SerializeField] GameObject enemyBGM = null;
+    [SerializeField] public GameObject playerBGM = null;
+    [SerializeField] public GameObject enemyBGM = null;
     [SerializeField] public GameObject tankMove = null;
     [SerializeField,HideInInspector] public Text text1 = null;
     //アナウンス用
@@ -71,86 +73,59 @@ public class TurnManager : Singleton<TurnManager>
     public bool FoundEnemy = false;
     void Start()//playerBGM等の戦闘中の音楽はきちんと条件げ区分けする
     {
-        if (controlPanel == null)
-        {
-            Debug.Log("新規作成");
-            controlPanel = GameObject.Find("TurnPanel");
-            turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
-            turnText.GetComponent<TextMeshProUGUI>();
-            moveValue = GameObject.Find("MoveCounterUI");
-        }
         announceImage = GameManager.Instance.announceObj.transform.GetChild(0).GetComponent<Image>();
         annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
         text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
         turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
         turnText.GetComponent<TextMeshProUGUI>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
+        hpGage = hpBar.transform.GetChild(0).GetChild(1).GetComponent<Image>();
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(false,moveValue);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
         GameManager.Instance.ChengePop(false, GameManager.Instance.limitedBar);
-        GameManager.Instance.ChengePop(false, moveValue);
+        GameManager.Instance.ChengePop(false,hpBar);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
+        if (SceneManager.GetActiveScene().name == "GamePlay")
         {
             TurnManag();
         }
-
     }
-    private bool playerMPlay = false;
-    private bool enemyMPlay = false;
-    bool flag = true,oneUseFlager = true;
+    [SerializeField,HideInInspector] public bool playerMPlay = false;
+    [SerializeField,HideInInspector] public bool enemyMPlay = false;
+    [SerializeField,HideInInspector] public bool oneUseFlager = true;
     public void PlayMusic()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
+        if (SceneManager.GetActiveScene().name == "GamePlay" && oneUseFlager)
         {
-            if (flag)
+            if (playerMPlay && enemyMPlay)
             {
-
-                GameManager.Instance.ChengePop(false, playerBGM);
+                return;
+            }
+            if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
+            {
+                GameManager.Instance.ChengePop(true, playerBGM);
                 GameManager.Instance.ChengePop(false, enemyBGM);
                 enemyMPlay = false;
-                playerMPlay = false;
-                flag = false;
+                playerMPlay = true;
             }
-            else
+            if (enemyTurn && playerMPlay)
             {
-                if (playerMPlay && enemyMPlay)
-                {
-                    return;
-                }
-                if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
-                {
-                    GameManager.Instance.ChengePop(true, playerBGM);
-                    GameManager.Instance.ChengePop(false, enemyBGM);
-                    enemyMPlay = false;
-                    playerMPlay = true;
-                    oneUseFlager = true;
-                }
-                if (enemyTurn && playerMPlay)
-                {
-                    GameManager.Instance.ChengePop(true, enemyBGM);
-                    GameManager.Instance.ChengePop(false, playerBGM);
-                    playerMPlay = false;
-                    enemyMPlay = true;
-                }
+                GameManager.Instance.ChengePop(true, enemyBGM);
+                GameManager.Instance.ChengePop(false, playerBGM);
+                playerMPlay = false;
+                enemyMPlay = true;
             }
+            oneUseFlager = true;
+            Debug.Log("iiiiiiiii");
         }
-        else if(SceneManager.GetActiveScene().name != "GamePlay" && oneUseFlager || SceneManager.GetActiveScene().name != "TestMap" && oneUseFlager)
-        {
-            GameManager.Instance.ChengePop(false, playerBGM);
-            GameManager.Instance.ChengePop(false, enemyBGM);
-            enemyMPlay = false;
-            playerMPlay = false;
-            flag = false;
-            oneUseFlager = false;
-        }
+
     }
     bool turnFirstNumFlag = true;
     void TurnManag()
@@ -214,6 +189,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.eAtackCount = GameManager.Instance.atackCounter;
                 }
                 GameManager.Instance.ChengePop(true,moveValue);
+                GameManager.Instance.ChengePop(true,hpBar);
                 nowPayer = players[playerNum].gameObject;
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
                 GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);

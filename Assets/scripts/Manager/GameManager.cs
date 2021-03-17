@@ -22,7 +22,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
-    [SerializeField, Tooltip("攻撃ボタン")] public AudioClip atackSfx;
+    [SerializeField, Tooltip("レーダー音")] public AudioClip RadarSfx;
     [SerializeField, Tooltip("攻撃音")] public AudioClip atack;
 
     [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
@@ -51,16 +51,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 
     void Start()
     {
-        if (tankChengeObj == null)
-        {
-            tankChengeObj = GameObject.Find("TankChengeUI");
-            pauseObj = GameObject.Find("PauseUI");
-            endObj = GameObject.Find("TurnendUI");
-            radarObj = GameObject.Find("Radar");
-            limitedBar = GameObject.Find("MoveLimitBar");
-            specialObj = GameObject.Find("specialStatusUI");
-            announceObj = GameObject.Find("announceUI");
-        }
         ChengePop(false,tankChengeObj);
         ChengePop(false, radarObj);
         ChengePop(false, pauseObj);
@@ -78,7 +68,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
+        if (SceneManager.GetActiveScene().name == "GamePlay")
         {
             if (oneTimeFlag)
             {
@@ -93,7 +83,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Meeting, true, true);
             }
         }
-        if (SceneManager.GetActiveScene().name == "GamePlay" || SceneManager.GetActiveScene().name == "TestMap")
+        if (SceneManager.GetActiveScene().name == "GamePlay")
         {
             nowTurnValue = TurnManager.Instance.generalTurn;
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
@@ -104,13 +94,21 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             }
 
             //テスト用
-            if (Input.GetKeyUp(KeyCode.H))
+            if (Input.GetKeyUp(KeyCode.H) || Input.GetKeyUp(KeyCode.G))
             {
-                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear,true,true);
-            }
-            if (Input.GetKeyUp(KeyCode.G))
-            {
-                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
+                ChengePop(false, TurnManager.Instance.playerBGM);
+                ChengePop(false, TurnManager.Instance.enemyBGM);
+                TurnManager.Instance.enemyMPlay = false;
+                TurnManager.Instance.playerMPlay = false;
+                TurnManager.Instance.oneUseFlager = false;
+                if (Input.GetKeyUp(KeyCode.H))
+                {
+                    SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+                }
+                if (Input.GetKeyUp(KeyCode.G))
+                {
+                    SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
+                }
             }
             //以上
         }
@@ -269,7 +267,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 atackCounter = 2;
                 break;
             case TankChoice.Shaman:
-                charactorHp = 80;
+                //charactorHp = 80;
+                charactorHp = 50;
                 charactorSpeed = 21f;
                 tankHeadSpeed = 2.5f;
                 tankTurnSpeed = 5f;

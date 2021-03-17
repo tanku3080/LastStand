@@ -28,8 +28,7 @@ public class RadarCon : MonoBehaviour
         if (color.a == 255f)
         {
             Debug.Log("risetto");
-            //適切な音楽が無い
-            GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.RadarSfx);
         }
         else
         {

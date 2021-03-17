@@ -44,11 +44,12 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public void Damage(int damage)
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.Hit);
+        playerLife -= damage;
         if (playerLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
             PlayerDie(Renderer);
         }
-        playerLife -= damage;
+        //TurnManager.Instance.hpGage.fillAmount -= damage * 0.1f;
     }
 }

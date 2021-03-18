@@ -33,6 +33,8 @@ public class TankCon : PlayerBase
     //以下は移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
 
+    [HideInInspector] public Slider tankHpBar;
+
     RaycastHit hit;
 
 
@@ -49,6 +51,7 @@ public class TankCon : PlayerBase
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
         moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
+        tankHpBar = TurnManager.Instance.hpBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
         borderLine = tankHead.GetComponent<BoxCollider>();
@@ -67,6 +70,8 @@ public class TankCon : PlayerBase
                 limitRangeFlag = false;
                 moveLimitRangeBar.maxValue = tankLimitRange;
                 moveLimitRangeBar.value = tankLimitRange;
+                tankHpBar.maxValue = playerLife;
+                tankHpBar.value = playerLife;
             }
             if (cameraActive)
             {

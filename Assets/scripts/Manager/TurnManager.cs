@@ -24,7 +24,6 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
     [SerializeField, Header("体力ゲージ")] public GameObject hpBar = null;
-    [SerializeField, HideInInspector] public Image hpGage = null;
     private GameObject turnText = null;
     //移動回数
     [SerializeField] GameObject moveValue = null;
@@ -79,7 +78,6 @@ public class TurnManager : Singleton<TurnManager>
         turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
         turnText.GetComponent<TextMeshProUGUI>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
-        hpGage = hpBar.transform.GetChild(0).GetChild(1).GetComponent<Image>();
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(false,moveValue);
         GameManager.Instance.ChengePop(false, playerBGM);

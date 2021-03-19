@@ -2,13 +2,14 @@
 
 public class God : MonoBehaviour
 {
+    GameObject objKeep = null;
     // Start is called before the first frame update
     void Start()
     {
-        var t = GameObject.Find("Managers");
-        if (t == null)
+        
+        if (objKeep == null)
         {
-            Instantiate(Resources.Load("Prefab/Managers"), gameObject.transform.parent);
+            objKeep = (GameObject)Instantiate(Resources.Load("Prefab/Managers"), gameObject.transform.parent);
         }
     }
 }

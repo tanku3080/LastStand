@@ -103,10 +103,14 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 TurnManager.Instance.oneUseFlager = false;
                 if (Input.GetKeyUp(KeyCode.H))
                 {
+                    TurnManager.Instance.players.Clear();
+                    TurnManager.Instance.enemys.Clear();
                     SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
                 }
                 if (Input.GetKeyUp(KeyCode.G))
                 {
+                    TurnManager.Instance.players.Clear();
+                    TurnManager.Instance.enemys.Clear();
                     SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
                 }
             }
@@ -206,6 +210,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         TurnManager.Instance.players.Clear();
         TurnManager.Instance.enemys.Clear();
+        TurnManager.Instance.generalTurn = 0;
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
     }
 

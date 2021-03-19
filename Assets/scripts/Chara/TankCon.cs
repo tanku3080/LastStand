@@ -170,6 +170,7 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
+            GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
             if (Input.GetButtonUp("Fire1"))
             {
                 if (atackCount > limitCounter)
@@ -206,6 +207,7 @@ public class TankCon : PlayerBase
             TurnManager.Instance.playerIsMove = true;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);
             GameManager.Instance.ChengePop(false,aimCom.gameObject);
             var p = tankGun.transform.rotation;
             p.x = 0;

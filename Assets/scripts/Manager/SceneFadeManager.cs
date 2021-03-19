@@ -7,7 +7,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
 {
     public enum SceneName
     {
-        Start,Meeting,GamePlay,GameOver,GameClear,
+        Start, Meeting, GamePlay, GameOver, GameClear,
     }
     public SceneName scene;
     CanvasGroup group = null;
@@ -36,7 +36,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     /// <param name="name">遷移先のシーンを選択</param>
     /// <param name="fadeStart">trueならフェードありfalseはフェード無し</param>
     /// <param name="sceneChangeStart">trueならシーン遷移スタート</param>
-    public void SceneFadeAndChanging(SceneName name,bool fadeStart = false,bool sceneChangeStart = false)
+    public void SceneFadeAndChanging(SceneName name, bool fadeStart = false, bool sceneChangeStart = false)
     {
         if (fadeStart)
         {

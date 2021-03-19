@@ -297,16 +297,30 @@ public class TurnManager : Singleton<TurnManager>
             players.Remove(thisObj.GetComponent<TankCon>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
             playerNum++;
-            if (playerNum == players.Count) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
+            if (playerNum == players.Count)
+            {
+                playerNum = 0;
+                enemyNum = 0;
+                Invoke("DelayGameOver",2f);
+            }
         }
         if (thisObj.tag == "Enemy")
         {
+            Debug.Log("死亡処理");
             enemys.Remove(thisObj.GetComponent<Enemy>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
             enemyNum++;
-            if (enemyNum == enemys.Count) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+            Debug.Log("体の数" + enemys.Count);
+            if (0 >= enemys.Count)
+            {
+                enemyNum = 0;
+                playerNum = 0;
+                Invoke("DelayGameClear", 2f);
+            }
         }
     }
+    private void DelayGameClear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+    private void DelayGameOver() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
     /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える/// </summary>
     public void OkTankChenge() 
     {

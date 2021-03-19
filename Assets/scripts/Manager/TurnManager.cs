@@ -301,6 +301,11 @@ public class TurnManager : Singleton<TurnManager>
             {
                 playerNum = 0;
                 enemyNum = 0;
+                GameManager.Instance.ChengePop(false, playerBGM);
+                GameManager.Instance.ChengePop(false, enemyBGM);
+                enemyMPlay = false;
+                playerMPlay = false;
+                oneUseFlager = false;
                 Invoke("DelayGameOver",2f);
             }
         }
@@ -315,6 +320,11 @@ public class TurnManager : Singleton<TurnManager>
             {
                 enemyNum = 0;
                 playerNum = 0;
+                GameManager.Instance.ChengePop(false, playerBGM);
+                GameManager.Instance.ChengePop(false, enemyBGM);
+                enemyMPlay = false;
+                playerMPlay = false;
+                oneUseFlager = false;
                 Invoke("DelayGameClear", 2f);
             }
         }

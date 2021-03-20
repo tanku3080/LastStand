@@ -196,6 +196,7 @@ public class TurnManager : Singleton<TurnManager>
                 DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
                 AimCon = nowPayer.GetComponent<TankCon>().aimCom;
                 GameManager.Instance.ChengePop(false,AimCon.gameObject);
+                GameManager.Instance.ChengePop(true,DefCon.gameObject);
                 tankMove = nowPayer.transform.GetChild(3).gameObject;
                 nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
@@ -249,11 +250,11 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
             nowPayer.GetComponent<TankCon>().controlAccess = false;
+            GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
+            GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer = players[playerNum].gameObject;
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
-            //GameManager.Instance.ChengePop(false, DefCon.gameObject);
-            //GameManager.Instance.ChengePop(false, AimCon.gameObject);
             VcamChenge();
 
             player = false;
@@ -277,14 +278,10 @@ public class TurnManager : Singleton<TurnManager>
                 }
                 else if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
                 else if (nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount) TurnEnd();
-                else
-                {
-                    enemyNum++;
-                }
+                else enemyNum++;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
             }
             enemy = false;
-            //enemyNum++;
         }
     }
     /// <summary>
@@ -329,7 +326,9 @@ public class TurnManager : Singleton<TurnManager>
             }
         }
     }
+    /// <summary>GameClear時に呼び出される</summary>
     private void DelayGameClear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+    /// <summary>GameOverr時に呼び出される</summary>
     private void DelayGameOver() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
     /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える/// </summary>
     public void OkTankChenge() 
@@ -355,13 +354,10 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>初回以外のバーチャルカメラを切り替える</summary>
     private void VcamChenge()
     {
-        if (playerTurn)
-        {
-            GameManager.Instance.ChengePop(true,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
-            GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
-            DefCon = nowPayer.GetComponent<TankCon>().defaultCon.GetComponent<CinemachineVirtualCamera>();
-            AimCon = nowPayer.GetComponent<TankCon>().aimCom.GetComponent<CinemachineVirtualCamera>();
-        }
+        GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
+        GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
+        DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
+        AimCon = nowPayer.GetComponent<TankCon>().aimCom;
     }
 
     /// <summary>

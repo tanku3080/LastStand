@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class GameClearCon : MonoBehaviour
 {
     public CanvasGroup canvas;
-    public TextMeshProUGUI title;
+    public Text title;
     float timer = 0;
     void Start()
     {
         canvas.GetComponent<CanvasGroup>();
-        title.GetComponent<TextMeshProUGUI>();
+       title.GetComponent<Text>();
         canvas.alpha = 0;
     }
 

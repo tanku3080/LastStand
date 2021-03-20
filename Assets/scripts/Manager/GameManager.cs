@@ -92,29 +92,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 ButtonSelected();
             }
-
-            //テスト用
-            if (Input.GetKeyUp(KeyCode.H) || Input.GetKeyUp(KeyCode.G))
-            {
-                ChengePop(false, TurnManager.Instance.playerBGM);
-                ChengePop(false, TurnManager.Instance.enemyBGM);
-                TurnManager.Instance.enemyMPlay = false;
-                TurnManager.Instance.playerMPlay = false;
-                TurnManager.Instance.oneUseFlager = false;
-                if (Input.GetKeyUp(KeyCode.H))
-                {
-                    TurnManager.Instance.players.Clear();
-                    TurnManager.Instance.enemys.Clear();
-                    SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
-                }
-                if (Input.GetKeyUp(KeyCode.G))
-                {
-                    TurnManager.Instance.players.Clear();
-                    TurnManager.Instance.enemys.Clear();
-                    SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
-                }
-            }
-            //以上
         }
         if (SceneManager.GetActiveScene().name == "GameClear" || SceneManager.GetActiveScene().name == "GameOver")
         {
@@ -271,7 +248,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankDamage = 20;
                 atackCounter = 2;
                 break;
-            case TankChoice.Shaman:
+            case TankChoice.Shaman://テスト用に一発か二発で撃破出来るように体力調整
                 //charactorHp = 80;
                 charactorHp = 50;
                 charactorSpeed = 21f;

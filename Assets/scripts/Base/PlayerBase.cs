@@ -51,6 +51,5 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
             PlayerDie(Renderer);
         }
         gameObject.GetComponent<TankCon>().tankHpBar.value -= damage;
-        //TurnManager.Instance.hpGage.fillAmount -= damage * 0.1f;
     }
 }

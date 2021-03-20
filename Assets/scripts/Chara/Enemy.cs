@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using Cinemachine;
 public class Enemy : EnemyBase
 {
     enum EnemyState

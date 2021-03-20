@@ -117,7 +117,7 @@ public class TankCon : PlayerBase
                         if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                         {
                             MoveAudioFlag = true;
-                            float mov = v * playerSpeed * Time.deltaTime;// * Time.deltaTime;
+                            float mov = v * playerSpeed * Time.deltaTime;
                             Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                             MoveLimit();
                         }

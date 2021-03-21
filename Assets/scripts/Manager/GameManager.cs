@@ -283,10 +283,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {
-        if (obj.name != "EnemyBGM" || obj.name != "playerBGM")
-        {
-            Debug.Log(isChenge ? "アクティブにした" + obj.name : "消した" + obj.name);
-        }
         obj.SetActive(isChenge);
     }
 

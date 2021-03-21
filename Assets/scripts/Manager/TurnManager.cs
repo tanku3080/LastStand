@@ -2,7 +2,6 @@
 using UnityEngine.Playables;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
@@ -76,7 +75,7 @@ public class TurnManager : Singleton<TurnManager>
         annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
         text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
         turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
-        turnText.GetComponent<TextMeshProUGUI>();
+        turnText.GetComponent<Text>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(false,moveValue);
@@ -121,7 +120,6 @@ public class TurnManager : Singleton<TurnManager>
                 enemyMPlay = true;
             }
             oneUseFlager = true;
-            Debug.Log("iiiiiiiii");
         }
 
     }
@@ -216,7 +214,7 @@ public class TurnManager : Singleton<TurnManager>
 
     void TurnTextMove()
     {
-        TextMeshProUGUI text = turnText.GetComponent<TextMeshProUGUI>();
+        Text text = turnText.GetComponent<Text>();
         if (generalTurn == maxTurn) text.text = "Last";
         if (playerTurn) text.text = "Player ";
         if (enemyTurn) text.text = "Enemy ";

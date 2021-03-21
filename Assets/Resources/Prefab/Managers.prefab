@@ -1735,7 +1735,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2650243493533048608
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3374,7 +3374,7 @@ RectTransform:
   m_GameObject: {fileID: 6514396491923156277}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 25, y: 0.54, z: 1}
+  m_LocalScale: {x: 25, y: 0, z: 1}
   m_Children:
   - {fileID: 4775152428350503603}
   m_Father: {fileID: 2059272195340248074}
@@ -3441,7 +3441,7 @@ PlayableDirector:
   - key: {fileID: 7980815666438134741, guid: 1d744b59e64e99848ad7b19ceb6309ef, type: 2}
     value: {fileID: 321922459596073584}
   - key: {fileID: 4804527790167368247, guid: 1d744b59e64e99848ad7b19ceb6309ef, type: 2}
-    value: {fileID: 321922459596073584}
+    value: {fileID: 9149984638776497654}
   m_ExposedReferences:
     m_References: []
 --- !u!95 &321922459596073584
@@ -4075,7 +4075,7 @@ GameObject:
   - component: {fileID: 4775152428350503603}
   - component: {fileID: 3976592819669087823}
   - component: {fileID: 2874144947958553783}
-  - component: {fileID: 8824908841742336539}
+  - component: {fileID: 9149984638776497654}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -4144,7 +4144,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
---- !u!95 &8824908841742336539
+--- !u!95 &9149984638776497654
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -4267,7 +4267,7 @@ RectTransform:
   m_GameObject: {fileID: 7770876266878554674}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4064672522530514685}
   m_Father: {fileID: 1157145888724680104}

@@ -253,9 +253,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 tankDamage = 20;
                 atackCounter = 2;
                 break;
-            case TankChoice.Shaman://テスト用に一発か二発で撃破出来るように体力調整
-                //charactorHp = 80;
-                charactorHp = 50;
+            case TankChoice.Shaman:
+                charactorHp = 80;
                 charactorSpeed = 21f;
                 tankHeadSpeed = 2.5f;
                 tankTurnSpeed = 5f;

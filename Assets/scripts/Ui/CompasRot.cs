@@ -9,7 +9,6 @@ public class CompasRot : MonoBehaviour
         {
             float mouseX = Input.GetAxis("Horizontal") * TurnManager.Instance.nowPayer.GetComponent<TankCon>().tankTurn_Speed * Time.deltaTime;
             transform.Rotate(0, 0, mouseX);
-            transform.parent.GetChild(1).transform.Rotate(0,0,mouseX);
         }
     }
 }

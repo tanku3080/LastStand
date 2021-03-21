@@ -68,13 +68,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay")
-        {
-            if (oneTimeFlag)
-            {
-                oneTimeFlag = false;
-            }
-        }
         if (SceneManager.GetActiveScene().name == "Start")
         {
             if (Input.GetKeyUp(KeyCode.Return))
@@ -85,6 +78,10 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (SceneManager.GetActiveScene().name == "GamePlay")
         {
+            if (oneTimeFlag)
+            {
+                oneTimeFlag = false;
+            }
             nowTurnValue = TurnManager.Instance.generalTurn;
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
@@ -192,7 +189,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
 
     ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
-    public void Restart()
+    public void Restart()//現状未実装
     {
         source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay, true, true);
@@ -201,6 +198,18 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public void Title()
     {
         source.PlayOneShot(click);
+        TurnManager.Instance.enemyNum = 0;
+        TurnManager.Instance.playerNum = 0;
+        Instance.ChengePop(false, TurnManager.Instance.playerBGM);
+        Instance.ChengePop(false, TurnManager.Instance.enemyBGM);
+        Instance.ChengePop(false,pauseObj);
+
+        TurnManager.Instance.enemyMPlay = false;
+        TurnManager.Instance.playerMPlay = false;
+        TurnManager.Instance.oneUseFlager = false;
+        TurnManager.Instance.generalTurn = 0;
+        TurnManager.Instance.playerNum = 0;
+        TurnManager.Instance.enemyNum = 0;
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 

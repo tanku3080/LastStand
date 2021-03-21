@@ -198,8 +198,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public void Title()
     {
         source.PlayOneShot(click);
-        TurnManager.Instance.enemyNum = 0;
-        TurnManager.Instance.playerNum = 0;
         Instance.ChengePop(false, TurnManager.Instance.playerBGM);
         Instance.ChengePop(false, TurnManager.Instance.enemyBGM);
         Instance.ChengePop(false,pauseObj);
@@ -208,8 +206,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         TurnManager.Instance.playerMPlay = false;
         TurnManager.Instance.oneUseFlager = false;
         TurnManager.Instance.generalTurn = 0;
-        TurnManager.Instance.playerNum = 0;
-        TurnManager.Instance.enemyNum = 0;
         SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 

@@ -46,12 +46,9 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
             t.minValue = 0;
             t.value = enemyLife;
             t.transform.position = hpBarpos.position;
-            t.transform.LookAt(TurnManager.Instance.nowPayer.transform.position);
+            t.transform.LookAt(TurnManager.Instance.AimCon.transform);
             Invoke("Stop",1.5f);
         }
     }
-    private void Stop()
-    {
-        GameManager.Instance.ChengePop(false,TurnManager.Instance.enemyrHpBar);
-    }
+    private void Stop() => GameManager.Instance.ChengePop(false, TurnManager.Instance.enemyrHpBar);
 }

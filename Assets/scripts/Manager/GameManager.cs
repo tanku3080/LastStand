@@ -95,7 +95,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             if (Input.GetKeyUp(KeyCode.Return))
             {
                 source.PlayOneShot(click);
-                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
+                //稼働させた状態でサイドプレイするときちんと動作しない不具合が見つかったのでTitleメソッドとこの行に以下のコードを追加
+                Application.Quit();
+                //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
             }
         }
     }
@@ -206,7 +208,11 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         TurnManager.Instance.playerMPlay = false;
         TurnManager.Instance.oneUseFlager = false;
         TurnManager.Instance.generalTurn = 0;
-        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
+        //現状は発表用にアプリを終了する仕様
+        Application.Quit();
+        //ここまで
+
+        //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 
     public int charactorHp;

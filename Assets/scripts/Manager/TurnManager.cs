@@ -23,6 +23,7 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
     [SerializeField, Header("体力ゲージ")] public GameObject hpBar = null;
+    [SerializeField,Header("敵体力ゲージ")] public GameObject enemyrHpBar = null;
     private GameObject turnText = null;
     //移動回数
     [SerializeField] GameObject moveValue = null;
@@ -83,6 +84,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false, enemyBGM);
         GameManager.Instance.ChengePop(false, GameManager.Instance.limitedBar);
         GameManager.Instance.ChengePop(false,hpBar);
+        GameManager.Instance.ChengePop(false,enemyrHpBar);
 
     }
 

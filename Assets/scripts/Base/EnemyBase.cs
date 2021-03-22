@@ -16,6 +16,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public BoxCollider EborderLine = null;
     public int eTankDamage;
     public int eAtackCount;
+    public Transform hpBarpos = null;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
@@ -37,5 +38,20 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
             TurnManager.Instance.CharactorDie(gameObject);
             EnemyDie(Renderer);
         }
+        else
+        {
+            GameManager.Instance.ChengePop(true,TurnManager.Instance.enemyrHpBar);
+            var t = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<UnityEngine.UI.Slider>();
+            t.maxValue = GameManager.Instance.tankDamage;
+            t.minValue = 0;
+            t.value = enemyLife;
+            t.transform.position = hpBarpos.position;
+            t.transform.LookAt(TurnManager.Instance.nowPayer.transform.position);
+            Invoke("Stop",1.5f);
+        }
+    }
+    private void Stop()
+    {
+        GameManager.Instance.ChengePop(false,TurnManager.Instance.enemyrHpBar);
     }
 }

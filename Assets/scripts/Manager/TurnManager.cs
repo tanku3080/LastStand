@@ -11,8 +11,7 @@ public class TurnManager : Singleton<TurnManager>
     {
         Hit,Destroy,MiddleDmage,BigDamage
     }
-    public bool enemyTurn = false;
-    public bool playerTurn = false;
+    public bool enemyTurn = false, playerTurn = false;
     public bool playerIsMove = false, enemyIsMove = false;
     /// <summary>全体の経過ターン数</summary>
     public int generalTurn = 1;
@@ -30,8 +29,6 @@ public class TurnManager : Singleton<TurnManager>
     //以下はtimeLine   
     private PlayableDirector director;
     public GameObject controlPanel;
-    //キャラの行動回数
-    private int playerMoveValue = 5;
     [SerializeField] public GameObject playerBGM = null;
     [SerializeField] public GameObject enemyBGM = null;
     [SerializeField] public GameObject tankMove = null;
@@ -39,6 +36,8 @@ public class TurnManager : Singleton<TurnManager>
     //アナウンス用
     [SerializeField, HideInInspector] public Image announceImage = null;
     [SerializeField, HideInInspector] public Text annouceText = null;
+    /// <summary>味方の行動回数</summary>
+    private int playerMoveValue = 5;
     public int PlayerMoveVal
     {
         get { return playerMoveValue; }
@@ -48,7 +47,7 @@ public class TurnManager : Singleton<TurnManager>
             playerMoveValue = value;
         }
     }
-    //敵の値はプレイヤーより一つ小さくする
+    /// <summary>敵の行動回数</summary>
     private int enemyMoveValue = 4;
     public int EnemyMoveVal
     {
@@ -60,10 +59,11 @@ public class TurnManager : Singleton<TurnManager>
     }
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
-    //現在のキャラ数
+    /// <summary>味方のキャラ数</summary>
     int playerNum = 0;
+    /// <summary>敵のキャラ数</summary>
     int enemyNum = 0;
-    //timeline
+    //timeline関連
     bool timeLlineF = true;
     bool eventF = true;
 
@@ -237,7 +237,7 @@ public class TurnManager : Singleton<TurnManager>
             //playerNumの値を加算している処理が不具合の元になりそう
             if (moveV > 0)
             {
-                Debug.Log("case1");
+                if (players.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
                 if (playerNum >= players.Count)//問題個所はここ
                 {
                     GameManager.Instance.ChengePop(true, GameManager.Instance.endObj);
@@ -258,11 +258,13 @@ public class TurnManager : Singleton<TurnManager>
             VcamChenge();
 
             player = false;
+         
             playerNum++;
         }
 
         if (enemyTurn && enemy)
         {
+            if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
             if (enemyFirstColl)
             {
                 enemyFirstColl = false;
@@ -270,17 +272,20 @@ public class TurnManager : Singleton<TurnManager>
             }
             if (moveV > 0)
             {
-                Debug.Log("EnemyCase1");
-                if (enemys.Count == enemyNum)
+                if (enemys.Count >= enemyNum || nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount)
                 {
                     enemyNum = 0;
+                    nowEnemy.GetComponent<Enemy>().controlAccess = false;
                     TurnEnd();
                 }
-                else if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
-                else if (nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount) TurnEnd();
-                else enemyNum++;
-                nowEnemy.GetComponent<Enemy>().controlAccess = true;
+                else
+                {
+                    enemyNum++;
+                    moveV--;
+                }
             }
+            nowEnemy = enemys[enemyNum].gameObject;
+            nowEnemy.GetComponent<Enemy>().controlAccess = true;
             enemy = false;
         }
     }
@@ -289,7 +294,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     public void CharactorDie(GameObject thisObj)
     {
-        if (thisObj.tag == "Player")
+        if (thisObj.CompareTag("Player"))
         {
             players.Remove(thisObj.GetComponent<TankCon>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
@@ -306,7 +311,7 @@ public class TurnManager : Singleton<TurnManager>
                 Invoke("DelayGameOver",2f);
             }
         }
-        if (thisObj.tag == "Enemy")
+        if (thisObj.CompareTag("Enemy"))
         {
             Debug.Log("死亡処理");
             enemys.Remove(thisObj.GetComponent<Enemy>());
@@ -336,7 +341,7 @@ public class TurnManager : Singleton<TurnManager>
         //切り替える戦車がいない場合の処理。
         if (playerNum == players.Count)
         {
-            AnnounceStart("Rest Zero");
+            AnnounceStart("Remaining Zero");
         }
         else
         {

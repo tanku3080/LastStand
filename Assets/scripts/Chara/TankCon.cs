@@ -4,7 +4,7 @@ using Cinemachine;
 public class TankCon : PlayerBase
 {
     //ティーガー戦車は上下に0から∔65度
-    //AddRelativeForceを使えば斜面での移動に最適らしい
+    //AddRelativeForceを使えば斜面での移動に最適かも
     //xの射角は入れない
     Transform tankHead = null;
     private Transform tankGun = null;
@@ -14,7 +14,6 @@ public class TankCon : PlayerBase
 
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
-    [SerializeField] AudioSource source = null;
 
 
     bool AimFlag = false;
@@ -46,7 +45,6 @@ public class TankCon : PlayerBase
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).gameObject;
-        source = gameObject.GetComponent<AudioSource>();
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
@@ -65,6 +63,7 @@ public class TankCon : PlayerBase
         if (controlAccess)
         {
             Rd.isKinematic = false;
+
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
@@ -267,14 +266,12 @@ public class TankCon : PlayerBase
             if (perfectHit && turretCorrection)
             {
                 GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage * 2);
-                Debug.Log("EnemyLife" + GameManager.Instance.nearEnemy.gameObject.GetComponent<Enemy>().enemyLife);
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
                 if (RayStart(tankGun.transform.position))
                 {
                     hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                    Debug.Log("EnemyLife" + hit.collider.gameObject.GetComponent<Enemy>().enemyLife);
                 }
             }
         }
@@ -312,9 +309,9 @@ public class TankCon : PlayerBase
         bool f = false;
         if (Physics.Raycast(atackPoint, transform.forward, out hit, tankLimitRange))
         {
-            if (hit.collider.tag == num)
+            if (hit.collider.CompareTag(num))
             {
-                Debug.Log("ヤッターマン");
+                Debug.Log("当たった");
                 f = true;
             }
             Debug.DrawRay(atackPoint, transform.forward * tankLimitRange, Color.red, 10);
@@ -341,7 +338,7 @@ public class TankCon : PlayerBase
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Grand")
+        if (collision.gameObject.CompareTag("Grand"))
         {
             IsGranded = true;
         }
@@ -350,14 +347,14 @@ public class TankCon : PlayerBase
     //敵を見つけた際に使う物
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.CompareTag("Enemy"))
         {
             TurnManager.Instance.FoundEnemy = true;
         }
     }
     void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.tag == "Grand")
+        if (collision.gameObject.CompareTag("Grand"))
         {
             IsGranded = false;
         }

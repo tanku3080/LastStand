@@ -8,7 +8,6 @@ public class Enemy : EnemyBase
     }
     EnemyState state;
     public NavMeshAgent agent;
-    bool moveLimitGetFlag = true;
     GameObject tankGunFire = null;
     Transform tankBody = null;
     bool isPlayer = false;
@@ -17,13 +16,12 @@ public class Enemy : EnemyBase
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
     public bool controlAccess = false;
-    private bool isGrand = false;
     
     private float enemyMoveNowValue;
+    /// <summary>アクション回数</summary>
     public int nowCounter = 0;
 
     bool agentSetUpFlag = true;
-    bool atackFlag = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -54,14 +52,18 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
+            Debug.Log("controlAccess is" + controlAccess);
             Rd.isKinematic = false;
+            Debug.Log("isKinematic" + Rd.isKinematic);
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
+                    Debug.Log("nowState idol");
                     if (eAtackCount <= nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
                     {
                         oneFlag = false;
-                        Debug.Log("なんで？");
+                        Debug.Log("移動終了" + gameObject.name);
+                        agent.ResetPath();
                         TurnManager.Instance.MoveCharaSet(false, true,TurnManager.Instance.EnemyMoveVal);
                     }
 
@@ -72,10 +74,11 @@ public class Enemy : EnemyBase
                     }
                     break;
                 case EnemyState.Move:
+                    Debug.Log("nowState Move");
                     EnemyMove();
                     break;
                 case EnemyState.Atack:
-                    Debug.Log("攻撃");
+                    Debug.Log("nowState Atack");
                     PlayerAtack();
                     break;
             }
@@ -101,6 +104,8 @@ public class Enemy : EnemyBase
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 //今回の場合は予めオブジェクトを一つ用意した。
+                //敵味方の距離が近すぎる場合あり得ない角度に砲塔を旋回するので修正の必要
+                Debug.Log("発見");
                 AgentParamSet(false);
                 agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
@@ -108,7 +113,6 @@ public class Enemy : EnemyBase
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
                 if (angle < 3) isPlayer = true;
-                EnemyMoveLimit();
             }
             else
             {
@@ -135,8 +139,8 @@ public class Enemy : EnemyBase
                     AgentParamSet(false);
                     patrolNum++;
                 }
-                EnemyMoveLimit();
             }
+            EnemyMoveLimit();
         }
         else if (isPlayer) state = EnemyState.Idol;
     }
@@ -155,18 +159,20 @@ public class Enemy : EnemyBase
         Debug.Log(time + "現在");
         if (time > 1.5f)
         {
-            Debug.Log("入っちゃった");
+            Debug.Log("入った");
             if (result < 10)//クリティカル
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
+                Debug.Log($"{gameObject.name}が敵に大ダメージ");
             }
             else if (result < 50)//成功
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
+                Debug.Log($"{gameObject.name}が敵にダメージ");
             }
             if (result > 50)
             {
-                Debug.Log("はずれ");
+                Debug.Log($"{gameObject.name}がはずれ");
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
@@ -198,7 +204,7 @@ public class Enemy : EnemyBase
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             playerFind = true;
             AgentParamSet(false);
@@ -207,13 +213,17 @@ public class Enemy : EnemyBase
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
             isPlayer = false;
             AgentParamSet(true);
             state = EnemyState.Idol;
         }
     }
+    /// <summary>
+    /// 見えなくする
+    /// </summary>
+    /// <param name="f">見えなくするための判定</param>
     public void EnemyEnebled(bool f)
     {
         gameObject.GetComponent<MeshRenderer>().enabled = f;

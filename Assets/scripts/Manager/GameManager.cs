@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
@@ -10,13 +9,13 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     }
     [SerializeField,HideInInspector] public bool enemyAtackStop = false;
     [SerializeField,HideInInspector] public bool GameUi = false;
-    public Renderer[] enemyRender { get; set; }
+    public Renderer[] EnemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;//UIHitGameの音らしい
-    [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;//UIHitGameの音らしい
+    [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;
+    [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;
     [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
     [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
     [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
@@ -35,12 +34,11 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [HideInInspector] public GameObject hittingTargetR = null;
     [HideInInspector] public GameObject turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
-    //ゲームシーンかの判定(ターンマネージャー限定)
+    ///<summary>ゲームシーンかの判定(ターンマネージャー限定)</summary>
     [SerializeField, HideInInspector] public bool isGameScene;
 
     public bool clickC = true;
     private int nowTurnValue = 0;
-    Navigation nav;
 
     override protected void Awake()
     {
@@ -97,6 +95,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 source.PlayOneShot(click);
                 //稼働させた状態でサイドプレイするときちんと動作しない不具合が見つかったのでTitleメソッドとこの行に以下のコードを追加
                 Application.Quit();
+                UnityEditor.EditorApplication.isPlaying = false;
                 //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
             }
         }
@@ -208,9 +207,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         TurnManager.Instance.playerMPlay = false;
         TurnManager.Instance.oneUseFlager = false;
         TurnManager.Instance.generalTurn = 0;
-        //現状は発表用にアプリを終了する仕様
+        //アプリを終了する
         Application.Quit();
-        //ここまで
+        UnityEditor.EditorApplication.isPlaying = false;
 
         //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }

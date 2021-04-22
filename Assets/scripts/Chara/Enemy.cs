@@ -61,7 +61,7 @@ public class Enemy : EnemyBase
                     Debug.Log(enemyMoveTimer);
                     if (enemyMoveTimer > 3f)
                     {
-                        if (eAtackCount == nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
+                        if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
                         {
                             oneFlag = false;
                             Debug.Log("移動終了" + gameObject.name);

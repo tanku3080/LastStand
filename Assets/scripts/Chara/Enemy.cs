@@ -103,7 +103,6 @@ public class Enemy : EnemyBase
             if (playerFind)
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
-                //今回の場合は予めオブジェクトを一つ用意した。
                 //敵味方の距離が近すぎる場合あり得ない角度に砲塔を旋回するので修正の必要
                 Debug.Log("発見");
                 AgentParamSet(false);

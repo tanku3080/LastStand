@@ -149,6 +149,9 @@ public class TurnManager : Singleton<TurnManager>
             //timeLineNotActive
             playerIsMove = true;
         }
+        if (players.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
+        if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+
     }
     void FirstSet()
     {
@@ -237,7 +240,6 @@ public class TurnManager : Singleton<TurnManager>
             //playerNumの値を加算している処理が不具合の元になりそう
             if (moveV > 0)
             {
-                if (players.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
                 if (playerNum >= players.Count)//問題個所はここ
                 {
                     GameManager.Instance.ChengePop(true, GameManager.Instance.endObj);
@@ -264,7 +266,6 @@ public class TurnManager : Singleton<TurnManager>
 
         if (enemyTurn && enemy)
         {
-            if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
             if (enemyFirstColl)
             {
                 enemyFirstColl = false;
@@ -402,7 +403,14 @@ public class TurnManager : Singleton<TurnManager>
             enemyTurn = false;
             playerTurn = true;
             timeLlineF = true;
-            MoveCharaSet(true,false);
+            playerNum = 0;
+            enemyNum = 0;
+            nowEnemy.GetComponent<Enemy>().controlAccess = false;
+            nowPayer.GetComponent<TankCon>().controlAccess = false;
+            nowPayer = players[playerNum].gameObject;
+            nowEnemy = enemys[enemyNum].gameObject;
+            tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
+            VcamChenge();
             GameManager.Instance.isGameScene = true;//?
             return;
         }

@@ -103,10 +103,6 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" && oneUseFlager)
         {
-            if (playerMPlay && enemyMPlay)
-            {
-                return;
-            }
             if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
             {
                 GameManager.Instance.ChengePop(true, playerBGM);
@@ -285,8 +281,11 @@ public class TurnManager : Singleton<TurnManager>
                     moveV--;
                 }
             }
-            nowEnemy = enemys[enemyNum].gameObject;
-            nowEnemy.GetComponent<Enemy>().controlAccess = true;
+            else
+            {
+                nowEnemy = enemys[enemyNum].gameObject;
+                nowEnemy.GetComponent<Enemy>().controlAccess = true;//何かおかしい
+            }
             enemy = false;
         }
     }
@@ -393,6 +392,7 @@ public class TurnManager : Singleton<TurnManager>
             timeLlineF = true;
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
+            nowEnemy.GetComponent<Enemy>().enemyMoveTimer = 0f;
             MoveCharaSet(false, true);
             return;
         }
@@ -413,6 +413,7 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
             VcamChenge();
             nowPayer.GetComponent<TankCon>().controlAccess = true;
+            PlayMusic();
             GameManager.Instance.isGameScene = true;//?
             return;
         }

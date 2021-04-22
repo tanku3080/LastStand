@@ -47,30 +47,36 @@ public class Enemy : EnemyBase
 
     }
     bool oneFlag = true;
+    public float enemyMoveTimer;
     private void Update()
     {
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
-            Debug.Log("controlAccess is" + controlAccess);
             Rd.isKinematic = false;
-            Debug.Log("isKinematic" + Rd.isKinematic);
+            enemyMoveTimer += Time.deltaTime;
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
-                    Debug.Log("nowState idol");
-                    if (eAtackCount <= nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
+                    Debug.Log(enemyMoveTimer);
+                    if (enemyMoveTimer > 3f)
                     {
-                        oneFlag = false;
-                        Debug.Log("移動終了" + gameObject.name);
-                        agent.ResetPath();
-                        TurnManager.Instance.MoveCharaSet(false, true,TurnManager.Instance.EnemyMoveVal);
-                    }
+                        if (eAtackCount == nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
+                        {
+                            oneFlag = false;
+                            Debug.Log("移動終了" + gameObject.name);
+                            agent.ResetPath();
+                            nowCounter = 0;
+                            TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                        }
 
-                    if (TurnManager.Instance.EnemyMoveVal > 0)
-                    {
-                        if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
-                        else state = EnemyState.Move;
+                        if (TurnManager.Instance.EnemyMoveVal > 0)
+                        {
+                            Debug.Log("attackかMoveか" + eAtackCount + nowCounter);
+                            if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;//問題個所はここ
+                            else state = EnemyState.Move;
+                        }
+                        enemyMoveTimer = 0;
                     }
                     break;
                 case EnemyState.Move:
@@ -141,7 +147,11 @@ public class Enemy : EnemyBase
             }
             EnemyMoveLimit();
         }
-        else if (isPlayer) state = EnemyState.Idol;
+        else if (isPlayer)
+        {
+            Debug.Log("発見していない");
+            state = EnemyState.Idol;
+        }
     }
     void EnemyMoveLimit()
     {
@@ -151,13 +161,14 @@ public class Enemy : EnemyBase
         }
     }
 
+    float time;
     void PlayerAtack()
     {
         float result = Random.Range(0,100);
-        float time = Time.deltaTime;
-        Debug.Log(time + "現在");
+        time += Time.deltaTime;
         if (time > 1.5f)
         {
+            time = 0f;
             Debug.Log("入った");
             if (result < 10)//クリティカル
             {

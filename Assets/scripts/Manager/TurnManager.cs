@@ -410,7 +410,9 @@ public class TurnManager : Singleton<TurnManager>
             nowPayer = players[playerNum].gameObject;
             nowEnemy = enemys[enemyNum].gameObject;
             tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
+            GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
             VcamChenge();
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
             GameManager.Instance.isGameScene = true;//?
             return;
         }

@@ -368,7 +368,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>
     /// 操作権を別陣営に渡す
     /// </summary>
-    public void TurnEnd()//敵側入れてない
+    public void TurnEnd()
     {
         Debug.Log("turnEndSart");
         GameManager.Instance.ChengePop(false,GameManager.Instance.endObj);

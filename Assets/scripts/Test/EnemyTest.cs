@@ -1,18 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Cinemachine;
 
-/// <summary>このスクリプトはテスト用として作っているのでコードが気持ち悪くなる</summary>
+/// <summary>このスクリプトはテスト用として作っている</summary>
 public class EnemyTest : EnemyBase
 {
-    enum State
-    {
-        Idol, Move, Atack
-    }
-    State state;
-    public NavMeshAgent agent;
     bool moveLimitGetFlag = true;
     [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     GameObject tankGunFire = null;
@@ -26,42 +19,34 @@ public class EnemyTest : EnemyBase
     bool playerFind = false;
     float nowLimitRange = 0f;
     bool controllAcsess = false;
-    bool isGranded = false;
     private bool agentSetUpFlag = true;
 
     void Start()
     {
-        enemyLife = 80;
-        enemySpeed = 21f;
-        ETankTurn_Speed = 5f;
-        ETankLimitSpeed = 1000f;
-        ETankLimitRange = 10000f;
-        nowLimitRange = ETankLimitRange;
-        eTankDamage = 35;
-        eAtackCount = 1;
-        Rd = gameObject.GetComponent<Rigidbody>();
-        Renderer = gameObject.GetComponent<MeshRenderer>();
-        Anime = gameObject.GetComponent<Animator>();
-        Trans = gameObject.GetComponent<Transform>();
-        tankHead = Trans.GetChild(1);
-        tankGun = tankHead.GetChild(0);
-        tankGunFire = tankGun.GetChild(0).transform.gameObject;
-        tankBody = Trans.GetChild(0);
-        leftTank = tankBody.GetChild(0);
-        rightTank = tankBody.GetChild(1);
+        //enemyLife = 80;
+        //enemySpeed = 21f;
+        //ETankTurn_Speed = 5f;
+        //ETankLimitSpeed = 1000f;
+        //ETankLimitRange = 10000f;
+        //nowLimitRange = ETankLimitRange;
+        //eTankDamage = 35;
+        //eAtackCount = 1;
+        //Rd = gameObject.GetComponent<Rigidbody>();
+        //Renderer = gameObject.GetComponent<MeshRenderer>();
+        //Anime = gameObject.GetComponent<Animator>();
+        //Trans = gameObject.GetComponent<Transform>();
+        //tankHead = Trans.GetChild(1);
+        //tankGun = tankHead.GetChild(0);
+        //tankGunFire = tankGun.GetChild(0).transform.gameObject;
+        //tankBody = Trans.GetChild(0);
+        //leftTank = tankBody.GetChild(0);
+        //rightTank = tankBody.GetChild(1);
 
-        agent = GetComponent<NavMeshAgent>();
-        
-        agent.autoBraking = true;
-        agent.stoppingDistance = 0.5f;
-        AgentParamSet(false);
+        //defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
+        //EborderLine = tankHead.GetComponent<BoxCollider>();
+        //EborderLine.size = new Vector3(50f, 0.1f, 50f);
+        //EborderLine.isTrigger = true;
 
-        defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
-        EborderLine = tankHead.GetComponent<BoxCollider>();
-        EborderLine.size = new Vector3(50f, 0.1f, 50f);
-        EborderLine.isTrigger = true;
-
-        state = State.Idol;
     }
 
     // Update is called once per frame
@@ -71,91 +56,14 @@ public class EnemyTest : EnemyBase
         //試験
         if (Input.GetKeyUp(KeyCode.Return))
         {
-            if(controllAcsess) controllAcsess = false;
-            else controllAcsess = true;
+            controllAcsess = true;
         }
         
         if (controllAcsess)
         {
-            if (isGranded)
-            {
-                //if (nowLimitRange <= 0)
-                //{
-                //    controllAcsess = false;
-                //    Debug.Log("TurnEnd");
-                //    return;
-                //}
-                switch (state)//原点回帰
-                {
-                    case State.Idol:
-                        if (isPlayer) state = State.Atack;
-                        else state = State.Move;
-                        break;
-                    case State.Move:
-                        Moving();
-                        break;
-                    case State.Atack:
-                        Atack();
-                        break;
-                }
-            }
-            else
-            {
-                Trans.position = Vector3.down;
-            }
+            EnemyMoving();
+            controllAcsess = false;
         }
-    }
-
-    void Moving()
-    {
-        if (!isPlayer)
-        {
-            if (playerFind)
-            {
-                //発見したプレイヤーの中で一番近い物に照準を合わせる
-                //今回の場合は予めオブジェクトを一つ用意した。
-                Vector3 pointDir = target.transform.position - tankHead.position;
-                Quaternion rotetion = Quaternion.LookRotation(pointDir);
-                tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                float angle = Vector3.Angle(pointDir, tankGun.forward);
-                if (angle < 3) isPlayer = true;
-                MoveLimit();
-            }
-            else
-            {
-                if (patrolPos.Length < patrolNum) patrolNum = 0;
-                Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
-                Quaternion rotetion = Quaternion.LookRotation(pointDir);
-
-                Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                float angle = Vector3.Angle(pointDir, Trans.forward);
-                float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
-                if (angle < 3)
-                {
-                    if (agentSetUpFlag)
-                    {
-                        agentSetUpFlag = false;
-                        AgentParamSet(true);
-                    }
-                    agent.SetDestination(patrolPos[patrolNum].transform.position);
-                    agent.nextPosition = Trans.position;
-                }
-                else if (angle != 3 && a < 10)
-                {
-                    agentSetUpFlag = true;
-                    AgentParamSet(false);
-                    patrolNum++;
-                }
-                MoveLimit();
-            }
-        }
-        else state = State.Idol;
-    }
-    private void AgentParamSet(bool f)
-    {
-        agent.speed = f ? enemySpeed / 2 : 0;
-        agent.angularSpeed = f ? ETankTurn_Speed : 0;
-        agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
     int atackCounter = 1;
     void Atack()
@@ -201,26 +109,60 @@ public class EnemyTest : EnemyBase
     }
 
 
-
-
-
-
-
-
-    private void OnCollisionStay(Collision collision)
+    /// <summary>敵の動きを決める</summary>
+    /// <param name="setTimer"></param>
+    void EnemyMoving(float setTimer = 3f)
     {
-        if (collision.gameObject.tag == "Grand") isGranded = true;
+        float num = Random.Range(0f,1.0f);
+        float moveFlag = FuzzyMove(num);
+        float moveStop = FuzzyStop(num);
+        float atack = FuzzyAtack(num);
+        Debug.Log($"ランダム{num},移動{moveFlag},ストップ{moveStop},攻撃{atack}");
+
+        //if (moveFlag > 0.5)
+        //{
+        //    Debug.Log("移動変更");
+        //}
+        //else
+        //{
+        //    Debug.Log("移動");
+        //}
     }
-    private void OnTriggerEnter(Collider other)
+
+
+    private float FuzzyMove(float value,float min = 0f,float max = 1f)
     {
-        if (other.gameObject.tag == "Player")
+        float keisan = max - min;
+        if (value <= min) return 0;
+        else if (value >= max) return 1;
+        else return (value / keisan) - (min / keisan);
+    }
+
+    private float FuzzyStop(float value,float min = 0f,float max = 1f)
+    {
+        float keisan = max - min;
+        if (value <= 0) return 1;
+        else if (value >= max) return 0;
+        else return ((max / keisan) - (value / keisan));
+    }
+
+    private float FuzzyAtack(float value,float min = 0f,float max = 1f)
+    {
+        float keisan = min - max;
+        if (value <= min) return 0;
+        else if (value == max)
         {
-            playerFindPos = other.gameObject.transform.position;
-            playerFind = true;
+            Debug.Log("値が最大値と同じ");
+            return 1;
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Player") playerFind = false;
+        else if (value > min && value < max)
+        {
+            Debug.Log("値が最小値より大きいか最大値より小さい");
+            return ((value / keisan) - (value / keisan));
+        }
+        else {
+            Debug.Log("例外");
+            return ((min / keisan) - (value / keisan));
+        }
     }
 }

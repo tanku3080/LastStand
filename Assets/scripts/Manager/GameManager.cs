@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 {

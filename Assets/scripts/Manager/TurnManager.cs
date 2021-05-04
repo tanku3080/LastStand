@@ -211,12 +211,12 @@ public class TurnManager : Singleton<TurnManager>
 
     void TurnTextMove()
     {
+
         Text text = turnText.GetComponent<Text>();
         if (generalTurn == maxTurn) text.text = "Last";
         if (playerTurn) text.text = "Player ";
         if (enemyTurn) text.text = "Enemy ";
-        text.text += generalTurn.ToString();
-        text.text += "Turn";
+        text.text += generalTurn + "Turn";
     }
 
     /// <summary>

@@ -41,13 +41,21 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
         if (fadeStart)
         {
             //0.0005はmeetingに使うとちょうどいいかも？
-            if (group.alpha >= 0)//透明化する
+            if (group.alpha >= 0)
             {
-                group.alpha -= timer * 0.05f;
+                while (group.alpha > 255)
+                {
+                    Debug.Log("イクマ");
+                    group.alpha -= timer * 0.05f;
+                }
             }
             else//あらわれる
             {
-                group.alpha += timer * 0.05f;
+                while (group.alpha < 0)
+                {
+                    Debug.Log("deeee");
+                    group.alpha += timer * 0.05f;
+                }
             }
         }
         if (sceneChangeStart)

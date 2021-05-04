@@ -40,7 +40,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, HideInInspector] public bool isGameScene;
 
     public bool clickC = true;
-    private int nowTurnValue = 0;
 
     override protected void Awake()
     {
@@ -82,8 +81,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 oneTimeFlag = false;
             }
-            nowTurnValue = TurnManager.Instance.generalTurn;
-            if (nowTurnValue == 5)
+            if (TurnManager.Instance.generalTurn == 2)
             {
                 TurnManager.Instance.generalTurn = 1;
                 SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true);

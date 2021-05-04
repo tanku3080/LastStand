@@ -4,16 +4,22 @@ using UnityEngine;
 public class TestGameanager : MonoBehaviour
 {
     public List<GameObject> testEnemys = null;
+    public List<GameObject> testPlayers = null;
 
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            foreach (var item in FindObjectsOfType<TargetScript>())
+            foreach (var item in FindObjectsOfType<EnemyTest>())
             {
                 Debug.Log("収容" + item);
                 testEnemys.Add(item.gameObject);
             }
+            foreach (var item in FindObjectsOfType<TestPlayerCon>())
+            {
+                testPlayers.Add(item.gameObject);
+            }
+
         }
     }
 

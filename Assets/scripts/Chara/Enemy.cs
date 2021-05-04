@@ -46,7 +46,7 @@ public class Enemy : EnemyBase
         enemyMoveNowValue = ETankLimitRange;
 
     }
-    bool oneFlag = true;
+    bool oneUseFlag = true;
     public float enemyMoveTimer;
     private void Update()
     {
@@ -61,9 +61,9 @@ public class Enemy : EnemyBase
                     Debug.Log(enemyMoveTimer);
                     if (enemyMoveTimer > 3f)
                     {
-                        if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneFlag)
+                        if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneUseFlag)
                         {
-                            oneFlag = false;
+                            oneUseFlag = false;
                             Debug.Log("移動終了" + gameObject.name);
                             agent.ResetPath();
                             nowCounter = 0;
@@ -118,6 +118,7 @@ public class Enemy : EnemyBase
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
                 if (angle < 3) isPlayer = true;
+                else isPlayer = false;
             }
             else
             {
@@ -146,6 +147,7 @@ public class Enemy : EnemyBase
                 }
             }
             EnemyMoveLimit();
+            Debug.Log("離れた");
         }
         else if (isPlayer)
         {

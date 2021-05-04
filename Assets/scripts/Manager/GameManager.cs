@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor;
+
 
 public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
 {
@@ -36,6 +36,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [HideInInspector] public GameObject turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
     ///<summary>ゲームシーンかの判定(ターンマネージャー限定)</summary>
+    ///必要か分からない
     [SerializeField, HideInInspector] public bool isGameScene;
 
     public bool clickC = true;
@@ -82,6 +83,11 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 oneTimeFlag = false;
             }
             nowTurnValue = TurnManager.Instance.generalTurn;
+            if (nowTurnValue == 5)
+            {
+                TurnManager.Instance.generalTurn = 1;
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true);
+            }
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
@@ -96,7 +102,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
                 source.PlayOneShot(click);
                 //稼働させた状態でサイドプレイするときちんと動作しない不具合が見つかったのでTitleメソッドとこの行に以下のコードを追加
                 Application.Quit();
-                UnityEditor.EditorApplication.isPlaying = false;
+                //EditorApplication.isPlaying = false;
                 //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
             }
         }
@@ -210,7 +216,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         TurnManager.Instance.generalTurn = 0;
         //アプリを終了する
         Application.Quit();
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
 
         //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }

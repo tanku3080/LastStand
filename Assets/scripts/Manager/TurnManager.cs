@@ -70,7 +70,7 @@ public class TurnManager : Singleton<TurnManager>
     bool enemyFirstColl = true;
     //敵を発見したらtrue
     public bool FoundEnemy = false;
-    void Start()//playerBGM等の戦闘中の音楽はきちんと条件げ区分けする
+    void Start()
     {
         announceImage = GameManager.Instance.announceObj.transform.GetChild(0).GetComponent<Image>();
         annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
@@ -88,7 +88,6 @@ public class TurnManager : Singleton<TurnManager>
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (SceneManager.GetActiveScene().name == "GamePlay")
@@ -96,6 +95,7 @@ public class TurnManager : Singleton<TurnManager>
             TurnManag();
         }
     }
+    //以下の変数は音楽を鳴らすのに必要な物
     [SerializeField,HideInInspector] public bool playerMPlay = false;
     [SerializeField,HideInInspector] public bool enemyMPlay = false;
     [SerializeField,HideInInspector] public bool oneUseFlager = true;
@@ -121,9 +121,9 @@ public class TurnManager : Singleton<TurnManager>
         }
 
     }
-    bool turnFirstNumFlag = true;
     void TurnManag()
     {
+        bool turnFirstNumFlag = true;
         if (eventF)
         {
             director.stopped += TimeLineStop;
@@ -140,11 +140,7 @@ public class TurnManager : Singleton<TurnManager>
             TurnTextMove();
             StartTimeLine();
         }
-        else
-        {
-            //timeLineNotActive
-            playerIsMove = true;
-        }
+        else playerIsMove = true;
         if (players.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
         if (enemys.Count == 0) SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
 

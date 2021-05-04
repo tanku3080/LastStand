@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Cinemachine;
 
 /// <summary>このスクリプトはテスト用として作っている</summary>
 public class EnemyTest : EnemyBase
 {
-    bool moveLimitGetFlag = true;
     [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     GameObject tankGunFire = null;
     Transform tankBody = null;
@@ -129,8 +126,8 @@ public class EnemyTest : EnemyBase
         //}
     }
 
-
-    private float FuzzyMove(float value,float min = 0f,float max = 1f)
+    float max = 1f;
+    private float FuzzyMove(float value,float min = 0f)
     {
         float keisan = max - min;
         if (value <= min) return 0;
@@ -138,7 +135,7 @@ public class EnemyTest : EnemyBase
         else return (value / keisan) - (min / keisan);
     }
 
-    private float FuzzyStop(float value,float min = 0f,float max = 1f)
+    private float FuzzyStop(float value,float min = 0f)
     {
         float keisan = max - min;
         if (value <= 0) return 1;
@@ -146,7 +143,7 @@ public class EnemyTest : EnemyBase
         else return ((max / keisan) - (value / keisan));
     }
 
-    private float FuzzyAtack(float value,float min = 0f,float max = 1f)
+    private float FuzzyAtack(float value,float min = 0f)
     {
         float keisan = min - max;
         if (value <= min) return 0;

@@ -57,8 +57,6 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
 
     void SceneChanged(Scene nowScene,Scene nextScene)
     {
-        Debug.Log($"今のシーンは{nowScene.name}で遷移先のシーンは{nextScene.name}です");
         while (group.alpha > 0) group.alpha -= Time.deltaTime * 0.05f;
-
     }
 }

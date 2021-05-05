@@ -37,7 +37,6 @@ public class Enemy : EnemyBase
         agent = GetComponent<NavMeshAgent>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
-        EnemyEnebled(TurnManager.Instance.FoundEnemy);
 
         agent.autoBraking = true;
         AgentParamSet(false);
@@ -58,7 +57,6 @@ public class Enemy : EnemyBase
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
-                    Debug.Log(enemyMoveTimer);
                     if (enemyMoveTimer > 3f)
                     {
                         if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneUseFlag)
@@ -73,7 +71,7 @@ public class Enemy : EnemyBase
                         if (TurnManager.Instance.EnemyMoveVal > 0)
                         {
                             Debug.Log("attackかMoveか" + eAtackCount + nowCounter);
-                            if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;//問題個所はここ
+                            if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
                             else state = EnemyState.Move;
                         }
                         enemyMoveTimer = 0;
@@ -81,11 +79,18 @@ public class Enemy : EnemyBase
                     break;
                 case EnemyState.Move:
                     Debug.Log("nowState Move");
-                    EnemyMove();
+                    if (enemyMoveTimer > 3)
+                    {
+                        enemyMoveTimer = 0;
+                        EnemyMove();
+                    }
                     break;
                 case EnemyState.Atack:
-                    Debug.Log("nowState Atack");
-                    PlayerAtack();
+                    if (enemyMoveTimer > 3)
+                    {
+                        enemyMoveTimer = 0;
+                        PlayerAtack();
+                    }
                     break;
             }
         }
@@ -104,6 +109,7 @@ public class Enemy : EnemyBase
 
     void EnemyMove()
     {
+        Debug.Log("NowEnemyMove");
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
         {
             if (playerFind)
@@ -122,6 +128,7 @@ public class Enemy : EnemyBase
             }
             else
             {
+                Debug.Log("パトロール");
                 if (patrolPos.Length < patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);

@@ -7,27 +7,19 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
 {
     public enum SceneName
     {
-        Start, Meeting, GamePlay, GameOver, GameClear,
+        Start, Meeting, GamePlay, GameOver, GameClear,None
     }
     public SceneName scene;
     CanvasGroup group = null;
     string sceneName = null;
-    float timer = 0;
-    /// <summary>フェード単体かシーン切り替えか</summary>
-    bool fadeSingleOfMulti = false;
-    // Start is called before the first frame update
+
     void Start()
     {
-        var t = this.gameObject.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        var t = gameObject.transform.GetChild(0).GetChild(0).GetComponent<Image>();
         group = gameObject.transform.GetChild(0).GetComponent<CanvasGroup>();
         t.color = Color.black;
         group.alpha = 1;
-    }
-    private void Update()
-    {
-        timer += Time.deltaTime;
-        SceneFadeAndChanging(SceneName.GameClear, true);
-
+        SceneFadeAndChanging(SceneName.None,true);
     }
 
     /// <summary>
@@ -38,32 +30,35 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     /// <param name="sceneChangeStart">trueならシーン遷移スタート</param>
     public void SceneFadeAndChanging(SceneName name, bool fadeStart = false, bool sceneChangeStart = false)
     {
+        float timer = Time.deltaTime;
         if (fadeStart)
         {
-            //0.0005はmeetingに使うとちょうどいいかも？
-            if (group.alpha >= 0)
+            if (group.alpha > 0)
             {
-                while (group.alpha > 255)
-                {
-                    Debug.Log("イクマ");
-                    group.alpha -= timer * 0.05f;
-                }
+                while (group.alpha > 0) group.alpha -= timer * 0.05f;
             }
             else//あらわれる
             {
-                while (group.alpha < 0)
-                {
-                    Debug.Log("deeee");
-                    group.alpha += timer * 0.05f;
-                }
+                while (group.alpha < 1) group.alpha += timer * 0.05f;
             }
         }
         if (sceneChangeStart)
         {
-            if (name.ToString() == SceneManager.GetActiveScene().name && sceneChangeStart == false) return;
-            sceneName = name.ToString();
-            SceneManager.LoadScene(sceneName);
+            SceneManager.activeSceneChanged += SceneChanged;
+            if(name != SceneName.None)
+            {
+                if (name.ToString() == SceneManager.GetActiveScene().name && sceneChangeStart == false) return;
+                sceneName = name.ToString();
+                SceneManager.LoadScene(sceneName);
+            }
         }
         else return;
+    }
+
+    void SceneChanged(Scene nowScene,Scene nextScene)
+    {
+        Debug.Log($"今のシーンは{nowScene.name}で遷移先のシーンは{nextScene.name}です");
+        while (group.alpha > 0) group.alpha -= Time.deltaTime * 0.05f;
+
     }
 }

@@ -445,4 +445,12 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
     private void OneUseMethod() => GameManager.Instance.ChengePop(false, GameManager.Instance.announceObj);
 
+    /// <summary>キーボードの対応操作を表示する</summary>
+    public void KeyShow()
+    {
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.RadarSfx);
+        GameManager.Instance.ChengePop(true,GameManager.Instance.keyUI);
+    }
+    public void KeyImageBack() => GameManager.Instance.ChengePop(false,GameManager.Instance.keyUI);
+
 }

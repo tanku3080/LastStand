@@ -32,6 +32,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     [SerializeField, Header("アナウンスUI")] public GameObject announceObj = null;
     [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
     [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
+    [SerializeField, Header("キーボードUI")] public GameObject keyUI = null;
     [HideInInspector] public GameObject hittingTargetR = null;
     [HideInInspector] public GameObject turretCorrectionF = null;
     [SerializeField, HideInInspector] public GameObject nearEnemy = null;
@@ -58,6 +59,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         ChengePop(false, hittingTargetR);
         ChengePop(false, turretCorrectionF);
         ChengePop(false, announceObj);
+        ChengePop(false, keyUI);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
@@ -136,6 +138,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             source.PlayOneShot(cancel);
             ChengePop(clickC, pauseObj);
+            ChengePop(clickC,keyUI);
             TurnManager.Instance.playerIsMove = !clickC;
             TurnManager.Instance.enemyIsMove = !clickC;
             clickC = true;
@@ -306,5 +309,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         ChengePop(false, hittingTargetR);
         ChengePop(false, turretCorrectionF);
         ChengePop(false, announceObj);
+        ChengePop(false,keyUI);
     }
 }

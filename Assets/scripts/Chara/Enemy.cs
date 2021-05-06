@@ -46,51 +46,49 @@ public class Enemy : EnemyBase
 
     }
     bool oneUseFlag = true;
-    public float enemyMoveTimer;
+    private bool timerFalg = false;
     private void Update()
     {
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
             Rd.isKinematic = false;
-            enemyMoveTimer += Time.deltaTime;
+            WaitTimer(timerFalg);
             switch (state)//idolを全ての終着点に
             {
                 case EnemyState.Idol:
-                    if (enemyMoveTimer > 3f)
-                    {
-                        if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneUseFlag)
-                        {
-                            oneUseFlag = false;
-                            Debug.Log("移動終了" + gameObject.name);
-                            agent.ResetPath();
-                            nowCounter = 0;
-                            TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
-                        }
 
-                        if (TurnManager.Instance.EnemyMoveVal > 0)
-                        {
-                            Debug.Log("attackかMoveか" + eAtackCount + nowCounter);
-                            if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
-                            else state = EnemyState.Move;
-                        }
-                        enemyMoveTimer = 0;
+                    timerFalg = true;
+                    if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneUseFlag)
+                    {
+                        oneUseFlag = false;
+                        Debug.Log("移動終了" + gameObject.name);
+                        agent.ResetPath();
+                        nowCounter = 0;
+                        TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                    }
+
+                    if (TurnManager.Instance.EnemyMoveVal > 0)
+                    {
+                        Debug.Log("attackかMoveか" + eAtackCount + nowCounter);
+                        if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
+                        else state = EnemyState.Move;
                     }
                     break;
                 case EnemyState.Move:
                     Debug.Log("nowState Move");
-                    if (enemyMoveTimer > 3)
-                    {
-                        enemyMoveTimer = 0;
-                        EnemyMove();
-                    }
+                    //if (enemyMoveTimer > 3)
+                    //{
+                    //}
+                    timerFalg = true;
+                    EnemyMove();
                     break;
                 case EnemyState.Atack:
-                    if (enemyMoveTimer > 3)
-                    {
-                        enemyMoveTimer = 0;
-                        PlayerAtack();
-                    }
+                    //if (enemyMoveTimer > 3)
+                    //{
+                    //}
+                    timerFalg = true;
+                    PlayerAtack();
                     break;
             }
         }
@@ -98,6 +96,16 @@ public class Enemy : EnemyBase
         {
             Rd.isKinematic = true;
         }
+    }
+    private int t;
+    private void WaitTimer(bool flag,int timeLimit = 3 )
+    {
+        if (flag)
+        {
+            t += (int)Time.deltaTime;
+            if (t >= timeLimit) flag = false;
+        }
+        t = 0;
     }
 
     private void AgentParamSet(bool f)

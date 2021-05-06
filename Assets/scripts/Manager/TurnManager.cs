@@ -388,7 +388,6 @@ public class TurnManager : Singleton<TurnManager>
             timeLlineF = true;
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
-            nowEnemy.GetComponent<Enemy>().enemyMoveTimer = 0f;
             MoveCharaSet(false, true);
             return;
         }

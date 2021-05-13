@@ -83,11 +83,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 oneTimeFlag = false;
             }
-            if (TurnManager.Instance.generalTurn == 2)
-            {
-                TurnManager.Instance.generalTurn = 1;
-                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true);
-            }
+            if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
@@ -100,10 +96,9 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             if (Input.GetKeyUp(KeyCode.Return))
             {
                 source.PlayOneShot(click);
-                //稼働させた状態でサイドプレイするときちんと動作しない不具合が見つかったのでTitleメソッドとこの行に以下のコードを追加
+                //Titleメソッドとこの行に以下のコードを追加
                 Application.Quit();
-                //EditorApplication.isPlaying = false;
-                //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start,true,true);
+                //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
             }
         }
     }
@@ -201,25 +196,15 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     public void Restart()//現状未実装
     {
         source.PlayOneShot(click);
-        SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay, true, true);
+        TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.ReStart);
     }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()
     {
         source.PlayOneShot(click);
-        Instance.ChengePop(false, TurnManager.Instance.playerBGM);
-        Instance.ChengePop(false, TurnManager.Instance.enemyBGM);
-        Instance.ChengePop(false,pauseObj);
-
-        TurnManager.Instance.enemyMPlay = false;
-        TurnManager.Instance.playerMPlay = false;
-        TurnManager.Instance.oneUseFlager = false;
-        TurnManager.Instance.generalTurn = 0;
-        //アプリを終了する
+        //TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.Title);
+        ////アプリを終了する
         Application.Quit();
-        //UnityEditor.EditorApplication.isPlaying = false;
-
-        //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
     }
 
     public int charactorHp;

@@ -77,16 +77,10 @@ public class Enemy : EnemyBase
                     break;
                 case EnemyState.Move:
                     Debug.Log("nowState Move");
-                    //if (enemyMoveTimer > 3)
-                    //{
-                    //}
                     timerFalg = true;
                     EnemyMove();
                     break;
                 case EnemyState.Atack:
-                    //if (enemyMoveTimer > 3)
-                    //{
-                    //}
                     timerFalg = true;
                     PlayerAtack();
                     break;
@@ -117,7 +111,6 @@ public class Enemy : EnemyBase
 
     void EnemyMove()
     {
-        Debug.Log("NowEnemyMove");
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
         {
             if (playerFind)
@@ -128,6 +121,7 @@ public class Enemy : EnemyBase
                 AgentParamSet(false);
                 agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
+                Debug.Log("現在の近くのPlayerは" + NearPlayer().name);
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
@@ -162,7 +156,6 @@ public class Enemy : EnemyBase
                 }
             }
             EnemyMoveLimit();
-            Debug.Log("離れた");
         }
         else if (isPlayer)
         {
@@ -208,6 +201,7 @@ public class Enemy : EnemyBase
         state = EnemyState.Idol;
     }
 
+    bool oneFlag = true;
     /// <summary>
     /// 一番近い敵のオブジェクトを探す
     /// </summary>
@@ -216,15 +210,20 @@ public class Enemy : EnemyBase
         float keepPos = 0;
         float nearDistance = 0;
         GameObject target = null;
-        foreach (var item in TurnManager.Instance.players)
+        oneFlag = true;
+        if (oneFlag)
         {
-            keepPos = Vector3.Distance(gameObject.transform.position, item.transform.position);
-            if (nearDistance == 0 || nearDistance > keepPos)
+            oneFlag = false;
+            foreach (var item in TurnManager.Instance.players)
             {
-                nearDistance = keepPos;
-                target = item.gameObject;
-            }
+                keepPos = Vector3.Distance(gameObject.transform.position, item.transform.position);
+                if (nearDistance == 0 || nearDistance > keepPos)
+                {
+                    nearDistance = keepPos;
+                    target = item.gameObject;
+                }
 
+            }
         }
         return target;
     }

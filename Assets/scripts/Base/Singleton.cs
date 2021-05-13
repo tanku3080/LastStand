@@ -23,7 +23,7 @@ public class Singleton<T> : MonoBehaviour where T:MonoBehaviour
     {
         if(this != Instance)
         {
-            Debug.Log("同一オブジェクトがアタッチされています" + Instance.gameObject.name);
+            Debug.Log("同一オブジェクト存在するので削除します" + Instance.gameObject.name);
             Destroy(this.gameObject);
             return;
         }

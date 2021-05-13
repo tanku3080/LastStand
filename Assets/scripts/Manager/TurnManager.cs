@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class TurnManager : Singleton<TurnManager>
 {
-    public enum ParticleStatus
+    public enum JudgeStatus
     {
-        Hit,Destroy,MiddleDmage,BigDamage
+        Clear,GameOver,Title,ReStart
     }
     public bool enemyTurn = false, playerTurn = false;
     public bool playerIsMove = false, enemyIsMove = false;
@@ -60,9 +60,9 @@ public class TurnManager : Singleton<TurnManager>
     public CinemachineVirtualCamera DefCon { get; set; }
     public CinemachineVirtualCamera AimCon { get; set; }
     /// <summary>味方のキャラ数</summary>
-    int playerNum = 0;
+    [HideInInspector] public int playerNum = 0;
     /// <summary>敵のキャラ数</summary>
-    int enemyNum = 0;
+    [HideInInspector] public int enemyNum = 0;
     //timeline関連
     bool timeLlineF = true;
     bool eventF = true;
@@ -121,9 +121,9 @@ public class TurnManager : Singleton<TurnManager>
         }
 
     }
+    bool turnFirstNumFlag = true;
     void TurnManag()
     {
-        bool turnFirstNumFlag = true;
         if (eventF)
         {
             director.stopped += TimeLineStop;
@@ -150,9 +150,11 @@ public class TurnManager : Singleton<TurnManager>
         if (GameManager.Instance.isGameScene)
         {
             MoveCounterText(text1);
+            Debug.Log("ここはゲームシーン");
             //初回のみ
             if (generalTurn == 1)
             {
+                Debug.Log("初回言った");
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
@@ -295,17 +297,7 @@ public class TurnManager : Singleton<TurnManager>
             players.Remove(thisObj.GetComponent<TankCon>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
             playerNum++;
-            if (playerNum == players.Count)
-            {
-                playerNum = 0;
-                enemyNum = 0;
-                GameManager.Instance.ChengePop(false, playerBGM);
-                GameManager.Instance.ChengePop(false, enemyBGM);
-                enemyMPlay = false;
-                playerMPlay = false;
-                oneUseFlager = false;
-                Invoke("DelayGameOver",2f);
-            }
+            if (playerNum == players.Count) Invoke("DelayGameOver", 2f);
         }
         if (thisObj.CompareTag("Enemy"))
         {
@@ -313,24 +305,50 @@ public class TurnManager : Singleton<TurnManager>
             enemys.Remove(thisObj.GetComponent<Enemy>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
             enemyNum++;
-            Debug.Log("体の数" + enemys.Count);
-            if (0 >= enemys.Count)
-            {
-                enemyNum = 0;
-                playerNum = 0;
-                GameManager.Instance.ChengePop(false, playerBGM);
-                GameManager.Instance.ChengePop(false, enemyBGM);
-                enemyMPlay = false;
-                playerMPlay = false;
-                oneUseFlager = false;
-                Invoke("DelayGameClear", 2f);
-            }
+            Debug.Log("残りの敵" + enemys.Count);
+            if (0 >= enemys.Count) Invoke("DelayGameClear", 2f);
         }
     }
-    /// <summary>GameClear時に呼び出される</summary>
-    private void DelayGameClear() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
-    /// <summary>GameOverr時に呼び出される</summary>
-    private void DelayGameOver() => SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
+    /// <summary>GameClear時に呼び出される。Invokeを使う為のメソッド</summary>
+    public void DelayGameClear() => GameSceneChange(JudgeStatus.Clear);
+    /// <summary>GameOver時に呼び出される。Invokeを使う為のメソッド</summary>
+    public void DelayGameOver() => GameSceneChange(JudgeStatus.GameOver);
+    /// <summary>ゲームプレイからの切り替えで使う。待機時間を使わないならこれを使う</summary>
+    /// <param name="status">切り替え先のシーン</param>
+    public void GameSceneChange(JudgeStatus status)
+    {
+        enemyNum = 0;
+        playerNum = 0;
+        generalTurn = 1;
+        playerTurn = false;
+        enemyTurn = false;
+        GameManager.Instance.ChengePop(false, playerBGM);
+        GameManager.Instance.ChengePop(false, enemyBGM);
+        GameManager.Instance.ChengePop(false,GameManager.Instance.pauseObj);
+        GameManager.Instance.ChengePop(false,GameManager.Instance.radarObj);
+        enemyMPlay = false;
+        playerMPlay = false;
+        oneUseFlager = false;
+        GameManager.Instance.isGameScene = true;
+        turnFirstNumFlag = true;
+        //players.Clear();
+        //enemys.Clear();
+        switch (status)
+        {
+            case JudgeStatus.Clear:
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameClear, true, true);
+                break;
+            case JudgeStatus.GameOver:
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
+                break;
+            case JudgeStatus.Title:
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
+                break;
+            case JudgeStatus.ReStart:
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GamePlay,true,true);
+                break;
+        }
+    }
     /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える/// </summary>
     public void OkTankChenge() 
     {

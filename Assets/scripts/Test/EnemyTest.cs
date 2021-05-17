@@ -6,44 +6,13 @@ public class EnemyTest : EnemyBase
 {
     [SerializeField] public CinemachineVirtualCamera defaultCon = null;
     GameObject tankGunFire = null;
-    Transform tankBody = null;
-    bool isPlayer = false;
     [SerializeField] GameObject[] patrolPos;
-    int patrolNum = 0;
     [SerializeField] GameObject target = null;
-    /// <summary>敵を発見した際の地点で見失った際に使う</summary>
-    private Vector3 playerFindPos = Vector3.zero;
-    bool playerFind = false;
     float nowLimitRange = 0f;
     bool controllAcsess = false;
-    private bool agentSetUpFlag = true;
 
     void Start()
     {
-        //enemyLife = 80;
-        //enemySpeed = 21f;
-        //ETankTurn_Speed = 5f;
-        //ETankLimitSpeed = 1000f;
-        //ETankLimitRange = 10000f;
-        //nowLimitRange = ETankLimitRange;
-        //eTankDamage = 35;
-        //eAtackCount = 1;
-        //Rd = gameObject.GetComponent<Rigidbody>();
-        //Renderer = gameObject.GetComponent<MeshRenderer>();
-        //Anime = gameObject.GetComponent<Animator>();
-        //Trans = gameObject.GetComponent<Transform>();
-        //tankHead = Trans.GetChild(1);
-        //tankGun = tankHead.GetChild(0);
-        //tankGunFire = tankGun.GetChild(0).transform.gameObject;
-        //tankBody = Trans.GetChild(0);
-        //leftTank = tankBody.GetChild(0);
-        //rightTank = tankBody.GetChild(1);
-
-        //defaultCon = Trans.GetChild(2).GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
-        //EborderLine = tankHead.GetComponent<BoxCollider>();
-        //EborderLine.size = new Vector3(50f, 0.1f, 50f);
-        //EborderLine.isTrigger = true;
-
     }
 
     // Update is called once per frame

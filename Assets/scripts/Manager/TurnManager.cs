@@ -43,7 +43,6 @@ public class TurnManager : Singleton<TurnManager>
         get { return playerMoveValue; }
         set
         {
-            if (value == 0) AnnounceStart("Move Value Zero");
             playerMoveValue = value;
         }
     }
@@ -154,7 +153,6 @@ public class TurnManager : Singleton<TurnManager>
             //初回のみ
             if (generalTurn == 1)
             {
-                Debug.Log("初回言った");
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
@@ -166,7 +164,7 @@ public class TurnManager : Singleton<TurnManager>
                     item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     item.tankLimitRange = GameManager.Instance.tankLimitedRange;
                     item.tankDamage = GameManager.Instance.tankDamage;
-                    item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,0.1f, GameManager.Instance.tankSearchRanges);
+                    item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,1f, GameManager.Instance.tankSearchRanges);
                     item.atackCount = GameManager.Instance.atackCounter;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
@@ -180,7 +178,7 @@ public class TurnManager : Singleton<TurnManager>
                     enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
                     enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
                     enemy.eTankDamage = GameManager.Instance.tankDamage;
-                    enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 0.1f, GameManager.Instance.tankSearchRanges);
+                    enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 1f, GameManager.Instance.tankSearchRanges);
                     enemy.eAtackCount = GameManager.Instance.atackCounter;
                 }
                 GameManager.Instance.ChengePop(true,moveValue);
@@ -231,10 +229,9 @@ public class TurnManager : Singleton<TurnManager>
         PlayMusic();
         if (playerTurn && player)
         {
-            //playerNumの値を加算している処理が不具合の元になりそう
             if (moveV > 0)
             {
-                if (playerNum >= players.Count)//問題個所はここ
+                if (playerNum >= players.Count)
                 {
                     GameManager.Instance.ChengePop(true, GameManager.Instance.endObj);
                 }
@@ -246,6 +243,8 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
             nowPayer.GetComponent<TankCon>().controlAccess = false;
+            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(false, GameManager.Instance.turretCorrectionF);
             GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer = players[playerNum].gameObject;
@@ -301,7 +300,7 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (thisObj.CompareTag("Enemy"))
         {
-            Debug.Log("死亡処理");
+            Debug.Log("死亡");
             enemys.Remove(thisObj.GetComponent<Enemy>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.Destroy);
             enemyNum++;

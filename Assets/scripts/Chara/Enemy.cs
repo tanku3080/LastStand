@@ -91,15 +91,15 @@ public class Enemy : EnemyBase
             Rd.isKinematic = true;
         }
     }
-    private int t;
+    private int oneUseTimer;
     private void WaitTimer(bool flag,int timeLimit = 3 )
     {
         if (flag)
         {
-            t += (int)Time.deltaTime;
-            if (t >= timeLimit) flag = false;
+            oneUseTimer += (int)Time.deltaTime;
+            if (oneUseTimer >= timeLimit) flag = false;
         }
-        t = 0;
+        oneUseTimer = 0;
     }
 
     private void AgentParamSet(bool f)

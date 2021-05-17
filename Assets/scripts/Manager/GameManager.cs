@@ -39,6 +39,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     ///<summary>ゲームシーンかの判定(ターンマネージャー限定)</summary>
     ///必要か分からない
     [SerializeField, HideInInspector] public bool isGameScene;
+    [HideInInspector] public bool tankChangeFlag = false;
 
     public bool clickC = true;
 
@@ -174,6 +175,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         {
             source.PlayOneShot(click);
             ChengePop(clickC,radarObj);
+            tankChangeFlag = true;
             clickC = false;
         }
         else if (Input.GetKeyUp(KeyCode.Q) && TurnManager.Instance.playerTurn && clickC == false)

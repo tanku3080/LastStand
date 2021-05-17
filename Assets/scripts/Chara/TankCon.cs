@@ -17,6 +17,9 @@ public class TankCon : PlayerBase
 
 
     bool AimFlag = false;
+    //移動キー。HはCompassと連動するため
+    private float moveV;
+    public float moveH;
     //これがtureじゃないとPlayerの操作権はない
     public bool controlAccess = false;
     //カメラをオンにするのに必要
@@ -101,22 +104,22 @@ public class TankCon : PlayerBase
 
                     if (TurnManager.Instance.playerIsMove)
                     {
-                        float v = Input.GetAxis("Vertical");
-                        float h = Input.GetAxis("Horizontal");
-                        if (h != 0)
+                        moveV = Input.GetAxis("Vertical");
+                        moveH = Input.GetAxis("Horizontal");
+                        if (moveH != 0)
                         {
                             TankMoveSFXPlay(isMoving);
-                            float rot = h * tankTurn_Speed * Time.deltaTime;
+                            float rot = moveH * tankTurn_Speed * Time.deltaTime;
                             Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                             Rd.MoveRotation(Rd.rotation * rotetion);
                             MoveLimit();
                         }
                         else TankMoveSFXPlay(isMoving = false);
                         //前進後退
-                        if (v != 0 && Rd.velocity.magnitude != tankLimitSpeed || v != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
+                        if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                         {
                             MoveAudioFlag = true;
-                            float mov = v * playerSpeed * Time.deltaTime;
+                            float mov = moveV * playerSpeed * Time.deltaTime;
                             Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                             MoveLimit();
                         }
@@ -184,21 +187,28 @@ public class TankCon : PlayerBase
                     TurnManager.Instance.AnnounceStart("Atack Limit");
                 }
             }
-            if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
+            if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                if (TurnManager.Instance.FoundEnemy)
+                if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
-                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                    if (turretCorrection) turretCorrection = false;
-                    else turretCorrection = true; //精度100％
-                    GunAccuracy(turretCorrection);
+                    if (TurnManager.Instance.FoundEnemy)
+                    {
+                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                        if (turretCorrection) turretCorrection = false;
+                        else turretCorrection = true; //精度100％
+                        GunAccuracy(turretCorrection);
+                    }
+                }
+                if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
+                {
+                    if (perfectHit) perfectHit = false;
+                    else perfectHit = true;
+                    GunDirctionIsEnemy(perfectHit);
                 }
             }
-            if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
+            else if(TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                if (perfectHit) perfectHit = false;
-                else perfectHit = true;
-                GunDirctionIsEnemy(perfectHit);
+                TurnManager.Instance.AnnounceStart("Move Value Zero");
             }
         }
         else

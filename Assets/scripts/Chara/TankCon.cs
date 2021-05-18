@@ -168,13 +168,15 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
+            Debug.Log("エイム友好");
             TurnManager.Instance.playerIsMove = false;
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
-            if (Input.GetButtonUp("Fire1"))
+            if (Input.GetButtonUp("Fire1") && GameManager.Instance.dontShoot == false)
             {
+                Debug.Log("エイム攻撃dontShoot:" + GameManager.Instance.dontShoot);
                 if (atackCount > limitCounter)
                 {
                     limitCounter++;

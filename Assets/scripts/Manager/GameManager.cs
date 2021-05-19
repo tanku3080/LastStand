@@ -126,7 +126,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
     {
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
-            dontShoot = true;
+            dontShoot = clickC;
             source.PlayOneShot(click);
             ChengePop(clickC, pauseObj);
             TurnManager.Instance.playerIsMove = !clickC;
@@ -135,7 +135,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
-            dontShoot = false;
+            dontShoot = clickC;
             source.PlayOneShot(cancel);
             ChengePop(clickC, pauseObj);
             ChengePop(clickC,keyUI);
@@ -145,7 +145,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC)
         {
-            dontShoot = true;
+            dontShoot = clickC;
             source.PlayOneShot(click);
             ChengePop(clickC, tankChengeObj);
             TurnManager.Instance.playerIsMove = !clickC;
@@ -154,7 +154,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         else if (Input.GetKeyUp(KeyCode.Space) && TurnManager.Instance.playerTurn && clickC == false && tankChengeObj.activeSelf == true)
         {
-            dontShoot = false;
+            dontShoot = clickC;
             source.PlayOneShot(cancel);
             ChengePop(clickC, tankChengeObj);
             TurnManager.Instance.playerIsMove = !clickC;
@@ -163,7 +163,7 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         }
         if (Input.GetKeyUp(KeyCode.Return) && TurnManager.Instance.playerTurn && clickC)
         {
-            dontShoot = true;
+            dontShoot = clickC;
             source.PlayOneShot(click);
             ChengePop(clickC, endObj);
             TurnManager.Instance.playerIsMove = !clickC;

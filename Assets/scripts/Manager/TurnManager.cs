@@ -358,6 +358,7 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
+            GameManager.Instance.dontShoot = false;
             MoveCounterText(text1);
             MoveCharaSet(true, false, playerMoveValue);
         }

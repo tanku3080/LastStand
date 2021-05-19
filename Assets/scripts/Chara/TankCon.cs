@@ -168,7 +168,6 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
-            Debug.Log("エイム友好");
             TurnManager.Instance.playerIsMove = false;
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);

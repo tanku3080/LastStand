@@ -1591,7 +1591,9 @@ MonoBehaviour:
   turretCorrectionF: {fileID: 0}
   nearEnemy: {fileID: 0}
   isGameScene: 0
+  tankChangeFlag: 0
   clickC: 1
+  dontShoot: 0
   charactorHp: 0
   charactorSpeed: 0
   tankHeadSpeed: 0
@@ -1781,7 +1783,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2650243493533048608
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5169,7 +5171,7 @@ RectTransform:
   m_GameObject: {fileID: 7959688973949968130}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_Children:
   - {fileID: 68773429825704162}
   m_Father: {fileID: 2650243492874841538}
@@ -5177,8 +5179,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 139.5, y: -8.5}
-  m_SizeDelta: {x: 1011.75, y: 455}
+  m_AnchoredPosition: {x: -147.5, y: -35.499985}
+  m_SizeDelta: {x: 437.75, y: 401}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &7246058283042906497
 Canvas:
@@ -5197,7 +5199,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -5518,7 +5520,7 @@ RectTransform:
   m_GameObject: {fileID: 9142222111040355386}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3136746840196425352}
   - {fileID: 4713555392499448556}

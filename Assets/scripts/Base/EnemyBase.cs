@@ -42,7 +42,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
         {
             GameManager.Instance.ChengePop(true,TurnManager.Instance.enemyrHpBar);
             var t = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<UnityEngine.UI.Slider>();
-            t.maxValue = GameManager.Instance.tankDamage;
+            t.maxValue = TurnManager.Instance.tankDamage;
             t.minValue = 0;
             t.value = enemyLife;
             t.transform.position = hpBarpos.position;

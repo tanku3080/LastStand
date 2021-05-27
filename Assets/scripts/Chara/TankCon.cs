@@ -15,28 +15,28 @@ public class TankCon : PlayerBase
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
 
-
+    //エイム状態かどうかを判定する
     bool AimFlag = false;
-    //移動キー。HはCompassと連動するため
+    //移動キー。HはCompassと連動するためpublicにした
     private float moveV;
     public float moveH;
-    //これがtureじゃないとPlayerの操作権はない
+    //これがtureじゃないとPlayerの操作権は渡せない
     public bool controlAccess = false;
-    //カメラをオンにするのに必要
+    //カメラをオンにして操作キャラにカメラを切り替える
     public bool cameraActive = true;
 
     bool perfectHit = false;//命中率
     bool turretCorrection = false;//精度
     bool limitRangeFlag = true;//移動制限値
-    public bool atackCheck = false;
-    bool MoveAudioFlag;
-    bool isMoving = false;
+    public bool atackCheck = false;//当たったかどうかのチェック
+    bool MoveAudioFlag;//移動音のflag
+    bool isMoving = false;//移動している間trueにする
 
-    //以下は移動制限
+    //移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
-
+    //HP
     [HideInInspector] public Slider tankHpBar;
-
+    //攻撃に必要なレイキャストの変数
     RaycastHit hit;
 
 
@@ -87,15 +87,11 @@ public class TankCon : PlayerBase
 
                 if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
                 {
-                    Quaternion rotetion = Quaternion.identity;
-                    if (Input.GetKey(KeyCode.J))
-                    {
-                        rotetion = Quaternion.Euler(Vector3.down / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                    }
-                    else if (Input.GetKey(KeyCode.L))
-                    {
-                        rotetion = Quaternion.Euler(Vector3.up / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                    }
+                    Quaternion rotetion;
+                    bool fff = false;
+                    if (Input.GetKey(KeyCode.J)) fff = true;
+                    else if (Input.GetKey(KeyCode.L)) fff = false;
+                    rotetion = Quaternion.Euler((fff? Vector3.down:Vector3.up) / 2 * (AimFlag?tankHead_R_SPD:tankHead_R_SPD / 0.5f) * Time.deltaTime);
                     tankHead.rotation *= rotetion;
                 }
 
@@ -341,7 +337,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            //これだと砲塔が動かなくなる
+            //このキャラの移動権が無くなる
             controlAccess = false;
         }
     }
@@ -355,7 +351,7 @@ public class TankCon : PlayerBase
         }
     }
 
-    //敵を見つけた際に使う物
+    //敵がコライダーと接触したら使う
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
@@ -363,6 +359,15 @@ public class TankCon : PlayerBase
             TurnManager.Instance.FoundEnemy = true;
         }
     }
+    //敵がコライダーから離れたら使う
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            TurnManager.Instance.FoundEnemy = false;
+        }
+    }
+    //接地判定に使う物
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Grand"))

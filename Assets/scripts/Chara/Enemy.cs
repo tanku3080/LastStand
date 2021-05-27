@@ -16,7 +16,7 @@ public class Enemy : EnemyBase
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
     public bool controlAccess = false;
-    
+    //今の移動値
     private float enemyMoveNowValue;
     /// <summary>アクション回数</summary>
     public int nowCounter = 0;
@@ -43,9 +43,11 @@ public class Enemy : EnemyBase
         
         state = EnemyState.Idol;
         enemyMoveNowValue = ETankLimitRange;
+        Debug.Log($"呼び出された{gameObject.name}");
 
     }
     bool oneUseFlag = true;
+    /// <summary>待機を有効にする</summary>
     private bool timerFalg = false;
     private void Update()
     {
@@ -59,10 +61,10 @@ public class Enemy : EnemyBase
                 case EnemyState.Idol:
 
                     timerFalg = true;
-                    if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal <= 0 && oneUseFlag)
+                    if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <=0)
                     {
                         oneUseFlag = false;
-                        Debug.Log("移動終了" + gameObject.name);
+                        Debug.Log($"移動終了{gameObject.name}");
                         agent.ResetPath();
                         nowCounter = 0;
                         TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
@@ -70,7 +72,7 @@ public class Enemy : EnemyBase
 
                     if (TurnManager.Instance.EnemyMoveVal > 0)
                     {
-                        Debug.Log("attackかMoveか" + eAtackCount + nowCounter);
+                        Debug.Log($"attackかMoveか{eAtackCount + nowCounter}");
                         if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
                         else state = EnemyState.Move;
                     }
@@ -91,15 +93,18 @@ public class Enemy : EnemyBase
             Rd.isKinematic = true;
         }
     }
-    private int oneUseTimer;
+    /// <summary>敵が行動するごとに待機させる</summary>
+    /// <param name="flag">有効にすると命令が実行</param>
+    /// <param name="timeLimit">待機時間の設定</param>
     private void WaitTimer(bool flag,int timeLimit = 3 )
     {
+        int timer = 0;
         if (flag)
         {
-            oneUseTimer += (int)Time.deltaTime;
-            if (oneUseTimer >= timeLimit) flag = false;
+            timer += (int)Time.deltaTime;
+            if (timer >= timeLimit) flag = false;
         }
-        oneUseTimer = 0;
+        timer = 0;
     }
 
     private void AgentParamSet(bool f)
@@ -121,7 +126,7 @@ public class Enemy : EnemyBase
                 AgentParamSet(false);
                 agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
-                Debug.Log("現在の近くのPlayerは" + NearPlayer().name);
+                Debug.Log($"現在の近くのPlayerは{NearPlayer().name}");
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
@@ -131,7 +136,7 @@ public class Enemy : EnemyBase
             else
             {
                 Debug.Log("パトロール");
-                if (patrolPos.Length < patrolNum) patrolNum = 0;
+                if (patrolPos.Length == patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
 
@@ -169,6 +174,7 @@ public class Enemy : EnemyBase
         {
             enemyMoveNowValue -= 1;
         }
+        else state = EnemyState.Idol;
     }
 
     float time;
@@ -227,7 +233,7 @@ public class Enemy : EnemyBase
         }
         return target;
     }
-
+    //近くにプレイヤーが接触した場合の処理
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -237,6 +243,7 @@ public class Enemy : EnemyBase
             state = EnemyState.Idol;
         }
     }
+    //近くにプレイヤーが離れた場合の処理
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))

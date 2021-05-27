@@ -2,12 +2,8 @@
 using UnityEngine.SceneManagement;
 
 
-public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
+public class GameManager : Singleton<GameManager>
 {
-    public enum TankChoice
-    {
-        Tiger, Panzer2, Shaman, Stuart,
-    }
     [SerializeField,HideInInspector] public bool enemyAtackStop = false;
     [SerializeField,HideInInspector] public bool GameUi = false;
     public Renderer[] EnemyRender { get; set; }
@@ -86,7 +82,8 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
             {
                 oneTimeFlag = false;
             }
-            if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
+            //試験的に作った物
+            //if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
@@ -215,74 +212,6 @@ public class GameManager : Singleton<GameManager>, InterfaceScripts.ITankChoice
         //TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.Title);
         ////アプリを終了する
         Application.Quit();
-    }
-
-    public int charactorHp;
-    public float charactorSpeed;
-    public float tankHeadSpeed;
-    public float tankTurnSpeed;
-    public float tankLimitedSpeed;
-    public float tankLimitedRange;
-    public float tankSearchRanges;
-    public int tankDamage;
-    public int atackCounter;
-    /// <summary>
-    /// 戦車を選択
-    /// </summary>
-    /// <param name="tank">選択する戦車の名前</param>
-    public void TankChoiceStart(string num)
-    {
-        TankChoice tank = TankChoice.Tiger;
-        while (num != tank.ToString())
-        {
-            tank++;
-        }
-        switch (tank)
-        {
-            case TankChoice.Tiger:
-                charactorHp = 100;
-                charactorSpeed = 1000f;
-                tankHeadSpeed = 2.5f;
-                tankTurnSpeed = 5f;
-                tankLimitedSpeed = 1000f;
-                tankLimitedRange = 10000f;
-                tankSearchRanges = 50f;
-                tankDamage = 35;
-                atackCounter = 1;
-                break;
-            case TankChoice.Panzer2:
-                charactorHp = 50;
-                charactorSpeed = 1500f;
-                tankHeadSpeed = 3f;
-                tankTurnSpeed = 10f;
-                tankLimitedSpeed = 1500f;
-                tankLimitedRange = 100000f;
-                tankSearchRanges = 100f;
-                tankDamage = 20;
-                atackCounter = 2;
-                break;
-            case TankChoice.Shaman:
-                charactorHp = 80;
-                charactorSpeed = 21f;
-                tankHeadSpeed = 2.5f;
-                tankTurnSpeed = 5f;
-                tankLimitedSpeed = 1000f;
-                tankLimitedRange = 10000f;
-                tankSearchRanges = 50f;
-                tankDamage = 35;
-                atackCounter = 1;
-                break;
-            case TankChoice.Stuart:
-                charactorHp = 30;
-                charactorSpeed = 30f;
-                tankHeadSpeed = 2.5f;
-                tankTurnSpeed = 5f;
-                tankLimitedSpeed = 100000f;
-                tankSearchRanges = 100f;
-                tankDamage = 20;
-                atackCounter = 2;
-                break;
-        }
     }
 
     /// <summary>

@@ -5,11 +5,15 @@ using UnityEngine.UI;
 using Cinemachine;
 using UnityEngine.SceneManagement;
 
-public class TurnManager : Singleton<TurnManager>
+public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
 {
     public enum JudgeStatus
     {
         Clear,GameOver,Title,ReStart
+    }
+    public enum TankChoice
+    {
+        Tiger, Panzer2, Shaman, Stuart,
     }
     public bool enemyTurn = false, playerTurn = false;
     public bool playerIsMove = false, enemyIsMove = false;
@@ -36,8 +40,8 @@ public class TurnManager : Singleton<TurnManager>
     //アナウンス用
     [SerializeField, HideInInspector] public Image announceImage = null;
     [SerializeField, HideInInspector] public Text annouceText = null;
-    /// <summary>味方の行動回数</summary>
     private int playerMoveValue = 5;
+    /// <summary>味方の行動回数</summary>
     public int PlayerMoveVal
     {
         get { return playerMoveValue; }
@@ -46,8 +50,8 @@ public class TurnManager : Singleton<TurnManager>
             playerMoveValue = value;
         }
     }
-    /// <summary>敵の行動回数</summary>
     private int enemyMoveValue = 4;
+    /// <summary>敵の行動回数</summary>
     public int EnemyMoveVal
     {
         get { return enemyMoveValue; }
@@ -156,30 +160,30 @@ public class TurnManager : Singleton<TurnManager>
                 foreach (var item in FindObjectsOfType<TankCon>())
                 {
                     players.Add(item);
-                    GameManager.Instance.TankChoiceStart(item.name);
-                    item.playerLife = GameManager.Instance.charactorHp;
-                    item.playerSpeed = GameManager.Instance.charactorSpeed;
-                    item.tankHead_R_SPD = GameManager.Instance.tankHeadSpeed;
-                    item.tankTurn_Speed = GameManager.Instance.tankTurnSpeed;
-                    item.tankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
-                    item.tankLimitRange = GameManager.Instance.tankLimitedRange;
-                    item.tankDamage = GameManager.Instance.tankDamage;
-                    item.borderLine.size = new Vector3(GameManager.Instance.tankSearchRanges,1f, GameManager.Instance.tankSearchRanges);
-                    item.atackCount = GameManager.Instance.atackCounter;
+                    TankChoiceStart(item.name);
+                    item.playerLife = charactorHp;
+                    item.playerSpeed = charactorSpeed;
+                    item.tankHead_R_SPD = tankHeadSpeed;
+                    item.tankTurn_Speed = tankTurnSpeed;
+                    item.tankLimitSpeed = tankLimitedSpeed;
+                    item.tankLimitRange = tankLimitedRange;
+                    item.tankDamage = tankDamage;
+                    item.borderLine.size = new Vector3(tankSearchRanges,1f, tankSearchRanges);
+                    item.atackCount = atackCounter;
                 }
                 foreach (var enemy in FindObjectsOfType<Enemy>())
                 {
                     enemys.Add(enemy);
-                    GameManager.Instance.TankChoiceStart(enemy.name);
-                    enemy.enemyLife = GameManager.Instance.charactorHp;
-                    enemy.enemySpeed = GameManager.Instance.charactorSpeed;
-                    enemy.ETankHead_R_SPD = GameManager.Instance.tankHeadSpeed;
-                    enemy.ETankTurn_Speed = GameManager.Instance.tankTurnSpeed;
-                    enemy.ETankLimitSpeed = GameManager.Instance.tankLimitedSpeed;
-                    enemy.ETankLimitRange = GameManager.Instance.tankLimitedRange;
-                    enemy.eTankDamage = GameManager.Instance.tankDamage;
-                    enemy.EborderLine.size = new Vector3(GameManager.Instance.tankSearchRanges, 1f, GameManager.Instance.tankSearchRanges);
-                    enemy.eAtackCount = GameManager.Instance.atackCounter;
+                    TankChoiceStart(enemy.name);
+                    enemy.enemyLife = charactorHp;
+                    enemy.enemySpeed = charactorSpeed;
+                    enemy.ETankHead_R_SPD = tankHeadSpeed;
+                    enemy.ETankTurn_Speed = tankTurnSpeed;
+                    enemy.ETankLimitSpeed = tankLimitedSpeed;
+                    enemy.ETankLimitRange = tankLimitedRange;
+                    enemy.eTankDamage = tankDamage;
+                    enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f,tankSearchRanges);
+                    enemy.eAtackCount = atackCounter;
                 }
                 GameManager.Instance.ChengePop(true,moveValue);
                 GameManager.Instance.ChengePop(true,hpBar);
@@ -207,7 +211,7 @@ public class TurnManager : Singleton<TurnManager>
         }
     }
 
-    public void MoveCounterText(Text text) => text.text = "MOVE: " + PlayerMoveVal.ToString();
+    public void MoveCounterText(Text text) => text.text = $"MOVE: {PlayerMoveVal}";
 
     void TurnTextMove()
     {
@@ -281,7 +285,7 @@ public class TurnManager : Singleton<TurnManager>
             else
             {
                 nowEnemy = enemys[enemyNum].gameObject;
-                nowEnemy.GetComponent<Enemy>().controlAccess = true;//何かおかしい
+                nowEnemy.GetComponent<Enemy>().controlAccess = true;
             }
             enemy = false;
         }
@@ -470,4 +474,72 @@ public class TurnManager : Singleton<TurnManager>
     }
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,GameManager.Instance.keyUI);
 
+    public int charactorHp;
+    public float charactorSpeed;
+    public float tankHeadSpeed;
+    public float tankTurnSpeed;
+    public float tankLimitedSpeed;
+    public float tankLimitedRange;
+    public float tankSearchRanges;
+    public int tankDamage;
+    public int atackCounter;
+    /// <summary>
+    /// 戦車を選択
+    /// </summary>
+    /// <param name="tank">選択する戦車の名前</param>
+    public void TankChoiceStart(string num)
+    {
+        TankChoice tank = TankChoice.Tiger;
+        while (num != tank.ToString())
+        {
+            tank++;
+        }
+        switch (tank)
+        {
+            case TankChoice.Tiger:
+                charactorHp = 100;
+                charactorSpeed = 1000f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
+                tankLimitedRange = 10000f;
+                tankSearchRanges = 50f;
+                tankDamage = 35;
+                atackCounter = 1;
+                break;
+            case TankChoice.Panzer2:
+                charactorHp = 50;
+                charactorSpeed = 1500f;
+                tankHeadSpeed = 3f;
+                tankTurnSpeed = 10f;
+                tankLimitedSpeed = 1500f;
+                tankLimitedRange = 100000f;
+                tankSearchRanges = 100f;
+                tankDamage = 20;
+                atackCounter = 2;
+                break;
+            case TankChoice.Shaman:
+                charactorHp = 80;
+                charactorSpeed = 21f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 1000f;
+                tankLimitedRange = 1000f;
+                tankSearchRanges = 50f;
+                tankDamage = 35;
+                atackCounter = 1;
+                break;
+            case TankChoice.Stuart:
+                charactorHp = 30;
+                charactorSpeed = 30f;
+                tankHeadSpeed = 2.5f;
+                tankTurnSpeed = 5f;
+                tankLimitedSpeed = 100000f;
+                tankLimitedRange = 10000f;
+                tankSearchRanges = 100f;
+                tankDamage = 20;
+                atackCounter = 2;
+                break;
+        }
+    }
 }

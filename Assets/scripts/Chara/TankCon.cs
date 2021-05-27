@@ -29,8 +29,6 @@ public class TankCon : PlayerBase
     bool turretCorrection = false;//精度
     bool limitRangeFlag = true;//移動制限値
     public bool atackCheck = false;//当たったかどうかのチェック
-    bool MoveAudioFlag;//移動音のflag
-    bool isMoving = false;//移動している間trueにする
 
     //移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
@@ -83,17 +81,18 @@ public class TankCon : PlayerBase
             }
             if (TurnManager.Instance.playerIsMove)
             {
-                //マウスを「J」「L」での旋回に変更
 
                 if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
                 {
                     Quaternion rotetion;
-                    bool fff = false;
-                    if (Input.GetKey(KeyCode.J)) fff = true;
-                    else if (Input.GetKey(KeyCode.L)) fff = false;
-                    rotetion = Quaternion.Euler((fff? Vector3.down:Vector3.up) / 2 * (AimFlag?tankHead_R_SPD:tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                    bool keySet = false;
+                    if (Input.GetKey(KeyCode.J)) keySet = true;
+                    else if (Input.GetKey(KeyCode.L)) keySet = false;
+                    rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
                     tankHead.rotation *= rotetion;
+                    TankMoveSFXPlay(true, BGMType.HeadMove);
                 }
+                else TankMoveSFXPlay(false,BGMType.None);
 
                 if (IsGranded)
                 {
@@ -104,22 +103,22 @@ public class TankCon : PlayerBase
                         moveH = Input.GetAxis("Horizontal");
                         if (moveH != 0)
                         {
-                            TankMoveSFXPlay(isMoving);
+                            TankMoveSFXPlay(true,BGMType.HeadMove);
                             float rot = moveH * tankTurn_Speed * Time.deltaTime;
                             Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                             Rd.MoveRotation(Rd.rotation * rotetion);
                             MoveLimit();
                         }
-                        else TankMoveSFXPlay(isMoving = false);
+                        else TankMoveSFXPlay(false,BGMType.None);
                         //前進後退
                         if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                         {
-                            MoveAudioFlag = true;
+                            TankMoveSFXPlay(true,BGMType.Move);
                             float mov = moveV * playerSpeed * Time.deltaTime;
                             Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                             MoveLimit();
                         }
-                        else MoveAudioFlag = false;
+                        else TankMoveSFXPlay(false,BGMType.None);
                     }
                 }
             }
@@ -141,20 +140,32 @@ public class TankCon : PlayerBase
 
 
     }
-
-    void TankMoveSFXPlay(bool move)
+    enum BGMType
     {
-        //これは失敗なので保留
-        if (move && MoveAudioFlag)
+        Move,HeadMove,None
+    }
+    /// <summary>移動に関する音を鳴らす</summary>
+    /// <param name="move">tureならアクティブ化</param>
+    /// <param name="type">鳴らす音の種類</param>
+    void TankMoveSFXPlay(bool move,BGMType type)
+    {
+        if (move)
         {
-            GameManager.Instance.ChengePop(true, TurnManager.Instance.tankMove);
-            MoveAudioFlag = false;
+            var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
+            switch (type)
+            {
+                case BGMType.Move:
+                    t.clip = GameManager.Instance.tankMoveSfx;
+                    break;
+                case BGMType.HeadMove:
+                    t.clip = GameManager.Instance.tankHeadsfx;
+                    break;
+                case BGMType.None:
+                    return;
+            }
         }
-        else　if(!move)
-        {
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.tankMove);
-            MoveAudioFlag = true;
-        }
+        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
+
     }
     private int limitCounter = 0;
     /// <summary>

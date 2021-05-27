@@ -45,7 +45,8 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
             t.maxValue = TurnManager.Instance.tankDamage;
             t.minValue = 0;
             t.value = enemyLife;
-            t.transform.position = hpBarpos.position;
+            TurnManager.Instance.enemyrHpBar.transform.position = hpBarpos.position;
+            //t.transform.position = hpBarpos.position;
             TurnManager.Instance.enemyrHpBar.transform.LookAt(TurnManager.Instance.AimCon.transform);
             Invoke("Stop",1.5f);
         }

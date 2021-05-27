@@ -18,6 +18,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
     [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
     [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
+    [SerializeField, Tooltip("移動音")] public AudioClip tankMoveSfx;
     [SerializeField, Tooltip("レーダー音")] public AudioClip RadarSfx;
     [SerializeField, Tooltip("攻撃音")] public AudioClip atack;
 

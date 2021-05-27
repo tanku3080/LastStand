@@ -184,6 +184,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                     enemy.eTankDamage = tankDamage;
                     enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f,tankSearchRanges);
                     enemy.eAtackCount = atackCounter;
+                    enemy.parameterSetFlag = true;
                 }
                 GameManager.Instance.ChengePop(true,moveValue);
                 GameManager.Instance.ChengePop(true,hpBar);

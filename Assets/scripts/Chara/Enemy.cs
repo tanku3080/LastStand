@@ -22,6 +22,7 @@ public class Enemy : EnemyBase
     public int nowCounter = 0;
 
     bool agentSetUpFlag = true;
+    [HideInInspector] public bool parameterSetFlag = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -42,7 +43,6 @@ public class Enemy : EnemyBase
         AgentParamSet(false);
         
         state = EnemyState.Idol;
-        enemyMoveNowValue = ETankLimitRange;
         Debug.Log($"呼び出された{gameObject.name}");
 
     }
@@ -54,6 +54,12 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
+            if (parameterSetFlag)
+            {
+                parameterSetFlag = false;
+                enemyMoveNowValue = ETankLimitRange;
+            }
+            Debug.Log($"値は{enemyMoveNowValue}");
             Rd.isKinematic = false;
             WaitTimer(timerFalg);
             switch (state)//idolを全ての終着点に
@@ -130,6 +136,7 @@ public class Enemy : EnemyBase
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
+                EnemyMoveLimit();
                 if (angle < 3) isPlayer = true;
                 else isPlayer = false;
             }
@@ -139,7 +146,6 @@ public class Enemy : EnemyBase
                 if (patrolPos.Length == patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
-
                 Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, Trans.forward);
                 float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
@@ -159,8 +165,8 @@ public class Enemy : EnemyBase
                     AgentParamSet(false);
                     patrolNum++;
                 }
+                EnemyMoveLimit();
             }
-            EnemyMoveLimit();
         }
         else if (isPlayer)
         {

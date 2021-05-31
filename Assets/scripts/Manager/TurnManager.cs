@@ -99,9 +99,9 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         }
     }
     //以下の変数は音楽を鳴らすのに必要な物
-    [SerializeField,HideInInspector] public bool playerMPlay = false;
-    [SerializeField,HideInInspector] public bool enemyMPlay = false;
-    [SerializeField,HideInInspector] public bool oneUseFlager = true;
+     private bool playerMPlay = false;
+     private bool enemyMPlay = false;
+     private bool oneUseFlager = true;
     public void PlayMusic()
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" && oneUseFlager)
@@ -136,6 +136,10 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         {
             turnFirstNumFlag = false;
             FirstSet();
+        }
+        else if (generalTurn == 2)
+        {
+            SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
         }
         if (timeLlineF)
         {
@@ -201,6 +205,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
                 playerTurn = true;
+                playerMPlay = true;
+                PlayMusic();
             }
             else
             {
@@ -208,7 +214,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             }
             playerTurn = true;
             GameManager.Instance.isGameScene = false;
-            PlayMusic();
         }
     }
 

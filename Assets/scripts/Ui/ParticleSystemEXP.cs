@@ -26,7 +26,7 @@ public class ParticleSystemEXP : Singleton<ParticleSystemEXP>
                 name = "Destroy";
                 break;
         }
-        origin = Instantiate((GameObject)Resources.Load(name), origin.transform.position, Quaternion.identity).transform;
+        origin = Instantiate((GameObject)Resources.Load($"Prefab/{name}"), origin.transform.position, Quaternion.identity).transform;
         origin.parent = transform;
     }
 }

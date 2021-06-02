@@ -73,6 +73,7 @@ public class Enemy : EnemyBase
                         Debug.Log($"移動終了{gameObject.name}");
                         agent.ResetPath();
                         nowCounter = 0;
+                        parameterSetFlag = true;
                         TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
                     }
 
@@ -136,7 +137,7 @@ public class Enemy : EnemyBase
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
-                EnemyMoveLimit();
+                EnemyMoveLimit(0.5f);
                 if (angle < 3) isPlayer = true;
                 else isPlayer = false;
             }
@@ -165,7 +166,7 @@ public class Enemy : EnemyBase
                     AgentParamSet(false);
                     patrolNum++;
                 }
-                EnemyMoveLimit();
+                EnemyMoveLimit(1f);
             }
         }
         else if (isPlayer)
@@ -174,11 +175,11 @@ public class Enemy : EnemyBase
             state = EnemyState.Idol;
         }
     }
-    void EnemyMoveLimit()
+    void EnemyMoveLimit(float val)
     {
         if (enemyMoveNowValue > 0)
         {
-            enemyMoveNowValue -= 1;
+            enemyMoveNowValue -= val;
         }
         else state = EnemyState.Idol;
     }

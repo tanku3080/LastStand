@@ -137,10 +137,10 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             turnFirstNumFlag = false;
             FirstSet();
         }
-        else if (generalTurn == 2)
-        {
-            SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
-        }
+        //else if (generalTurn == 2)
+        //{
+        //    SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver,true,true);
+        //}
         if (timeLlineF)
         {
             

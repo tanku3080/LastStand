@@ -209,7 +209,7 @@ public class Enemy : EnemyBase
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
+        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GUN_FIRE);
         nowCounter++;
         state = EnemyState.Idol;
     }

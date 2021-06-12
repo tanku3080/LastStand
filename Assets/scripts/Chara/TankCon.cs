@@ -36,7 +36,8 @@ public class TankCon : PlayerBase
     [HideInInspector] public Slider tankHpBar;
     //攻撃に必要なレイキャストの変数
     RaycastHit hit;
-
+    //移動音を鳴らすために使う
+    bool isMoveBGM = true;
 
     void Start()
     {
@@ -81,7 +82,6 @@ public class TankCon : PlayerBase
             }
             if (TurnManager.Instance.playerIsMove)
             {
-
                 if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
                 {
                     Quaternion rotetion;
@@ -90,9 +90,20 @@ public class TankCon : PlayerBase
                     else if (Input.GetKey(KeyCode.L)) keySet = false;
                     rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
                     tankHead.rotation *= rotetion;
-                    TankMoveSFXPlay(true, BGMType.HeadMove);
+                    if(isMoveBGM)
+                    {
+                        isMoveBGM = false;
+                        TankMoveSFXPlay(true, BGMType.HeadMove);
+                    }
                 }
-                else TankMoveSFXPlay(false,BGMType.None);
+                else
+                {
+                    if (isMoveBGM == false)
+                    {
+                        isMoveBGM = true;
+                        TankMoveSFXPlay(false);
+                    }
+                }
 
                 if (IsGranded)
                 {
@@ -103,22 +114,44 @@ public class TankCon : PlayerBase
                         moveH = Input.GetAxis("Horizontal");
                         if (moveH != 0)
                         {
-                            TankMoveSFXPlay(true,BGMType.HeadMove);
+                            if (isMoveBGM)
+                            {
+                                isMoveBGM = false;
+                                TankMoveSFXPlay(true, BGMType.HeadMove);
+                            }
                             float rot = moveH * tankTurn_Speed * Time.deltaTime;
                             Quaternion rotetion = Quaternion.Euler(0, rot, 0);
                             Rd.MoveRotation(Rd.rotation * rotetion);
                             MoveLimit();
                         }
-                        else TankMoveSFXPlay(false,BGMType.None);
+                        else
+                        {
+                            if (isMoveBGM == false)
+                            {
+                                isMoveBGM = true;
+                                TankMoveSFXPlay(false);
+                            }
+                        }
                         //前進後退
                         if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                         {
-                            TankMoveSFXPlay(true,BGMType.Move);
+                            if (isMoveBGM)
+                            {
+                                isMoveBGM = false;
+                                TankMoveSFXPlay(true, BGMType.Move);
+                            }
                             float mov = moveV * playerSpeed * Time.deltaTime;
                             Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
                             MoveLimit();
                         }
-                        else TankMoveSFXPlay(false,BGMType.None);
+                        else
+                        {
+                            if (isMoveBGM == false)
+                            {
+                                isMoveBGM = true;
+                                TankMoveSFXPlay(false);
+                            }
+                        }
                     }
                 }
             }
@@ -147,25 +180,36 @@ public class TankCon : PlayerBase
     /// <summary>移動に関する音を鳴らす</summary>
     /// <param name="move">tureならアクティブ化</param>
     /// <param name="type">鳴らす音の種類</param>
-    void TankMoveSFXPlay(bool move,BGMType type)
+    void TankMoveSFXPlay(bool move,BGMType type = BGMType.None)
     {
+        var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
+
         if (move)
         {
-            var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
-            switch (type)
+            if (type == BGMType.Move || type == BGMType.HeadMove)
             {
-                case BGMType.Move:
-                    t.clip = GameManager.Instance.tankMoveSfx;
-                    break;
-                case BGMType.HeadMove:
-                    t.clip = GameManager.Instance.tankHeadsfx;
-                    break;
-                case BGMType.None:
-                    return;
+                switch (type)
+                {
+                    case BGMType.Move:
+                        t.clip = GameManager.Instance.tankMoveSfx;
+                        break;
+                    case BGMType.HeadMove:
+                        t.clip = GameManager.Instance.tankHeadsfx;
+                        break;
+                }
+                GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
+                t.Play();
+                move = false;
             }
-        }
-        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
 
+        }
+        else
+        {
+            t.clip = null;
+            t.Stop();
+            GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
+            move = true;
+        }
     }
     private int limitCounter = 0;
     /// <summary>
@@ -303,7 +347,7 @@ public class TankCon : PlayerBase
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GunFire);
+        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GUN_FIRE);
         GameManager.Instance.ChengePop(true,tankGunFire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
@@ -368,6 +412,7 @@ public class TankCon : PlayerBase
         if (other.gameObject.CompareTag("Enemy"))
         {
             TurnManager.Instance.FoundEnemy = true;
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
         }
     }
     //敵がコライダーから離れたら使う

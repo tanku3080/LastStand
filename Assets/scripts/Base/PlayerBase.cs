@@ -43,7 +43,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
 
     public void Damage(int damage)
     {
-        ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.Hit);
+        ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);
         playerLife -= damage;
         if (playerLife <= 0)
         {

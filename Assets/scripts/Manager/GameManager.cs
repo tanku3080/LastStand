@@ -4,43 +4,44 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField,HideInInspector] public bool enemyAtackStop = false;
-    [SerializeField,HideInInspector] public bool GameUi = false;
+    [HideInInspector] public bool enemyAtackStop = false;
+    [HideInInspector] public bool GameUi = false;
     public Renderer[] EnemyRender { get; set; }
 
     //この値がtrueなら敵味方問わず攻撃を停止する
     public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
-    [SerializeField, Tooltip("UIclickボタン")] public AudioClip click;
-    [SerializeField, Tooltip("UICancelボタン")] public AudioClip cancel;
-    [SerializeField, Tooltip("Fキーボタン")] public AudioClip Fsfx;
-    [SerializeField, Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
-    [SerializeField, Tooltip("Rキーボタン")] public AudioClip Aimsfx;
-    [SerializeField, Tooltip("space")] public AudioClip tankChengeSfx;
-    [SerializeField, Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
-    [SerializeField, Tooltip("移動音")] public AudioClip tankMoveSfx;
-    [SerializeField, Tooltip("レーダー音")] public AudioClip RadarSfx;
-    [SerializeField, Tooltip("攻撃音")] public AudioClip atack;
+    [Tooltip("UIclickボタン")] public AudioClip click;
+    [Tooltip("UICancelボタン")] public AudioClip cancel;
+    [Tooltip("Fキーボタン")] public AudioClip Fsfx;
+    [Tooltip("エイムキーボタン")] public AudioClip fire2sfx;
+    [Tooltip("Rキーボタン")] public AudioClip Aimsfx;
+    [Tooltip("space")] public AudioClip tankChengeSfx;
+    [Tooltip("砲塔旋回")] public AudioClip tankHeadsfx;
+    [Tooltip("移動音")] public AudioClip tankMoveSfx;
+    [Tooltip("レーダー音")] public AudioClip RadarSfx;
+    [Tooltip("攻撃音")] public AudioClip atack;
+    [Tooltip("敵発見音")] public AudioClip discoverySfx;
 
-    [SerializeField, Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
-    [SerializeField, Header("ポーズ画面UI")] public GameObject pauseObj = null;
-    [SerializeField, Header("ターンエンドUI")] public GameObject endObj = null;
-    [SerializeField, Header("レーダUI")] public GameObject radarObj = null;
-    [SerializeField, Header("アナウンスUI")] public GameObject announceObj = null;
-    [SerializeField, Header("移動制限")] public GameObject limitedBar = null;
-    [SerializeField, Header("特殊状態")] public GameObject specialObj = null;
-    [SerializeField, Header("キーボードUI")] public GameObject keyUI = null;
+    [Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
+    [Header("ポーズ画面UI")] public GameObject pauseObj = null;
+    [Header("ターンエンドUI")] public GameObject endObj = null;
+    [Header("レーダUI")] public GameObject radarObj = null;
+    [Header("アナウンスUI")] public GameObject announceObj = null;
+    [Header("移動制限")] public GameObject limitedBar = null;
+    [Header("特殊状態")] public GameObject specialObj = null;
+    [Header("キーボードUI")] public GameObject keyUI = null;
     [HideInInspector] public GameObject hittingTargetR = null;
     [HideInInspector] public GameObject turretCorrectionF = null;
-    [SerializeField, HideInInspector] public GameObject nearEnemy = null;
+    [HideInInspector] public GameObject nearEnemy = null;
     ///<summary>ゲームシーンかの判定(ターンマネージャー限定)</summary>
     ///必要か分からない
-    [SerializeField, HideInInspector] public bool isGameScene;
+    [HideInInspector] public bool isGameScene;
     [HideInInspector] public bool tankChangeFlag = false;
-
-    public bool clickC = true;
+    /// <summary>UIが呼び出されている事を確認する</summary>
+    [HideInInspector] public bool clickC = true;
     /// <summary>撃つな！！</summary>
-    public bool dontShoot = false;
+    [HideInInspector] public bool dontShoot = false;
 
     override protected void Awake()
     {
@@ -65,12 +66,13 @@ public class GameManager : Singleton<GameManager>
         isGameScene = true;
         DontDestroyOnLoad(gameObject);
     }
-    bool oneTimeFlag = true;
+    private bool oneTimeFlag = true;
     // Update is called once per frame
     void Update()
     {
         if (SceneManager.GetActiveScene().name == "Start")
         {
+            isGameScene = false;
             if (Input.GetKeyUp(KeyCode.Return))
             {
                 source.PlayOneShot(click);
@@ -79,12 +81,17 @@ public class GameManager : Singleton<GameManager>
         }
         if (SceneManager.GetActiveScene().name == "GamePlay")
         {
+            isGameScene = true;
             if (oneTimeFlag)
             {
                 oneTimeFlag = false;
             }
             //試験的に作った物
             //if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
+            if (TurnManager.Instance.nowPayer == null)
+            {
+                TurnManager.Instance.GameSetUp(TurnManager.gameSetUpStatus.TURN_START);
+            }
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
@@ -96,10 +103,11 @@ public class GameManager : Singleton<GameManager>
         {
             if (Input.GetKeyUp(KeyCode.Return))
             {
+                isGameScene = false;
                 source.PlayOneShot(click);
                 //Titleメソッドとこの行に以下のコードを追加
-                Application.Quit();
-                //SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
+                //Application.Quit();
+                SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.Start, true, true);
             }
         }
     }
@@ -204,7 +212,7 @@ public class GameManager : Singleton<GameManager>
     public void Restart()//現状未実装
     {
         source.PlayOneShot(click);
-        TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.ReStart);
+        TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.RE_START);
     }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()

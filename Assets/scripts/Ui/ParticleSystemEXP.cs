@@ -4,7 +4,7 @@ public class ParticleSystemEXP : Singleton<ParticleSystemEXP>
 {
     public enum ParticleStatus
     {
-        GunFire,Hit,Destroy
+        GUN_FIRE,HIT,DESTROY
     }
     /// <summary>
     /// パーティクルシステムを再生させる
@@ -16,13 +16,13 @@ public class ParticleSystemEXP : Singleton<ParticleSystemEXP>
         string name = null;
         switch (status)
         {
-            case ParticleStatus.GunFire:
+            case ParticleStatus.GUN_FIRE:
                 name = "GunFirering";
                 break;
-            case ParticleStatus.Hit:
+            case ParticleStatus.HIT:
                 name = "Hit";
                 break;
-            case ParticleStatus.Destroy:
+            case ParticleStatus.DESTROY:
                 name = "Destroy";
                 break;
         }

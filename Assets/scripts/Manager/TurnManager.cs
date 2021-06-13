@@ -112,6 +112,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 break;
             case gameSetUpStatus.TURN_START:
                 GameManager.Instance.nearEnemy = null;
+                timeLlineF = true;
+                eventF = true;
                 nowPayer = null;
                 nowEnemy = null;
                 players.Clear();
@@ -160,9 +162,9 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 nowEnemy = enemys[enemyNum].gameObject;
                 nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
                 playerTurn = true;
-                playerMPlay = true;
-                PlayMusic();
+                isMusicPlayFlag = true;
                 generalTurn = 1;
+                PlayMusic();
                 break;
             case gameSetUpStatus.EXIT:
                 playerTurn = false;

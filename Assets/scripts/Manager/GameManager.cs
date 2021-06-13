@@ -45,7 +45,7 @@ public class GameManager : Singleton<GameManager>
 
     override protected void Awake()
     {
-        //これは必須。start関数内に置いたら処理する前に呼び出されるので現状このように記述する
+        //これは必須。start関数内に置いたら処理する前に呼び出されるのでこのように記述する
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
         turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
     }
@@ -90,7 +90,7 @@ public class GameManager : Singleton<GameManager>
             //if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
             if (TurnManager.Instance.nowPayer == null)
             {
-                TurnManager.Instance.GameSetUp(TurnManager.gameSetUpStatus.TURN_START);
+                TurnManager.Instance.GameSetUp(TurnManager.GameSetUpStatus.TURN_START);
             }
             nearEnemy = SerchTag(TurnManager.Instance.nowPayer);
 
@@ -111,7 +111,9 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-
+    /// <summary>近くの敵を探すのに使うメソッド</summary>
+    /// <param name="nowObj">呼び出しているキャラクターのオブジェクト</param>
+    /// <returns></returns>
     GameObject SerchTag(GameObject nowObj)
     {
         float nearDis = 0;
@@ -127,7 +129,7 @@ public class GameManager : Singleton<GameManager>
         }
         return targetObj;
     }
-
+    /// <summary>対応するボタンのいずれかが押されたら処理を行う</summary>
     public void ButtonSelected()
     {
         if (Input.GetKeyUp(KeyCode.P) && clickC)
@@ -230,7 +232,7 @@ public class GameManager : Singleton<GameManager>
     {
         obj.SetActive(isChenge);
     }
-
+    /// <summary>プレイヤーターンを終わらせたいときに呼び出されるUIに対応したメソッド</summary>
     public void TurnEnd()
     {
         TurnManager.Instance.playerTurn = true;

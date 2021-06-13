@@ -4,7 +4,7 @@ public class Enemy : EnemyBase
 {
     enum EnemyState
     {
-        Idol,Move,Atack
+        IDOL,MOVE,ATACK
     }
     EnemyState state;
     public NavMeshAgent agent;
@@ -42,7 +42,7 @@ public class Enemy : EnemyBase
         agent.autoBraking = true;
         AgentParamSet(false);
         
-        state = EnemyState.Idol;
+        state = EnemyState.IDOL;
         Debug.Log($"呼び出された{gameObject.name}");
 
     }
@@ -64,7 +64,7 @@ public class Enemy : EnemyBase
             WaitTimer(timerFalg);
             switch (state)//idolを全ての終着点に
             {
-                case EnemyState.Idol:
+                case EnemyState.IDOL:
 
                     timerFalg = true;
                     if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <=0)
@@ -80,16 +80,16 @@ public class Enemy : EnemyBase
                     if (TurnManager.Instance.EnemyMoveVal > 0)
                     {
                         Debug.Log($"attackかMoveか{eAtackCount + nowCounter}");
-                        if (isPlayer && eAtackCount > nowCounter) state = EnemyState.Atack;
-                        else state = EnemyState.Move;
+                        if (isPlayer && eAtackCount > nowCounter) state = EnemyState.ATACK;
+                        else state = EnemyState.MOVE;
                     }
                     break;
-                case EnemyState.Move:
+                case EnemyState.MOVE:
                     Debug.Log("nowState Move");
                     timerFalg = true;
                     EnemyMove();
                     break;
-                case EnemyState.Atack:
+                case EnemyState.ATACK:
                     timerFalg = true;
                     PlayerAtack();
                     break;
@@ -172,7 +172,7 @@ public class Enemy : EnemyBase
         else if (isPlayer)
         {
             Debug.Log("発見していない");
-            state = EnemyState.Idol;
+            state = EnemyState.IDOL;
         }
     }
     void EnemyMoveLimit(float val)
@@ -181,7 +181,7 @@ public class Enemy : EnemyBase
         {
             enemyMoveNowValue -= val;
         }
-        else state = EnemyState.Idol;
+        else state = EnemyState.IDOL;
     }
 
     float time;
@@ -211,7 +211,7 @@ public class Enemy : EnemyBase
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
         ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GUN_FIRE);
         nowCounter++;
-        state = EnemyState.Idol;
+        state = EnemyState.IDOL;
     }
 
     bool oneFlag = true;
@@ -247,7 +247,7 @@ public class Enemy : EnemyBase
         {
             playerFind = true;
             AgentParamSet(false);
-            state = EnemyState.Idol;
+            state = EnemyState.IDOL;
         }
     }
     //近くにプレイヤーが離れた場合の処理
@@ -257,7 +257,7 @@ public class Enemy : EnemyBase
         {
             isPlayer = false;
             AgentParamSet(true);
-            state = EnemyState.Idol;
+            state = EnemyState.IDOL;
         }
     }
     /// <summary>

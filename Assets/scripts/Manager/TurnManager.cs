@@ -81,7 +81,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
         turnText.GetComponent<Text>();
         director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
-        GameSetUp(gameSetUpStatus.INVISIBLE);
+        GameSetUp(GameSetUpStatus.INVISIBLE);
 
     }
 
@@ -92,16 +92,16 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             TurnManag();
         }
     }
-    public enum gameSetUpStatus
+    public enum GameSetUpStatus
     {
         INVISIBLE,TURN_START,EXIT
     }
     /// <summary>ゲームを開始するたびに行われる初期化処理</summary>
-    public void GameSetUp(gameSetUpStatus setUpStatus)
+    public void GameSetUp(GameSetUpStatus setUpStatus)
     {
         switch (setUpStatus)
         {
-            case gameSetUpStatus.INVISIBLE:
+            case GameSetUpStatus.INVISIBLE:
                 GameManager.Instance.ChengePop(false, controlPanel);
                 GameManager.Instance.ChengePop(false, moveValue);
                 GameManager.Instance.ChengePop(false, playerBGM);
@@ -110,7 +110,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 GameManager.Instance.ChengePop(false, hpBar);
                 GameManager.Instance.ChengePop(false, enemyrHpBar);
                 break;
-            case gameSetUpStatus.TURN_START:
+            case GameSetUpStatus.TURN_START:
                 GameManager.Instance.nearEnemy = null;
                 timeLlineF = true;
                 eventF = true;
@@ -166,7 +166,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 generalTurn = 1;
                 PlayMusic();
                 break;
-            case gameSetUpStatus.EXIT:
+            case GameSetUpStatus.EXIT:
                 playerTurn = false;
                 enemyTurn = false;
                 GameManager.Instance.ChengePop(false,GameManager.Instance.radarObj);
@@ -186,6 +186,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
      private bool playerMPlay = false;
      private bool enemyMPlay = false;
      private bool isMusicPlayFlag = true;
+    /// <summary>各陣営に対応したBMGを鳴らす</summary>
+    /// <param name="isStop">Trueなら音楽をストップする</param>
     public void PlayMusic(bool isStop = false)
     {
         if (SceneManager.GetActiveScene().name == "GamePlay" && isMusicPlayFlag)
@@ -232,7 +234,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             if (GameManager.Instance.isGameScene)
             {
                 MoveCounterText(text1);
-                GameSetUp(gameSetUpStatus.TURN_START);
+                GameSetUp(GameSetUpStatus.TURN_START);
                 playerTurn = true;
                 GameManager.Instance.isGameScene = false;
             }
@@ -240,7 +242,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         else if (generalTurn == 2)
         {
             PlayMusic(false);
-            GameSetUp(gameSetUpStatus.EXIT);
+            GameSetUp(GameSetUpStatus.EXIT);
             SceneFadeManager.Instance.SceneFadeAndChanging(SceneFadeManager.SceneName.GameOver, true, true);
         }
         if (timeLlineF)
@@ -260,9 +262,10 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         }
 
     }
-
+    /// <summary>残りアクション回数を表示するためのメソッド</summary>
+    /// <param name="text">表示するためのテキスト</param>
     public void MoveCounterText(Text text) => text.text = $"MOVE: {PlayerMoveVal}";
-
+    /// <summary>ターン開始時にどの陣営のターンか表示する為のメソッド</summary>
     void TurnTextMove()
     {
 
@@ -402,7 +405,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 break;
         }
     }
-    /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える/// </summary>
+    /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える。UIのオンクリックに使われる/// </summary>
     public void OkTankChenge() 
     {
         //切り替える戦車がいない場合の処理。
@@ -419,6 +422,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
         GameManager.Instance.clickC = true;
     }
+    /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()
     {
         GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
@@ -443,6 +447,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.clickC = true;
         PlayerMoveVal = 5;
         EnemyMoveVal = 4;
+        //プレイヤーが呼んだ場合の処理
         if (playerTurn)
         {
             GameManager.Instance.ChengePop(false, GameManager.Instance.tankChengeObj);
@@ -463,6 +468,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             MoveCharaSet(false, true);
             return;
         }
+        //敵が呼んだ場合の処理
         if (enemyTurn)
         {
             Debug.Log("全ての陣営が終了");
@@ -485,7 +491,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             return;
         }
     }
-
+    ///<summary>表示されているUIを非表示にするメソッド</summary>
     public void Back()
     {
         GameManager.Instance.ChengePop(false,GameManager.Instance.tankChengeObj);
@@ -493,6 +499,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false, GameManager.Instance.pauseObj);
         GameManager.Instance.clickC = true;
     }
+    /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)
     {
         stop.Stop();
@@ -500,12 +507,14 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(true,GameManager.Instance.limitedBar);
         timeLlineF = false;
     }
+    /// <summary>TimeLineを開始するためのメソッド</summary>
     void StartTimeLine()
     {
         GameManager.Instance.ChengePop(true,controlPanel);
         director.Play();
     }
-
+    /// <summary>画面上に指定の文字列を一定時間表示するためのメソッド</summary>
+    /// <param name="n">表示させたい文字列</param>
     public void AnnounceStart(string n = null)
     {
         GameManager.Instance.ChengePop(true, GameManager.Instance.announceObj);
@@ -522,6 +531,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.RadarSfx);
         GameManager.Instance.ChengePop(true,GameManager.Instance.keyUI);
     }
+    /// <summary>キーボードのUIを非表示にする</summary>
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,GameManager.Instance.keyUI);
 
     public int charactorHp;

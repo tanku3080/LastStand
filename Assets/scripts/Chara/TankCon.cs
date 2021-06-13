@@ -93,7 +93,7 @@ public class TankCon : PlayerBase
                     if(isMoveBGM)
                     {
                         isMoveBGM = false;
-                        TankMoveSFXPlay(true, BGMType.HeadMove);
+                        TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                     }
                 }
                 else
@@ -117,7 +117,7 @@ public class TankCon : PlayerBase
                             if (isMoveBGM)
                             {
                                 isMoveBGM = false;
-                                TankMoveSFXPlay(true, BGMType.HeadMove);
+                                TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                             }
                             float rot = moveH * tankTurn_Speed * Time.deltaTime;
                             Quaternion rotetion = Quaternion.Euler(0, rot, 0);
@@ -138,7 +138,7 @@ public class TankCon : PlayerBase
                             if (isMoveBGM)
                             {
                                 isMoveBGM = false;
-                                TankMoveSFXPlay(true, BGMType.Move);
+                                TankMoveSFXPlay(true, BGMType.MOVE);
                             }
                             float mov = moveV * playerSpeed * Time.deltaTime;
                             Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
@@ -175,25 +175,25 @@ public class TankCon : PlayerBase
     }
     enum BGMType
     {
-        Move,HeadMove,None
+        MOVE,HEAD_MOVE,NONE
     }
     /// <summary>移動に関する音を鳴らす</summary>
     /// <param name="move">tureならアクティブ化</param>
     /// <param name="type">鳴らす音の種類</param>
-    void TankMoveSFXPlay(bool move,BGMType type = BGMType.None)
+    void TankMoveSFXPlay(bool move,BGMType type = BGMType.NONE)
     {
         var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
 
         if (move)
         {
-            if (type == BGMType.Move || type == BGMType.HeadMove)
+            if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)
             {
                 switch (type)
                 {
-                    case BGMType.Move:
+                    case BGMType.MOVE:
                         t.clip = GameManager.Instance.tankMoveSfx;
                         break;
-                    case BGMType.HeadMove:
+                    case BGMType.HEAD_MOVE:
                         t.clip = GameManager.Instance.tankHeadsfx;
                         break;
                 }

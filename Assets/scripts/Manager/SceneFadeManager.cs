@@ -1,62 +1,188 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>シーンのFadeとシーン切り替えを行う</summary>
 public class SceneFadeManager : Singleton<SceneFadeManager>
 {
-    public enum SceneName
+     public enum SCENE_STATUS
     {
-        Start, Meeting, GamePlay, GameOver, GameClear,None
+        START, MEETING, GAME_PLAY, GAME_OVER, GAME_CLEAR,AUTO,NONE
     }
-    public SceneName scene;
-    CanvasGroup group = null;
-    string sceneName = null;
-
-    void Start()
+    public enum FADE_STATUS
     {
-        var t = gameObject.transform.GetChild(0).GetChild(0).GetComponent<Image>();
-        group = gameObject.transform.GetChild(0).GetComponent<CanvasGroup>();
-        t.color = Color.black;
-        group.alpha = 1;
-        SceneFadeAndChanging(SceneName.None,true);
+        FADE_IN, FADE_OUT, AUTO, NONE
     }
+    /// <summary>フェード処理が終わったかどうかを返す</summary>
+    [HideInInspector] public bool FadeStop { get { return fadeStopFlag; } set { FadeStop = fadeStopFlag; } }
+    private bool fadeStopFlag = false;
 
-    /// <summary>
-    /// シーンの切り替えとフェードを行う関数
+    /// <summary>フェード機能のみを行う
     /// </summary>
-    /// <param name="name">遷移先のシーンを選択</param>
-    /// <param name="fadeStart">trueならフェードありfalseはフェード無し</param>
-    /// <param name="sceneChangeStart">trueならシーン遷移スタート</param>
-    public void SceneFadeAndChanging(SceneName name, bool fadeStart = false, bool sceneChangeStart = false)
+    /// <param name="status">どんなフェードを行いたいか</param>
+    /// <param name="fadeSpeed">Fadeの速度</param>
+    /// <param name="canvas">Fadeさせるオブジェクト</param>
+    public void FadeSystem(FADE_STATUS status = FADE_STATUS.NONE,float fadeSpeed = 0.02f,CanvasGroup canvas = null)
     {
-        float timer = Time.deltaTime;
-        if (fadeStart)
+        StartCoroutine(StartFadeSystem(status,fadeSpeed,canvas));
+    }
+    private IEnumerator StartFadeSystem(FADE_STATUS _STATUS = FADE_STATUS.NONE, float fadeSpeed = 0.02f, CanvasGroup obj = null)
+    {
+        CanvasGroup group;
+        if (obj != null)
         {
-            if (group.alpha > 0)
-            {
-                while (group.alpha > 0) group.alpha -= timer * 0.05f;
-            }
-            else//あらわれる
-            {
-                while (group.alpha < 1) group.alpha += timer * 0.05f;
-            }
+            group = obj.GetComponent<CanvasGroup>();
         }
-        if (sceneChangeStart)
+        else
         {
-            SceneManager.activeSceneChanged += SceneChanged;
-            if(name != SceneName.None)
-            {
-                if (name.ToString() == SceneManager.GetActiveScene().name && sceneChangeStart == false) return;
-                sceneName = name.ToString();
-                SceneManager.LoadScene(sceneName);
-            }
+            group = GetComponent<CanvasGroup>();
         }
-        else return;
+
+        fadeStopFlag = false;
+        switch (_STATUS)
+        {
+            case FADE_STATUS.FADE_IN:
+                while (true)
+                {
+                    yield return null;
+                    if (group.alpha >= 1)
+                    {
+                        fadeStopFlag = true;
+                        break;
+                    }
+                    else group.alpha += fadeSpeed;
+                }
+                break;
+            case FADE_STATUS.FADE_OUT:
+                while (true)
+                {
+                    yield return null;
+                    if (group.alpha <= 0)
+                    {
+                        fadeStopFlag = true;
+                        break;
+                    }
+                    else group.alpha -= fadeSpeed;
+                }
+                break;
+            case FADE_STATUS.AUTO:
+                if (group.alpha == 1)
+                {
+                    FadeSystem(FADE_STATUS.FADE_OUT);
+                }
+                else
+                {
+                    FadeSystem(FADE_STATUS.FADE_IN);
+                }
+                break;
+            case FADE_STATUS.NONE:
+                break;
+        }
+        yield return 0;
     }
 
-    void SceneChanged(Scene nowScene,Scene nextScene)
+   /// <summary>シーン切り替えのみを行う
+   /// </summary>
+   /// <param name="scene"切り替えたいシーン></param>
+    public void SceneChangeSystem(SCENE_STATUS scene = SCENE_STATUS.NONE)
     {
-        while (group.alpha > 0) group.alpha -= Time.deltaTime * 0.05f;
+        string changeName = null;
+        var nowSceneName = SceneManager.GetActiveScene().name;
+        switch (scene)
+        {
+            case SCENE_STATUS.START:
+                changeName = "Title";
+                break;
+            case SCENE_STATUS.MEETING:
+                changeName = "Meeting";
+                break;
+            case SCENE_STATUS.GAME_PLAY:
+                changeName = "GamePlay";
+                break;
+            case SCENE_STATUS.GAME_OVER:
+                changeName = "GameOvar";
+                break;
+            case SCENE_STATUS.GAME_CLEAR:
+                changeName = "GameClear";
+                break;
+            case SCENE_STATUS.AUTO:
+                if (nowSceneName == "Title") changeName = "Meeting";
+                else if (nowSceneName == "Meeting") changeName = "GamePlay";
+                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameClear) changeName = "GameClear";
+                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameOvar) changeName = "GameOvar";
+                else changeName = "Title";
+                break;
+            case SCENE_STATUS.NONE:
+                break;
+        }
+        SceneManager.LoadScene(changeName);
+    }
+    /// <summary>フェードアウトとシーン切り替えを行う/// </summary>
+    /// <param name="fadeSpeed"></param>
+    /// <param name="status"></param>
+    public void SceneOutAndChangeSystem(float fadeSpeed = 0.02f,SCENE_STATUS status = SCENE_STATUS.AUTO)
+    {
+        StartCoroutine(FadeOutSceneChangeStart(fadeSpeed,status));
+    }
+
+    private IEnumerator FadeOutSceneChangeStart(float fadeSpeed = 0.02f, SCENE_STATUS status = SCENE_STATUS.NONE)
+    {
+        CanvasGroup group = GetComponent<CanvasGroup>();
+        fadeStopFlag = false;
+        if (fadeStopFlag != true)
+        {
+            while (true)
+            {
+                yield return null;
+                if (group.alpha >= 1)
+                {
+                    SceneManager.activeSceneChanged += SceneChangeEvent;
+                    switch (status)
+                    {
+                        case SCENE_STATUS.START:
+                            SceneChangeSystem(SCENE_STATUS.START);
+                            break;
+                        case SCENE_STATUS.MEETING:
+                            SceneChangeSystem(SCENE_STATUS.MEETING);
+                            break;
+                        case SCENE_STATUS.GAME_PLAY:
+                            SceneChangeSystem(SCENE_STATUS.GAME_PLAY);
+                            break;
+                        case SCENE_STATUS.GAME_OVER:
+                            SceneChangeSystem(SCENE_STATUS.GAME_OVER);
+                            break;
+                        case SCENE_STATUS.GAME_CLEAR:
+                            SceneChangeSystem(SCENE_STATUS.GAME_CLEAR);
+                            break;
+                        case SCENE_STATUS.AUTO:
+                            SceneChangeSystem(SCENE_STATUS.AUTO);
+                            break;
+                        case SCENE_STATUS.NONE:
+                            break;
+                    }
+                    while (true)
+                    {
+                        yield return null;
+                        if (group.alpha <= 0)
+                        {
+                            fadeStopFlag = true;
+                            break;
+                        }
+                        else group.alpha -= fadeSpeed;
+                    }
+                    break;
+                }
+                else group.alpha += fadeSpeed;
+            }
+        }
+        yield return 0;
+    }
+
+    /// <summary>シーンが切り替わった時に呼ばれる</summary>
+    /// <param name="from">ここから</param>
+    /// <param name="to">ここに</param>
+    private void SceneChangeEvent(Scene from, Scene to)
+    {
+        Debug.Log($"{from}から{to}");
     }
 }

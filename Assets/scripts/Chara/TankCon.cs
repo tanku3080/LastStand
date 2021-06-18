@@ -50,7 +50,7 @@ public class TankCon : PlayerBase
         tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
-        moveLimitRangeBar = GameManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
+        moveLimitRangeBar = TurnManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
         tankHpBar = TurnManager.Instance.hpBar.transform.GetChild(0).GetComponent<Slider>();
         aimCom = Trans.GetChild(2).GetChild(1).gameObject.GetComponent<CinemachineVirtualCamera>();
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
@@ -224,9 +224,9 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
-            if (Input.GetButtonUp("Fire1") && GameManager.Instance.dontShoot == false)
+            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
             {
-                Debug.Log("エイム攻撃dontShoot:" + GameManager.Instance.dontShoot);
+                Debug.Log("エイム攻撃dontShoot:" + TurnManager.Instance.dontShoot);
                 if (atackCount > limitCounter)
                 {
                     limitCounter++;
@@ -293,13 +293,13 @@ public class TankCon : PlayerBase
             TurnManager.Instance.PlayerMoveVal--;
             TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-            tankHead.LookAt(GameManager.Instance.nearEnemy.transform,Vector3.up);
-            GameManager.Instance.ChengePop(true, GameManager.Instance.turretCorrectionF);
+            tankHead.LookAt(TurnManager.Instance.nearEnemy.transform,Vector3.up);
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.turretCorrectionF);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, GameManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(false, TurnManager.Instance.turretCorrectionF);
         }
     }
 
@@ -311,14 +311,14 @@ public class TankCon : PlayerBase
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            GameManager.Instance.ChengePop(true,GameManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(true,TurnManager.Instance.hittingTargetR);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, GameManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(false, TurnManager.Instance.hittingTargetR);
         }
     }
     void Atack()
@@ -327,7 +327,7 @@ public class TankCon : PlayerBase
         {
             if (perfectHit && turretCorrection)
             {
-                GameManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage * 2);
+                TurnManager.Instance.nearEnemy.GetComponent<Enemy>().Damage(tankDamage * 2);
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {

@@ -102,9 +102,9 @@ public class SceneCreate : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance.tankChengeObj == null)
+        if (TurnManager.Instance.tankChengeObj == null)
         {
-            GameManager.Instance.tankChengeObj = GameObject.Find("TankChengeButton");
+            TurnManager.Instance.tankChengeObj = GameObject.Find("TankChengeButton");
         }
     }
 }

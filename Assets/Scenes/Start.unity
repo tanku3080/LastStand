@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 24261690}
   - component: {fileID: 24261693}
   - component: {fileID: 24261692}
+  - component: {fileID: 24261694}
   m_Layer: 5
   m_Name: EnterText
   m_TagString: Untagged
@@ -242,6 +243,18 @@ PlayableDirector:
     value: {fileID: 24261692}
   m_ExposedReferences:
     m_References: []
+--- !u!225 &24261694
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24261688}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &119763982
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,6 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleImage: {fileID: 1744378005}
+  textImage: {fileID: 24261694}
   playableObj: {fileID: 24261693}
 --- !u!82 &860280643
 AudioSource:

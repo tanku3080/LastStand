@@ -9,8 +9,9 @@ public class Enemy : EnemyBase
     public NavMeshAgent agent;
     GameObject tankGunFire = null;
     Transform tankBody = null;
+    /// <summary>砲塔がプレイヤーに向いているか</summary>
     bool isPlayer = false;
-    //接触判定で見つけた場合
+    ///<summary>接触判定で見つけた場合</summary>
     bool playerFind = false;
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
@@ -44,8 +45,6 @@ public class Enemy : EnemyBase
         enemyMove = false;
         AgentParamSet(enemyMove);
        
-        Debug.Log($"呼び出された{gameObject.name}");
-
     }
     bool oneUseFlag = true;
     /// <summary>待機を有効にする</summary>
@@ -102,6 +101,7 @@ public class Enemy : EnemyBase
                 EnemyMove();
                 break;
             case EnemyState.ATACK:
+                Debug.Log("攻撃ステート");
                 timerFalg = true;
                 PlayerAtack();
                 break;
@@ -131,10 +131,11 @@ public class Enemy : EnemyBase
     {
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
         {
-            if (TurnManager.Instance.FoundEnemy)
-            {
-                EnemyActionSet(EnemyState.ATACK);
-            }
+            //if (TurnManager.Instance.FoundEnemy)
+            //{
+            //    playerFind = true;
+            //    EnemyActionSet(EnemyState.ATACK);
+            //}
             if (playerFind)
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
@@ -144,7 +145,6 @@ public class Enemy : EnemyBase
                 AgentParamSet(enemyMove);
                 agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
-                Debug.Log($"現在の近くのPlayerは{NearPlayer().name}");
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
@@ -157,7 +157,6 @@ public class Enemy : EnemyBase
             }
             else
             {
-                Debug.Log("パトロール");
                 if (patrolPos.Length == patrolNum) patrolNum = 0;
                 Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
@@ -190,7 +189,6 @@ public class Enemy : EnemyBase
         }
         else if (isPlayer)
         {
-            Debug.Log("発見していない");
             EnemyActionSet(EnemyState.IDOL);
         }
     }

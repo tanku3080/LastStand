@@ -9,9 +9,7 @@ public class TextCon : MonoBehaviour
 	TextMeshProUGUI uiText;
 	private int count = 0;
 
-	[SerializeField]
-	[HideInInspector,Range(0.001f, 0.3f)]
-	float intervalForCharacterDisplay = 0.05f;
+	[Range(0.001f, 0.3f)] float intervalForCharacterDisplay = 0.05f;
 
 	private string currentText = string.Empty;
 	private float timeUntilDisplay = 0;
@@ -19,6 +17,8 @@ public class TextCon : MonoBehaviour
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
 	TextAsset asset;
+	/// <summary>シーンが切り替わった際に一度だけ呼び出される</summary>
+	bool firstSet = true;
 
 	// 文字の表示が完了しているかどうか
 	public bool IsCompleteDisplayText
@@ -33,21 +33,25 @@ public class TextCon : MonoBehaviour
 		asset = Resources.Load<TextAsset>("Text");
 		string stringNum = asset.text;
 		unit = stringNum.Split('\n');
-		SetNextLine();
 	}
 
 	void Update()
 	{
         if (SceneFadeManager.Instance.FadeStop)
         {
+            if (firstSet)
+            {
+				SetNextLine();
+				firstSet = false;
+			}
 			if (Input.GetKeyUp(KeyCode.P))
 			{
-				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f);
+				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.005f);
 			}
 
 			if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 			{
-				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f);
+				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.005f);
 			}
 			// 文字の表示が完了してるならクリック時に次の行を表示する
 			if (IsCompleteDisplayText)

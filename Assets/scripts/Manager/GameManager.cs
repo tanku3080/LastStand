@@ -33,10 +33,10 @@ public class GameManager : Singleton<GameManager>
 
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
         isGameScene = true;
-        DontDestroyOnLoad(gameObject);
     }
     private bool oneTimeFlag = true;
     // Update is called once per frame

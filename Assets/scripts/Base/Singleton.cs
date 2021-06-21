@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T:MonoBehaviour
 {
-    [SerializeField] bool dontDestroy = false;
     private static T instance;
     public static T Instance 
     {
@@ -23,10 +22,8 @@ public class Singleton<T> : MonoBehaviour where T:MonoBehaviour
     {
         if(this != Instance)
         {
-            Debug.Log("同一オブジェクト存在するので削除します" + Instance.gameObject.name);
             Destroy(this.gameObject);
             return;
         }
-        if (dontDestroy) DontDestroyOnLoad(this.gameObject);
     }
 }

@@ -168,7 +168,11 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
                             fadeStopFlag = true;
                             break;
                         }
-                        else group.alpha -= fadeSpeed;
+                        else
+                        {
+                            fadeStopFlag = false;
+                            group.alpha -= fadeSpeed;
+                        }
                     }
                     break;
                 }
@@ -183,6 +187,6 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
     /// <param name="to">ここに</param>
     private void SceneChangeEvent(Scene from, Scene to)
     {
-        Debug.Log($"{from}から{to}");
+        Debug.Log($"{to.name}に遷移");
     }
 }

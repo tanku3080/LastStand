@@ -19,11 +19,13 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     {
         INVISIBLE, TURN_START, EXIT
     }
+    /// <summary>各陣営のTurnを判定</summary>
     public bool enemyTurn = false, playerTurn = false;
+    /// <summary>敵味方が移動しているか判定</summary>
     public bool playerIsMove = false, enemyIsMove = false;
     /// <summary>全体の経過ターン数</summary>
     public int generalTurn = 1;
-    private int maxTurn = 5;
+    private readonly int maxTurn = 5;
     [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
     [SerializeField, Header("敵キャラ")] public List<Enemy> enemys = null;
     //現在の操作キャラ
@@ -38,6 +40,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     //以下はtimeLine   
     private PlayableDirector director;
     [SerializeField,Header("Timeline用")]public GameObject controlPanel;
+
     [SerializeField] public GameObject playerBGM = null;
     [SerializeField] public GameObject enemyBGM = null;
     [SerializeField] public GameObject tankMove = null;

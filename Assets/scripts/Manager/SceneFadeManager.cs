@@ -91,7 +91,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
         switch (scene)
         {
             case SCENE_STATUS.START:
-                changeName = "Title";
+                changeName = "Start";
                 break;
             case SCENE_STATUS.MEETING:
                 changeName = "Meeting";
@@ -106,11 +106,11 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
                 changeName = "GameClear";
                 break;
             case SCENE_STATUS.AUTO:
-                if (nowSceneName == "Title") changeName = "Meeting";
+                if (nowSceneName == "Start") changeName = "Meeting";
                 else if (nowSceneName == "Meeting") changeName = "GamePlay";
                 else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameClear) changeName = "GameClear";
                 else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameOvar) changeName = "GameOvar";
-                else changeName = "Title";
+                else changeName = "Start";
                 break;
             case SCENE_STATUS.NONE:
                 break;

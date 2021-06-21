@@ -718,7 +718,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>プレイヤーターンを終わらせたいときに呼び出されるUIに対応したメソッド</summary>
     public void TurnEndUI()
     {
-        TurnManager.Instance.playerTurn = true;
+        playerTurn = true;
         GameManager.Instance.ChengePop(false, tankChengeObj);
         GameManager.Instance.ChengePop(false, radarObj);
         GameManager.Instance.ChengePop(false, pauseObj);
@@ -728,5 +728,13 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false, turretCorrectionF);
         GameManager.Instance.ChengePop(false, announceObj);
         GameManager.Instance.ChengePop(false, keyUI);
+    }
+    /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
+    public void Title()
+    {
+        GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
+        //TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.Title);
+        ////アプリを終了する
+        Application.Quit();
     }
 }

@@ -10,7 +10,7 @@ public class TextCon : MonoBehaviour
 	private int count = 0;
 
 	[SerializeField]
-	[Range(0.001f, 0.3f)]
+	[HideInInspector,Range(0.001f, 0.3f)]
 	float intervalForCharacterDisplay = 0.05f;
 
 	private string currentText = string.Empty;
@@ -33,7 +33,6 @@ public class TextCon : MonoBehaviour
 		asset = Resources.Load<TextAsset>("Text");
 		string stringNum = asset.text;
 		unit = stringNum.Split('\n');
-		//NewGameManager.Instance.source.PlayOneShot(NewGameManager.Instance.mC_meeting);
 		SetNextLine();
 	}
 

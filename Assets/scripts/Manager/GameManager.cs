@@ -74,14 +74,6 @@ public class GameManager : Singleton<GameManager>
         source.PlayOneShot(click);
         SceneFadeManager.Instance.SceneOutAndChangeSystem();
     }
-    /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
-    public void Title()
-    {
-        source.PlayOneShot(click);
-        //TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.Title);
-        ////アプリを終了する
-        Application.Quit();
-    }
 
     /// <summary>
     /// 確認メッセージやその他非表示オブジェクトを表示。第3引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる

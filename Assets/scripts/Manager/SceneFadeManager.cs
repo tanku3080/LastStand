@@ -78,6 +78,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
             case FADE_STATUS.NONE:
                 break;
         }
+        if (obj != null) obj = null;
         yield return 0;
     }
 

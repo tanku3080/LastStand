@@ -7,6 +7,7 @@ public class StartSection : MonoBehaviour
     [SerializeField] CanvasGroup titleImage = null;
     [SerializeField] CanvasGroup textImage = null;
     [SerializeField] PlayableDirector playableObj;
+    bool oneUssFalg = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,18 +27,19 @@ public class StartSection : MonoBehaviour
         {
             SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_IN,0.02f,titleImage);
         }
-        if (titleImage.alpha == 1)
+        if (titleImage.alpha == 1 && oneUssFalg)
         {
+            oneUssFalg = false;
             SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_IN,0.05f,textImage);
-            if (textImage.alpha == 1)
+        }
+        if (textImage.alpha == 1 && oneUssFalg != true)
+        {
+            playableObj.Play();
+            if (Input.GetKeyUp(KeyCode.Return))
             {
-                playableObj.Play();
-                if (Input.GetKeyUp(KeyCode.Return))
-                {
-                    playableObj.Stop();
-                    GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
-                    SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f, SceneFadeManager.SCENE_STATUS.MEETING);
-                }
+                playableObj.Stop();
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
+                SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f, SceneFadeManager.SCENE_STATUS.MEETING);
             }
         }
     }

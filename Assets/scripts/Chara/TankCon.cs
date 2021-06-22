@@ -405,12 +405,12 @@ public class TankCon : PlayerBase
             IsGranded = true;
         }
     }
-
     //敵がコライダーと接触したら使う
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true)
         {
+            Debug.Log("敵を見つけた");
             TurnManager.Instance.FoundEnemy = true;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
         }

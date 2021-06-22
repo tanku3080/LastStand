@@ -96,12 +96,10 @@ public class Enemy : EnemyBase
                 }
                 break;
             case EnemyState.MOVE:
-                Debug.Log("nowState Move");
                 timerFalg = true;
                 EnemyMove();
                 break;
             case EnemyState.ATACK:
-                Debug.Log("攻撃ステート");
                 timerFalg = true;
                 PlayerAtack();
                 break;
@@ -222,16 +220,16 @@ public class Enemy : EnemyBase
             if (result < 10)//クリティカル
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
-                Debug.Log($"{gameObject.name}が敵に大ダメージ");
+                Debug.Log($"{gameObject.name}がプレイヤーに大ダメージ");
             }
             else if (result < 50)//成功
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
-                Debug.Log($"{gameObject.name}が敵にダメージ");
+                Debug.Log($"{gameObject.name}がプレイヤーにダメージ");
             }
             if (result > 50)
             {
-                Debug.Log($"{gameObject.name}がはずれ");
+                Debug.Log($"{gameObject.name}が外した");
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
@@ -268,7 +266,7 @@ public class Enemy : EnemyBase
     //近くにプレイヤーが接触した場合の処理
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && TurnManager.Instance.enemyTurn && controlAccess)
         {
             playerFind = true;
             enemyMove = false;

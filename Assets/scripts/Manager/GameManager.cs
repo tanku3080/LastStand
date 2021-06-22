@@ -49,12 +49,6 @@ public class GameManager : Singleton<GameManager>
             {
                 oneTimeFlag = false;
             }
-            //試験的に作った物
-            //if (TurnManager.Instance.generalTurn == 2) TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.GameOver);
-            if (TurnManager.Instance.nowPayer == null)
-            {
-                TurnManager.Instance.GameSetUp(TurnManager.SET_UI.TURN_START);
-            }
         }
     }
 

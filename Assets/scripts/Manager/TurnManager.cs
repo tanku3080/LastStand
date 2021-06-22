@@ -17,7 +17,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     }
     public enum SET_UI
     {
-        INVISIBLE, TURN_START, EXIT
+        TURN_START, EXIT
     }
     /// <summary>各陣営のTurnを判定</summary>
     public bool enemyTurn = false, playerTurn = false;
@@ -116,7 +116,13 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false, turretCorrectionF);
         GameManager.Instance.ChengePop(false, announceObj);
         GameManager.Instance.ChengePop(false, keyUI);
-        GameSetUp(SET_UI.INVISIBLE);
+        GameManager.Instance.ChengePop(false, controlPanel);
+        GameManager.Instance.ChengePop(false, moveValue);
+        GameManager.Instance.ChengePop(false, playerBGM);
+        GameManager.Instance.ChengePop(false, enemyBGM);
+        GameManager.Instance.ChengePop(false, limitedBar);
+        GameManager.Instance.ChengePop(false, hpBar);
+        GameManager.Instance.ChengePop(false, enemyrHpBar);
 
     }
 
@@ -223,21 +229,58 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         return targetObj;
     }
 
-    /// <summary>ゲームを開始するたびに行われる初期化処理</summary>
-    public void GameSetUp(SET_UI setUpStatus)
+    //以下の変数は音楽を鳴らすのに必要な物
+     private bool playerMPlay = false;
+     private bool enemyMPlay = false;
+     private bool isMusicPlayFlag = true;
+    /// <summary>各陣営に対応したBMGを鳴らす</summary>
+    /// <param name="isStop">Trueなら音楽をストップする</param>
+    public void PlayMusic(bool isStop = false)
     {
-        switch (setUpStatus)
+        if (SceneManager.GetActiveScene().name == "GamePlay" && isMusicPlayFlag)
         {
-            case SET_UI.INVISIBLE:
-                GameManager.Instance.ChengePop(false, controlPanel);
-                GameManager.Instance.ChengePop(false, moveValue);
-                GameManager.Instance.ChengePop(false, playerBGM);
-                GameManager.Instance.ChengePop(false, enemyBGM);
-                GameManager.Instance.ChengePop(false, limitedBar);
-                GameManager.Instance.ChengePop(false, hpBar);
-                GameManager.Instance.ChengePop(false, enemyrHpBar);
-                break;
-            case SET_UI.TURN_START:
+            if (isStop != true)
+            {
+                if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
+                {
+                    GameManager.Instance.ChengePop(true, playerBGM);
+                    GameManager.Instance.ChengePop(false, enemyBGM);
+                    enemyMPlay = false;
+                    playerMPlay = true;
+                }
+                if (enemyTurn && playerMPlay)
+                {
+                    GameManager.Instance.ChengePop(true, enemyBGM);
+                    GameManager.Instance.ChengePop(false, playerBGM);
+                    playerMPlay = false;
+                    enemyMPlay = true;
+                }
+                isMusicPlayFlag = false;
+            }
+            else
+            {
+                GameManager.Instance.ChengePop(false,playerBGM);
+                GameManager.Instance.ChengePop(false,enemyBGM);
+                isMusicPlayFlag = true;
+            }
+        }
+
+    }
+    bool turnFirstNumFlag = true;
+    /// <summary>ゲームシーンで毎フレーム呼ばれるメソッド</summary>
+    void TurnManag()
+    {
+        if (eventF)
+        {
+            director.stopped += TimeLineStop;
+            eventF = false;
+        }
+        if (generalTurn == 1 && turnFirstNumFlag)
+        {
+            turnFirstNumFlag = false;
+            if (GameManager.Instance.isGameScene)
+            {
+                MoveCounterText(text1);
                 nearEnemy = null;
                 timeLlineF = true;
                 eventF = true;
@@ -291,85 +334,13 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 playerTurn = true;
                 isMusicPlayFlag = true;
                 generalTurn = 1;
-                PlayMusic();
-                break;
-            case SET_UI.EXIT:
-                playerTurn = false;
-                enemyTurn = false;
-                GameManager.Instance.ChengePop(false,radarObj);
-                GameManager.Instance.ChengePop(false, controlPanel);
-                GameManager.Instance.ChengePop(false, moveValue);
-                GameManager.Instance.ChengePop(false, playerBGM);
-                GameManager.Instance.ChengePop(false, enemyBGM);
-                GameManager.Instance.ChengePop(false,limitedBar);
-                GameManager.Instance.ChengePop(false, hpBar);
-                GameManager.Instance.ChengePop(false, enemyrHpBar);
-                GameManager.Instance.ChengePop(false,playerBGM);
-                GameManager.Instance.ChengePop(false,enemyBGM);
-                break;
-        }
-    }
-    //以下の変数は音楽を鳴らすのに必要な物
-     private bool playerMPlay = false;
-     private bool enemyMPlay = false;
-     private bool isMusicPlayFlag = true;
-    /// <summary>各陣営に対応したBMGを鳴らす</summary>
-    /// <param name="isStop">Trueなら音楽をストップする</param>
-    public void PlayMusic(bool isStop = false)
-    {
-        if (SceneManager.GetActiveScene().name == "GamePlay" && isMusicPlayFlag)
-        {
-            if (isStop != true)
-            {
-                if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
-                {
-                    GameManager.Instance.ChengePop(true, playerBGM);
-                    GameManager.Instance.ChengePop(false, enemyBGM);
-                    enemyMPlay = false;
-                    playerMPlay = true;
-                }
-                if (enemyTurn && playerMPlay)
-                {
-                    GameManager.Instance.ChengePop(true, enemyBGM);
-                    GameManager.Instance.ChengePop(false, playerBGM);
-                    playerMPlay = false;
-                    enemyMPlay = true;
-                }
-                isMusicPlayFlag = false;
-            }
-            else
-            {
-                GameManager.Instance.ChengePop(false,playerBGM);
-                GameManager.Instance.ChengePop(false,enemyBGM);
-                isMusicPlayFlag = true;
-            }
-        }
-
-    }
-    bool turnFirstNumFlag = true;
-    /// <summary>ゲームシーンで毎フレーム呼ばれるメソッド</summary>
-    void TurnManag()
-    {
-        if (eventF)
-        {
-            director.stopped += TimeLineStop;
-            eventF = false;
-        }
-        if (generalTurn == 1 && turnFirstNumFlag)
-        {
-            turnFirstNumFlag = false;
-            if (GameManager.Instance.isGameScene)
-            {
-                MoveCounterText(text1);
-                GameSetUp(SET_UI.TURN_START);
-                playerTurn = true;
+                PlayMusic(); playerTurn = true;
                 GameManager.Instance.isGameScene = false;
             }
         }
         else if (generalTurn == 2)
         {
             PlayMusic(false);
-            GameSetUp(SET_UI.EXIT);
             SceneFadeManager.Instance.SceneOutAndChangeSystem();
         }
         if (timeLlineF)

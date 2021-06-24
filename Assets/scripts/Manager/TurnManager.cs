@@ -39,7 +39,9 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     [SerializeField] GameObject moveValue = null;
     //以下はtimeLine   
     private PlayableDirector director;
-    [SerializeField,Header("Timeline用")]public GameObject controlPanel;
+    [Header("Timeline用")]public GameObject controlPanel;
+    /// <summary>timeLineが終わったらtrue</summary>
+    [HideInInspector] public bool timeLineEndFlag = false;
 
     [SerializeField] public GameObject playerBGM = null;
     [SerializeField] public GameObject enemyBGM = null;
@@ -98,6 +100,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     bool enemyFirstColl = true;
     /// <summary>敵を発見したらtrue</summary>
     public bool FoundEnemy = false;
+    /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
+    [HideInInspector] public List<GameObject> enemyDiscovery = new List<GameObject>();
     void Start()
     {
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
@@ -230,40 +234,33 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         return targetObj;
     }
 
-    //以下の変数は音楽を鳴らすのに必要な物
-     private bool playerMPlay = false;
-     private bool enemyMPlay = false;
-     private bool isMusicPlayFlag = true;
     /// <summary>各陣営に対応したBMGを鳴らす</summary>
     /// <param name="isStop">Trueなら音楽をストップする</param>
     public void PlayMusic(bool isStop = false)
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay" && isMusicPlayFlag)
+
+        //以下の変数は音楽を鳴らすのに必要な物
+        bool isMusicPlayFlag = true;
+        if (isMusicPlayFlag)
         {
             if (isStop != true)
             {
-                Debug.Log("曲を流す");
-                if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
+                if (playerTurn || playerTurn && generalTurn == 1)
                 {
                     GameManager.Instance.ChengePop(true, playerBGM);
                     GameManager.Instance.ChengePop(false, enemyBGM);
-                    enemyMPlay = false;
-                    playerMPlay = true;
+
                 }
-                if (enemyTurn && playerMPlay)
+                else
                 {
                     GameManager.Instance.ChengePop(true, enemyBGM);
                     GameManager.Instance.ChengePop(false, playerBGM);
-                    playerMPlay = false;
-                    enemyMPlay = true;
                 }
-                isMusicPlayFlag = false;
             }
             else
             {
                 GameManager.Instance.ChengePop(false,playerBGM);
                 GameManager.Instance.ChengePop(false,enemyBGM);
-                isMusicPlayFlag = true;
             }
         }
 
@@ -333,7 +330,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             nowEnemy = enemys[enemyNum].gameObject;
             nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
             playerTurn = true;
-            isMusicPlayFlag = true;
             generalTurn = 1;
             PlayMusic();
         }
@@ -385,7 +381,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <param name="enemy">enemyの場合はtrue</param>
     public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
-        PlayMusic();
         if (playerTurn && player)
         {
             if (moveV > 0)
@@ -444,6 +439,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             }
             enemy = false;
         }
+        PlayMusic();
+
     }
     /// <summary>
     /// 死んだ場合の処理
@@ -484,12 +481,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false, enemyBGM);
         GameManager.Instance.ChengePop(false,pauseObj);
         GameManager.Instance.ChengePop(false,radarObj);
-        enemyMPlay = false;
-        playerMPlay = false;
-        isMusicPlayFlag = false;
         turnFirstNumFlag = true;
-        //players.Clear();
-        //enemys.Clear();
         SceneFadeManager.Instance.SceneOutAndChangeSystem();
     }
     /// <summary>PlayerMoveValに値を渡す。戦車を順番よく切り替える。UIのオンクリックに使われる/// </summary>
@@ -529,7 +521,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// </summary>
     public void TurnEnd()
     {
-        Debug.Log("turnEndSart");
         GameManager.Instance.ChengePop(false,endObj);
         clickC = true;
         PlayerMoveVal = 5;
@@ -553,7 +544,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
             MoveCharaSet(false, true);
-            PlayMusic();
             return;
         }
         //敵が呼んだ場合の処理
@@ -578,7 +568,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
             VcamChenge();
             nowPayer.GetComponent<TankCon>().controlAccess = true;
-            PlayMusic();
             return;
         }
     }
@@ -598,10 +587,12 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(true,limitedBar);
         timeLlineF = false;
         playerIsMove = true;
+        timeLineEndFlag = true;
     }
     /// <summary>TimeLineを開始するためのメソッド</summary>
     void StartTimeLine()
     {
+        timeLineEndFlag = false;
         GameManager.Instance.ChengePop(true,controlPanel);
         director.Play();
     }
@@ -626,14 +617,23 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>キーボードのUIを非表示にする</summary>
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,keyUI);
 
+    /// <summary>キャラのHP</summary>
     public int charactorHp;
+    /// <summary>キャラのスピード</summary>
     public float charactorSpeed;
+    /// <summary>キャラの砲塔旋回速度</summary>
     public float tankHeadSpeed;
+    /// <summary>キャラの旋回速度</summary>
     public float tankTurnSpeed;
+    /// <summary>キャラの移動速度制限</summary>
     public float tankLimitedSpeed;
+    /// <summary>キャラの有効射程範囲</summary>
     public float tankLimitedRange;
+    /// <summary>キャラの索敵範囲</summary>
     public float tankSearchRanges;
+    /// <summary>キャラのダメージ量</summary>
     public int tankDamage;
+    /// <summary>キャラの攻撃回数</summary>
     public int atackCounter;
     /// <summary>
     /// 戦車を選択
@@ -651,7 +651,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             case TANK_CHOICE.Tiger:
                 charactorHp = 100;
                 charactorSpeed = 1000f;
-                tankHeadSpeed = 2.5f;
+                tankHeadSpeed = 4f;
                 tankTurnSpeed = 5f;
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
@@ -662,7 +662,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             case TANK_CHOICE.Panzer2:
                 charactorHp = 50;
                 charactorSpeed = 1500f;
-                tankHeadSpeed = 3f;
+                tankHeadSpeed = 9f;
                 tankTurnSpeed = 10f;
                 tankLimitedSpeed = 1500f;
                 tankLimitedRange = 100000f;
@@ -673,7 +673,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             case TANK_CHOICE.Shaman:
                 charactorHp = 80;
                 charactorSpeed = 21f;
-                tankHeadSpeed = 2.5f;
+                tankHeadSpeed = 4f;
                 tankTurnSpeed = 5f;
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 1000f;
@@ -684,8 +684,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             case TANK_CHOICE.Stuart:
                 charactorHp = 30;
                 charactorSpeed = 30f;
-                tankHeadSpeed = 2.5f;
-                tankTurnSpeed = 5f;
+                tankHeadSpeed = 9f;
+                tankTurnSpeed = 10f;
                 tankLimitedSpeed = 100000f;
                 tankLimitedRange = 10000f;
                 tankSearchRanges = 100f;

@@ -25,7 +25,7 @@ public class Enemy : EnemyBase
 
     bool agentSetUpFlag = true;
     [HideInInspector] public bool parameterSetFlag = false;
-    /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue(みじっそう) </summary>
+    /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue</summary>
     [HideInInspector] public bool enemyAppearance = false;
     private void Start()
     {
@@ -48,13 +48,14 @@ public class Enemy : EnemyBase
         AgentParamSet(enemyMove);
        
     }
+    /// <summary>switch文で行動終了する際に使う変数</summary>
     bool oneUseFlag = true;
     /// <summary>待機を有効にする</summary>
     private bool timerFalg = false;
     private void Update()
     {
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
-        if (controlAccess)
+        if (controlAccess && SceneFadeManager.Instance.FadeStop)
         {
             if (enemyMove)
             {
@@ -201,7 +202,6 @@ public class Enemy : EnemyBase
         {
             if (agentSetUpFlag)
             {
-                Debug.Log("angleが3位内");
                 agentSetUpFlag = false;
                 enemyMove = true;
                 AgentParamSet(enemyMove);

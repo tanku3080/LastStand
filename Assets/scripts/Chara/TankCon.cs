@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 public class TankCon : PlayerBase
@@ -62,7 +63,7 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        if (controlAccess)
+        if (controlAccess && TurnManager.Instance.timeLineEndFlag)
         {
             Rd.isKinematic = false;
 
@@ -80,21 +81,44 @@ public class TankCon : PlayerBase
                 GameManager.Instance.ChengePop(true, aimCom.gameObject);
                 cameraActive = false;
             }
-            if (TurnManager.Instance.playerIsMove)
+            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
             {
-                if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
+                Quaternion rotetion;
+                bool keySet = false;
+                if (Input.GetKey(KeyCode.J)) keySet = true;
+                else if (Input.GetKey(KeyCode.L)) keySet = false;
+                rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                tankHead.rotation *= rotetion;
+                if (isMoveBGM)
                 {
-                    Quaternion rotetion;
-                    bool keySet = false;
-                    if (Input.GetKey(KeyCode.J)) keySet = true;
-                    else if (Input.GetKey(KeyCode.L)) keySet = false;
-                    rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) / 2 * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                    tankHead.rotation *= rotetion;
-                    if(isMoveBGM)
+                    isMoveBGM = false;
+                    TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                }
+            }
+            else
+            {
+                if (isMoveBGM == false)
+                {
+                    isMoveBGM = true;
+                    TankMoveSFXPlay(false);
+                }
+            }
+
+            if (IsGranded)
+            {
+                moveV = Input.GetAxis("Vertical");
+                moveH = Input.GetAxis("Horizontal");
+                if (moveH != 0)
+                {
+                    if (isMoveBGM)
                     {
                         isMoveBGM = false;
                         TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                     }
+                    float rot = moveH * tankTurn_Speed * Time.deltaTime;
+                    Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                    Rd.MoveRotation(Rd.rotation * rotetion);
+                    MoveLimit();
                 }
                 else
                 {
@@ -104,57 +128,28 @@ public class TankCon : PlayerBase
                         TankMoveSFXPlay(false);
                     }
                 }
-
-                if (IsGranded)
+                //前進後退
+                if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                 {
-
-                    if (TurnManager.Instance.playerIsMove)
+                    if (isMoveBGM)
                     {
-                        moveV = Input.GetAxis("Vertical");
-                        moveH = Input.GetAxis("Horizontal");
-                        if (moveH != 0)
-                        {
-                            if (isMoveBGM)
-                            {
-                                isMoveBGM = false;
-                                TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
-                            }
-                            float rot = moveH * tankTurn_Speed * Time.deltaTime;
-                            Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                            Rd.MoveRotation(Rd.rotation * rotetion);
-                            MoveLimit();
-                        }
-                        else
-                        {
-                            if (isMoveBGM == false)
-                            {
-                                isMoveBGM = true;
-                                TankMoveSFXPlay(false);
-                            }
-                        }
-                        //前進後退
-                        if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
-                        {
-                            if (isMoveBGM)
-                            {
-                                isMoveBGM = false;
-                                TankMoveSFXPlay(true, BGMType.MOVE);
-                            }
-                            float mov = moveV * playerSpeed * Time.deltaTime;
-                            Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                            MoveLimit();
-                        }
-                        else
-                        {
-                            if (isMoveBGM == false)
-                            {
-                                isMoveBGM = true;
-                                TankMoveSFXPlay(false);
-                            }
-                        }
+                        isMoveBGM = false;
+                        TankMoveSFXPlay(true, BGMType.MOVE);
+                    }
+                    float mov = moveV * playerSpeed * Time.deltaTime;
+                    Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                    MoveLimit();
+                }
+                else
+                {
+                    if (isMoveBGM == false)
+                    {
+                        isMoveBGM = true;
+                        TankMoveSFXPlay(false);
                     }
                 }
             }
+
 
             //右クリック
             if (Input.GetButtonUp("Fire2"))
@@ -410,9 +405,9 @@ public class TankCon : PlayerBase
         if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true)
         {
             TurnManager.Instance.FoundEnemy = true;
-            if (other.gameObject.GetComponent<Enemy>().enemyAppearance != true && TurnManager.Instance.enemyTurn != true)
+            if (other.gameObject.GetComponent<Enemy>().enemyAppearance != true && !TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
             {
-                Debug.Log("敵を見つけた");
+                TurnManager.Instance.enemyDiscovery.Add(other.gameObject);
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
                 other.gameObject.GetComponent<Enemy>().enemyAppearance = true;
             }
@@ -421,10 +416,10 @@ public class TankCon : PlayerBase
     //敵がコライダーから離れたら使う
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
         {
+            TurnManager.Instance.enemyDiscovery.Remove(other.gameObject);
             TurnManager.Instance.FoundEnemy = false;
-            TurnManager.Instance.nowEnemy.GetComponent<Enemy>().enemyAppearance = false;
         }
     }
     //接地判定に使う物

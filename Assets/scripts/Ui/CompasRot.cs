@@ -6,7 +6,7 @@ public class CompasRot : MonoBehaviour
     private float transR_Y;
     void Update()
     {
-        if (TurnManager.Instance.playerTurn == true && GameManager.Instance.isGameScene)
+        if (TurnManager.Instance.playerTurn == true)
         {
             var player = TurnManager.Instance.nowPayer.GetComponent<TankCon>();
             if (TurnManager.Instance.tankChangeFlag)

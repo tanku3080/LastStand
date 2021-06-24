@@ -23,11 +23,6 @@ public class GameManager : Singleton<GameManager>
     [Tooltip("攻撃音")] public AudioClip atack;
     [Tooltip("敵発見音")] public AudioClip discoverySfx;
 
-    ///<summary>ゲームシーンかの判定(ターンマネージャー限定)</summary>
-    ///必要か分からない
-    [HideInInspector] public bool isGameScene;
-
-
     public bool isGameClear = false;
     public bool isGameOvar = false;
 
@@ -36,19 +31,14 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
         source.playOnAwake = false;
-        isGameScene = true;
     }
-    private bool oneTimeFlag = true;
     // Update is called once per frame
     void Update()
     {
-        if (SceneManager.GetActiveScene().name == "GamePlay")
+        //デバック用
+        if (SceneManager.GetActiveScene().name != "GamePlay" && Input.GetKeyUp(KeyCode.P) && SceneFadeManager.Instance.FadeStop)
         {
-            isGameScene = true;
-            if (oneTimeFlag)
-            {
-                oneTimeFlag = false;
-            }
+            SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_PLAY);
         }
     }
 

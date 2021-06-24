@@ -25,6 +25,8 @@ public class Enemy : EnemyBase
 
     bool agentSetUpFlag = true;
     [HideInInspector] public bool parameterSetFlag = false;
+    /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue(みじっそう) </summary>
+    [HideInInspector] public bool enemyAppearance = false;
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -54,6 +56,10 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess)
         {
+            if (enemyMove)
+            {
+                EnemyMoveLimit();
+            }
             EnemyActionSet();
         }
         else
@@ -146,43 +152,36 @@ public class Enemy : EnemyBase
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
-                if (enemyMove)
-                {
-                    EnemyMoveLimit(playerFind);
-                }
                 if (angle < 3) isPlayer = true;
                 else isPlayer = false;
             }
             else
             {
-                if (patrolPos.Length == patrolNum) patrolNum = 0;
-                Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
-                Quaternion rotetion = Quaternion.LookRotation(pointDir);
-                Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                float angle = Vector3.Angle(pointDir, Trans.forward);
-                float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
-                if (angle < 3)
-                {
-                    if (agentSetUpFlag)
-                    {
-                        agentSetUpFlag = false;
-                        enemyMove = true;
-                        AgentParamSet(enemyMove);
-                    }
-                    agent.SetDestination(patrolPos[patrolNum].transform.position);
-                    agent.nextPosition = Trans.position;
-                }
-                else if (angle != 3 && a < 10)
-                {
-                    agentSetUpFlag = true;
-                    enemyMove = false;
-                    AgentParamSet(enemyMove);
-                    patrolNum++;
-                }
-                if (enemyMove)
-                {
-                    EnemyMoveLimit(playerFind);
-                }
+                //if (patrolPos.Length == patrolNum) patrolNum = 0;
+                //Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
+                //Quaternion rotetion = Quaternion.LookRotation(pointDir);
+                //Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
+                //float angle = Vector3.Angle(pointDir, Trans.forward);
+                //float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
+                //if (angle < 3)
+                //{
+                //    if (agentSetUpFlag)
+                //    {
+                //        agentSetUpFlag = false;
+                //        enemyMove = true;
+                //        AgentParamSet(enemyMove);
+                //    }
+                //    agent.SetDestination(patrolPos[patrolNum].transform.position);
+                //    agent.nextPosition = Trans.position;
+                //}
+                //else if (angle != 3 && a < 10)
+                //{
+                //    agentSetUpFlag = true;
+                //    enemyMove = false;
+                //    AgentParamSet(enemyMove);
+                //    patrolNum++;
+                //}
+                EnemyMoveStatusSet(enemyAppearance);
             }
         }
         else if (isPlayer)
@@ -190,17 +189,39 @@ public class Enemy : EnemyBase
             EnemyActionSet(EnemyState.IDOL);
         }
     }
-    void EnemyMoveLimit(bool find)
+    void EnemyMoveStatusSet(bool appearanceFlag)
     {
-        float val;
-        if (find)
+        if (appearanceFlag && patrolPos.Length == patrolNum) patrolNum = 0;
+        Vector3 pointDir = (appearanceFlag ? patrolPos[patrolNum].transform.position : NearPlayer().transform.position) - Trans.position;
+        Quaternion rotetion = Quaternion.LookRotation(pointDir);
+        Trans.rotation = Quaternion.RotateTowards(Trans.rotation,rotetion,ETankTurn_Speed * Time.deltaTime);
+        float angle = Vector3.Angle(pointDir,Trans.forward);
+        float dis = Vector3.Distance((appearanceFlag?patrolPos[patrolNum].transform.position:NearPlayer().transform.position),Trans.position);
+        if (angle < 3)
         {
-            val = 0.5f;
+            if (agentSetUpFlag)
+            {
+                Debug.Log("angleが3位内");
+                agentSetUpFlag = false;
+                enemyMove = true;
+                AgentParamSet(enemyMove);
+            }
+            agent.SetDestination((appearanceFlag ? patrolPos[patrolNum].transform.position : Trans.position));
+            agent.nextPosition = Trans.position;
         }
-        else
+        else if (angle != 3 && dis < 10)
         {
-            val = 1f;
+            Debug.Log("次のステップ");
+            agentSetUpFlag = true;
+            enemyMove = false;
+            AgentParamSet(enemyMove);
+            if (appearanceFlag) patrolNum++;
         }
+    }
+    void EnemyMoveLimit()
+    {
+        //移動制限バーの減少値
+        float val = 1f;
         if (enemyMoveNowValue > 0)
         {
             enemyMoveNowValue -= val;

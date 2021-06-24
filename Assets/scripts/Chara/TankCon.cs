@@ -19,16 +19,16 @@ public class TankCon : PlayerBase
     bool AimFlag = false;
     //移動キー。HはCompassと連動するためpublicにした
     private float moveV;
-    public float moveH;
+    [HideInInspector] public float moveH;
     //これがtureじゃないとPlayerの操作権は渡せない
     public bool controlAccess = false;
     //カメラをオンにして操作キャラにカメラを切り替える
-    public bool cameraActive = true;
+    [HideInInspector] public bool cameraActive = true;
 
     bool perfectHit = false;//命中率
     bool turretCorrection = false;//精度
     bool limitRangeFlag = true;//移動制限値
-    public bool atackCheck = false;//当たったかどうかのチェック
+    [HideInInspector] public bool atackCheck = false;//当たったかどうかのチェック
 
     //移動制限
     [HideInInspector] public Slider moveLimitRangeBar;
@@ -199,9 +199,8 @@ public class TankCon : PlayerBase
                 }
                 GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
                 t.Play();
-                move = false;
             }
-
+            move = false;
         }
         else
         {
@@ -219,7 +218,6 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
-            TurnManager.Instance.playerIsMove = false;
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
@@ -241,6 +239,8 @@ public class TankCon : PlayerBase
             }
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
+                if (TurnManager.Instance.playerIsMove != true) TurnManager.Instance.playerIsMove = true;
+                else TurnManager.Instance.playerIsMove = false;
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
                     if (TurnManager.Instance.FoundEnemy)
@@ -376,7 +376,6 @@ public class TankCon : PlayerBase
                 Debug.Log("当たった");
                 f = true;
             }
-            Debug.DrawRay(atackPoint, transform.forward * tankLimitRange, Color.red, 10);
         }
         return f;
     }
@@ -410,9 +409,13 @@ public class TankCon : PlayerBase
     {
         if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true)
         {
-            Debug.Log("敵を見つけた");
             TurnManager.Instance.FoundEnemy = true;
-            GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
+            if (other.gameObject.GetComponent<Enemy>().enemyAppearance != true && TurnManager.Instance.enemyTurn != true)
+            {
+                Debug.Log("敵を見つけた");
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
+                other.gameObject.GetComponent<Enemy>().enemyAppearance = true;
+            }
         }
     }
     //敵がコライダーから離れたら使う
@@ -421,6 +424,7 @@ public class TankCon : PlayerBase
         if (other.gameObject.CompareTag("Enemy"))
         {
             TurnManager.Instance.FoundEnemy = false;
+            TurnManager.Instance.nowEnemy.GetComponent<Enemy>().enemyAppearance = false;
         }
     }
     //接地判定に使う物

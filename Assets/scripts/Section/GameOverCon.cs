@@ -16,11 +16,17 @@ public class GameOverCon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer > 5)
+        if (SceneFadeManager.Instance.FadeStop)
         {
-            canvas.alpha = 1;
-            
+            timer += Time.deltaTime;
+            if (timer > 2)
+            {
+                SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_IN, 0.02f, canvas);
+            }
+        }
+        if (canvas.alpha == 1 && Input.GetKeyUp(KeyCode.Return))
+        {
+            SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.START);
         }
     }
 }

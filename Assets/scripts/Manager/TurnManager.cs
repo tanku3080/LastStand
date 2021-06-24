@@ -44,7 +44,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     [SerializeField] public GameObject playerBGM = null;
     [SerializeField] public GameObject enemyBGM = null;
     [SerializeField] public GameObject tankMove = null;
-    [SerializeField,HideInInspector] public Text text1 = null;
+    [HideInInspector] public Text text1 = null;
     //アナウンス用
     [SerializeField, HideInInspector] public Image announceImage = null;
     [SerializeField, HideInInspector] public Text annouceText = null;
@@ -94,13 +94,14 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     bool timeLlineF = true;
     bool eventF = true;
 
+    /// <summary>アップデート関数内で最初の敵ターンの時に使う変数</summary>
     bool enemyFirstColl = true;
-    //敵を発見したらtrue
+    /// <summary>敵を発見したらtrue</summary>
     public bool FoundEnemy = false;
     void Start()
     {
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
-        turretCorrectionF = specialObj.transform.GetChild(0).gameObject;
+        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
         announceImage = announceObj.transform.GetChild(0).GetComponent<Image>();
         annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
         text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
@@ -241,6 +242,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         {
             if (isStop != true)
             {
+                Debug.Log("曲を流す");
                 if (playerTurn && enemyMPlay || playerTurn && generalTurn == 1)
                 {
                     GameManager.Instance.ChengePop(true, playerBGM);
@@ -278,70 +280,62 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         if (generalTurn == 1 && turnFirstNumFlag)
         {
             turnFirstNumFlag = false;
-            if (GameManager.Instance.isGameScene)
+
+            MoveCounterText(text1);
+            nearEnemy = null;
+            timeLlineF = true;
+            eventF = true;
+            nowPayer = null;
+            nowEnemy = null;
+            players.Clear();
+            enemys.Clear();
+            foreach (var item in FindObjectsOfType<TankCon>())
             {
-                MoveCounterText(text1);
-                nearEnemy = null;
-                timeLlineF = true;
-                eventF = true;
-                nowPayer = null;
-                nowEnemy = null;
-                players.Clear();
-                enemys.Clear();
-                foreach (var item in FindObjectsOfType<TankCon>())
-                {
-                    players.Add(item);
-                    TankChoiceStart(item.name);
-                    item.playerLife = charactorHp;
-                    item.playerSpeed = charactorSpeed;
-                    item.tankHead_R_SPD = tankHeadSpeed;
-                    item.tankTurn_Speed = tankTurnSpeed;
-                    item.tankLimitSpeed = tankLimitedSpeed;
-                    item.tankLimitRange = tankLimitedRange;
-                    item.tankDamage = tankDamage;
-                    item.borderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
-                    item.atackCount = atackCounter;
-                }
-                foreach (var enemy in FindObjectsOfType<Enemy>())
-                {
-                    enemys.Add(enemy);
-                    TankChoiceStart(enemy.name);
-                    enemy.enemyLife = charactorHp;
-                    enemy.enemySpeed = charactorSpeed;
-                    enemy.ETankHead_R_SPD = tankHeadSpeed;
-                    enemy.ETankTurn_Speed = tankTurnSpeed;
-                    enemy.ETankLimitSpeed = tankLimitedSpeed;
-                    enemy.ETankLimitRange = tankLimitedRange;
-                    enemy.eTankDamage = tankDamage;
-                    enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
-                    enemy.eAtackCount = atackCounter;
-                    enemy.parameterSetFlag = true;
-                }
-                GameManager.Instance.ChengePop(true, moveValue);
-                GameManager.Instance.ChengePop(true, hpBar);
-                nowPayer = players[playerNum].gameObject;
-                nowPayer.GetComponent<TankCon>().controlAccess = true;
-                GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
-                GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
-                nowPayer.GetComponent<Rigidbody>().isKinematic = true;
-                DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
-                AimCon = nowPayer.GetComponent<TankCon>().aimCom;
-                GameManager.Instance.ChengePop(false, AimCon.gameObject);
-                GameManager.Instance.ChengePop(true, DefCon.gameObject);
-                tankMove = nowPayer.transform.GetChild(3).gameObject;
-                nowEnemy = enemys[enemyNum].gameObject;
-                nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
-                playerTurn = true;
-                isMusicPlayFlag = true;
-                generalTurn = 1;
-                PlayMusic(); playerTurn = true;
-                GameManager.Instance.isGameScene = false;
+                players.Add(item);
+                TankChoiceStart(item.name);
+                item.playerLife = charactorHp;
+                item.playerSpeed = charactorSpeed;
+                item.tankHead_R_SPD = tankHeadSpeed;
+                item.tankTurn_Speed = tankTurnSpeed;
+                item.tankLimitSpeed = tankLimitedSpeed;
+                item.tankLimitRange = tankLimitedRange;
+                item.tankDamage = tankDamage;
+                item.borderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
+                item.atackCount = atackCounter;
             }
-        }
-        else if (generalTurn == 2)
-        {
-            PlayMusic(false);
-            SceneFadeManager.Instance.SceneOutAndChangeSystem();
+            foreach (var enemy in FindObjectsOfType<Enemy>())
+            {
+                enemys.Add(enemy);
+                TankChoiceStart(enemy.name);
+                enemy.enemyLife = charactorHp;
+                enemy.enemySpeed = charactorSpeed;
+                enemy.ETankHead_R_SPD = tankHeadSpeed;
+                enemy.ETankTurn_Speed = tankTurnSpeed;
+                enemy.ETankLimitSpeed = tankLimitedSpeed;
+                enemy.ETankLimitRange = tankLimitedRange;
+                enemy.eTankDamage = tankDamage;
+                enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
+                enemy.eAtackCount = atackCounter;
+                enemy.parameterSetFlag = true;
+            }
+            GameManager.Instance.ChengePop(true, moveValue);
+            GameManager.Instance.ChengePop(true, hpBar);
+            nowPayer = players[playerNum].gameObject;
+            nowPayer.GetComponent<TankCon>().controlAccess = true;
+            GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
+            GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
+            nowPayer.GetComponent<Rigidbody>().isKinematic = true;
+            DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
+            AimCon = nowPayer.GetComponent<TankCon>().aimCom;
+            GameManager.Instance.ChengePop(false, AimCon.gameObject);
+            GameManager.Instance.ChengePop(true, DefCon.gameObject);
+            tankMove = nowPayer.transform.GetChild(3).gameObject;
+            nowEnemy = enemys[enemyNum].gameObject;
+            nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
+            playerTurn = true;
+            isMusicPlayFlag = true;
+            generalTurn = 1;
+            PlayMusic();
         }
         if (timeLlineF)
         {
@@ -349,7 +343,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             TurnTextMove();
             StartTimeLine();
         }
-        else playerIsMove = true;
         if (players.Count == 0)
         {
             GameManager.Instance.isGameOvar = true;
@@ -370,10 +363,19 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     {
 
         Text text = turnText.GetComponent<Text>();
-        if (generalTurn == maxTurn) text.text = "Last";
-        if (playerTurn) text.text = "Player ";
-        if (enemyTurn) text.text = "Enemy ";
-        text.text += generalTurn + "Turn";
+        if (generalTurn == maxTurn)
+        {
+            text.text = "Last";
+            if (playerTurn) text.text += "Player";
+            if (enemyTurn) text.text += "Enemy";
+            text.text += "Turn";
+        }
+        else
+        {
+            if (playerTurn) text.text = "Player ";
+            if (enemyTurn) text.text = "Enemy ";
+            text.text += generalTurn + "Turn";
+        }
     }
 
     /// <summary>
@@ -485,7 +487,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         enemyMPlay = false;
         playerMPlay = false;
         isMusicPlayFlag = false;
-        GameManager.Instance.isGameScene = true;
         turnFirstNumFlag = true;
         //players.Clear();
         //enemys.Clear();
@@ -552,12 +553,17 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
             MoveCharaSet(false, true);
+            PlayMusic();
             return;
         }
         //敵が呼んだ場合の処理
         if (enemyTurn)
         {
             Debug.Log("全ての陣営が終了");
+            if (maxTurn == generalTurn)
+            {
+                SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_OVER);
+            }
             generalTurn++;
             enemyTurn = false;
             playerTurn = true;
@@ -573,7 +579,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             VcamChenge();
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             PlayMusic();
-            GameManager.Instance.isGameScene = true;//?
             return;
         }
     }
@@ -592,6 +597,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false,controlPanel);
         GameManager.Instance.ChengePop(true,limitedBar);
         timeLlineF = false;
+        playerIsMove = true;
     }
     /// <summary>TimeLineを開始するためのメソッド</summary>
     void StartTimeLine()
@@ -707,8 +713,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     public void Title()
     {
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
-        //TurnManager.Instance.GameSceneChange(TurnManager.JudgeStatus.Title);
-        ////アプリを終了する
-        Application.Quit();
+        SceneFadeManager.Instance.SceneOutAndChangeSystem(0.01f,SceneFadeManager.SCENE_STATUS.START);
     }
 }

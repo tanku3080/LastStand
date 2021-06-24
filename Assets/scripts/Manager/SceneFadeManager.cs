@@ -78,7 +78,8 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
             case FADE_STATUS.NONE:
                 break;
         }
-        if (obj != null) obj = null;
+        obj = null;
+        group = null;
         yield return 0;
     }
 
@@ -101,7 +102,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
                 changeName = "GamePlay";
                 break;
             case SCENE_STATUS.GAME_OVER:
-                changeName = "GameOvar";
+                changeName = "GameOver";
                 break;
             case SCENE_STATUS.GAME_CLEAR:
                 changeName = "GameClear";
@@ -110,7 +111,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
                 if (nowSceneName == "Start") changeName = "Meeting";
                 else if (nowSceneName == "Meeting") changeName = "GamePlay";
                 else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameClear) changeName = "GameClear";
-                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameOvar) changeName = "GameOvar";
+                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameOvar) changeName = "GameOver";
                 else changeName = "Start";
                 break;
             case SCENE_STATUS.NONE:

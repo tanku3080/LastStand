@@ -17,9 +17,13 @@ public class GameClearCon : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer > 5)
+        if (timer > 3)
         {
-            canvas.alpha = 1;
+            SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_IN,0.02f,canvas);
+        }
+        if (canvas.alpha == 1 && Input.GetKeyUp(KeyCode.Return))
+        {
+            SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.START);
         }
     }
 }

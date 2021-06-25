@@ -8,6 +8,7 @@ public class TextCon : MonoBehaviour
     string[] unit;
 	TextMeshProUGUI uiText;
 	private int count = 0;
+	[SerializeField] AudioClip soundDisplay = null;
 
 	[Range(0.001f, 0.3f)] float intervalForCharacterDisplay = 0.05f;
 
@@ -47,6 +48,7 @@ public class TextCon : MonoBehaviour
 			if (Input.GetKeyUp(KeyCode.P))
 			{
 				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.005f);
+
 			}
 
 			if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
@@ -76,6 +78,7 @@ public class TextCon : MonoBehaviour
 			{
 				uiText.text = currentText.Substring(0, displayCharacterCount);
 				lastUpdateCharacter = displayCharacterCount;
+				GameManager.Instance.source.PlayOneShot(soundDisplay);
 			}
 		}
 	}

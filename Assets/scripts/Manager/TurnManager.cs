@@ -32,8 +32,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
     [HideInInspector] public GameObject nearEnemy = null;
-    [SerializeField, Header("体力ゲージ")] public GameObject hpBar = null;
-    [SerializeField,Header("敵体力ゲージ")] public GameObject enemyrHpBar = null;
+    [Header("体力ゲージ")] public GameObject hpBar = null;
+    [Header("敵体力ゲージ")] public GameObject enemyrHpBar = null;
     private GameObject turnText = null;
     //移動回数
     [SerializeField] GameObject moveValue = null;

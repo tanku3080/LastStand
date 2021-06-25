@@ -45,8 +45,8 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
             GameManager.Instance.ChengePop(true, TurnManager.Instance.enemyrHpBar);
             slider = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<Slider>();
             slider.minValue = 0;
-            slider.maxValue = TurnManager.Instance.tankDamage;
-            slider.value = enemyLife;
+            slider.maxValue = enemyLife;
+            slider.value = TurnManager.Instance.tankDamage;
             TurnManager.Instance.enemyrHpBar.transform.position = hpBarpos.position;
             TurnManager.Instance.enemyrHpBar.transform.LookAt(TurnManager.Instance.AimCon.transform);
             Invoke(nameof(Stop), 1.5f);

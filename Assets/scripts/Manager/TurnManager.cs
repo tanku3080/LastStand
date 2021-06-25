@@ -42,7 +42,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     [Header("Timeline用")]public GameObject controlPanel;
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
-
+    /// <summary>プレイヤー陣営のBGM</summary>
     [SerializeField] public GameObject playerBGM = null;
     [SerializeField] public GameObject enemyBGM = null;
     [SerializeField] public GameObject tankMove = null;

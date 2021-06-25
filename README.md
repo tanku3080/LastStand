@@ -87,5 +87,13 @@
   
   <details> <summary>軽戦車</summary>  
   
-  軽戦車
-  </details>
+  ![軽戦車](https://user-images.githubusercontent.com/57029371/123485838-e5b71300-d645-11eb-869f-4224903b03f7.png)  
+  
+  素早い移動速度と広範囲の索敵能力、攻撃回数が多い反面HPが低い戦車。主に敵を探すスポッターとして活躍する
+  </details>  
+  
+  <details> <summary>重戦車</summary>  
+  
+  ![重戦車](https://user-images.githubusercontent.com/57029371/123485841-e6e84000-d645-11eb-8a42-ff7988d10e69.png)
+  
+  強力は攻撃力と高いHPを誇る戦車。軽戦車と連携する事で活躍できる。

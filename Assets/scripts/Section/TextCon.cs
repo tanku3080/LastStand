@@ -10,7 +10,7 @@ public class TextCon : MonoBehaviour
 	private int count = 0;
 	[SerializeField] AudioClip soundDisplay = null;
 
-	[Range(0.001f, 0.3f)] float intervalForCharacterDisplay = 0.05f;
+	[Range(0.001f, 0.3f)] readonly float intervalForCharacterDisplay = 0.05f;
 
 	private string currentText = string.Empty;
 	private float timeUntilDisplay = 0;

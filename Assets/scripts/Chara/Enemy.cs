@@ -126,6 +126,8 @@ public class Enemy : EnemyBase
         }
     }
 
+    /// <summary>ナビメッシュで動いている敵の移動の可否を決める</summary>
+    /// <param name="f"></param>
     private void AgentParamSet(bool f)
     {
         agent.speed = f ? enemySpeed / 4 : 0;
@@ -133,7 +135,7 @@ public class Enemy : EnemyBase
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
 
-    /// <summary>プレイヤーを発見した時の挙動</summary>
+    /// <summary>i移動するための挙動</summary>
     void EnemyMove()
     {
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
@@ -163,6 +165,8 @@ public class Enemy : EnemyBase
             EnemyActionSet(EnemyState.IDOL);
         }
     }
+    /// <summary>攻撃するための移動を行うか、巡回をするか決めて行うメソッド</summary>
+    /// <param name="appearanceFlag">trueなら攻撃移動。falseなら巡回</param>
     void EnemyMoveStatusSet(bool appearanceFlag)
     {
         if (appearanceFlag != true && patrolPos.Length == patrolNum) patrolNum = 0;
@@ -200,9 +204,9 @@ public class Enemy : EnemyBase
             if (appearanceFlag != true) patrolNum++;
         }
     }
+    /// <summary>移動出来なくなるする為のメソッド</summary>
     void EnemyMoveLimit()
     {
-        //移動制限バーの減少値
         float val = 1f;
         if (enemyMoveNowValue > 0)
         {
@@ -212,6 +216,7 @@ public class Enemy : EnemyBase
     }
 
     float time;
+    /// <summary>プレイヤーを攻撃するためのメソッド</summary>
     void PlayerAtack()
     {
         float result = Random.Range(0,100);

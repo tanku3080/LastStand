@@ -29,18 +29,6 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
         GameManager.Instance.ChengePop(false,targer);
     }
 
-    protected float PlayerGetMove(bool isPlayer = false)
-    {
-        Vector3 playerPos = Vector3.zero;
-        float spd = 0f;
-        if (isPlayer)
-        {
-            spd = ((transform.position - playerPos) / Time.deltaTime).magnitude;
-            playerPos = transform.position;
-        }
-        return spd;
-    }
-
     public void Damage(int damage)
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);

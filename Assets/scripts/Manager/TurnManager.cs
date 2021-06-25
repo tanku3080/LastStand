@@ -3,21 +3,13 @@ using UnityEngine.Playables;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
-using UnityEngine.SceneManagement;
 
 public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
 {
-    public enum JUDGE_STATUS
-    {
-        CLEAR,GAME_OVER,TITLE,RE_START
-    }
+    /// <summary>戦車のステータスを代入する時に使う</summary>
     public enum TANK_CHOICE
     {
         Tiger, Panzer2, Shaman, Stuart,
-    }
-    public enum SET_UI
-    {
-        TURN_START, EXIT
     }
     /// <summary>各陣営のTurnを判定</summary>
     public bool enemyTurn = false, playerTurn = false;
@@ -25,9 +17,10 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     public bool playerIsMove = false, enemyIsMove = false;
     /// <summary>全体の経過ターン数</summary>
     public int generalTurn = 1;
+    /// <summary>経過ターンの上限</summary>
     private readonly int maxTurn = 5;
-    [SerializeField, Header("味方操作キャラ")] public List<TankCon> players = null;
-    [SerializeField, Header("敵キャラ")] public List<Enemy> enemys = null;
+    [Header("味方操作キャラ")] public List<TankCon> players = null;
+    [Header("敵キャラ")] public List<Enemy> enemys = null;
     //現在の操作キャラ
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
@@ -43,13 +36,13 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
     /// <summary>プレイヤー陣営のBGM</summary>
-    [SerializeField] public GameObject playerBGM = null;
-    [SerializeField] public GameObject enemyBGM = null;
-    [SerializeField] public GameObject tankMove = null;
+    [SerializeField] GameObject playerBGM = null;
+    [SerializeField] GameObject enemyBGM = null;
+    [HideInInspector] public GameObject tankMove = null;
     [HideInInspector] public Text text1 = null;
     //アナウンス用
-    [SerializeField, HideInInspector] public Image announceImage = null;
-    [SerializeField, HideInInspector] public Text annouceText = null;
+    [HideInInspector] public Image announceImage = null;
+    [HideInInspector] public Text annouceText = null;
     [Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [Header("ターンエンドUI")] public GameObject endObj = null;
@@ -57,30 +50,21 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     [Header("アナウンスUI")] public GameObject announceObj = null;
     [Header("移動制限")] public GameObject limitedBar = null;
     [Header("特殊状態")] public GameObject specialObj = null;
-    [Header("キーボードUI")] public GameObject keyUI = null;
+    [Header("キーボードの画像")] public GameObject keyUI = null;
+    /// <summary>スペシャルアクションキーRが押されたときに表示するオブジェクト</summary>
     [HideInInspector] public GameObject hittingTargetR = null;
+    /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
     [HideInInspector] public GameObject turretCorrectionF = null;
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
-    public int PlayerMoveVal
-    {
-        get { return playerMoveValue; }
-        set
-        {
-            playerMoveValue = value;
-        }
-    }
+    public int PlayerMoveVal {get { return playerMoveValue; } set { playerMoveValue = value; }
+}
     private int enemyMoveValue = 4;
     /// <summary>敵の行動回数</summary>
-    public int EnemyMoveVal
-    {
-        get { return enemyMoveValue; }
-        set
-        {
-            enemyMoveValue = value;
-        }
-    }
+    public int EnemyMoveVal { get { return enemyMoveValue; } set { enemyMoveValue = value; } }
+    /// <summary>通常状態のカメラ</summary>
     public CinemachineVirtualCamera DefCon { get; set; }
+    /// <summary>エイム状態のカメラ</summary>
     public CinemachineVirtualCamera AimCon { get; set; }
     /// <summary>味方のキャラ数</summary>
     [HideInInspector] public int playerNum = 0;
@@ -99,7 +83,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>アップデート関数内で最初の敵ターンの時に使う変数</summary>
     bool enemyFirstColl = true;
     /// <summary>敵を発見したらtrue</summary>
-    public bool FoundEnemy = false;
+    [HideInInspector] public bool FoundEnemy = false;
     /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
     [HideInInspector] public List<GameObject> enemyDiscovery = new List<GameObject>();
     void Start()
@@ -265,6 +249,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         }
 
     }
+    /// <summary>最初のターンに使うフラグ</summary>
     bool turnFirstNumFlag = true;
     /// <summary>ゲームシーンで毎フレーム呼ばれるメソッド</summary>
     void TurnManag()
@@ -451,7 +436,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         {
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
             playerNum++;
-            if (playerNum == players.Count) Invoke("DelayGameOver", 2f);
+            if (playerNum == players.Count) Invoke(nameof(DelayGameOver), 2f);
             else
             {
                 players.Remove(thisObj.GetComponent<TankCon>());
@@ -462,8 +447,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         {
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
             enemyNum++;
-            Debug.Log("残りの敵" + enemys.Count);
-            if (0 >= enemys.Count) Invoke("DelayGameClear", 2f);
+            if (0 >= enemys.Count) Invoke(nameof(DelayGameClear), 2f);
             else
             {
                 enemys.Remove(thisObj.GetComponent<Enemy>());
@@ -609,7 +593,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(true,announceObj);
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
         annouceText.text = n;
-        Invoke("AnnounceStartInvoke", 3f);
+        Invoke(nameof(AnnounceStartInvoke), 3f);
     }
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
     private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceObj);

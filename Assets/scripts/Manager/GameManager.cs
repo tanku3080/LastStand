@@ -30,7 +30,6 @@ public class GameManager : Singleton<GameManager>
     {
         DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
-        source.playOnAwake = false;
     }
     // Update is called once per frame
     void Update()

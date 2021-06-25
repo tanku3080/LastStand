@@ -1,5 +1,4 @@
-# BattleOfValkyria
-戦場のヴァルキュリアにあるをプラスレズビアン  
+# LastStand説明書  
   
 ## 操作方法  
   

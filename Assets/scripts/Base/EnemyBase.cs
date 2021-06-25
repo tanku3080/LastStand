@@ -22,13 +22,13 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;
-    public MeshRenderer Renderer { get; protected set; } = null;
+    public GameObject EnemyObj { get; protected set; } = null;
     private Slider slider;
 
-    protected void EnemyDie(MeshRenderer mesh)
+    protected void EnemyDie(GameObject target)
     {
-        Trans.position = Vector3.one * (Random.Range(1000, 2000));
-        mesh.enabled = false;
+        TurnManager.Instance.CharactorDie(target);
+        GameManager.Instance.ChengePop(false,target);
     }
 
     public void Damage(int damager)
@@ -38,7 +38,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
         if (enemyLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
-            EnemyDie(Renderer);
+            EnemyDie(EnemyObj);
         }
         else
         {

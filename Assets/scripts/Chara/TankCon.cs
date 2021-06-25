@@ -44,7 +44,7 @@ public class TankCon : PlayerBase
     {
         Rd = GetComponent<Rigidbody>();
         Trans = GetComponent<Transform>();
-        Renderer = GetComponent<MeshRenderer>();
+        PlayerObj = gameObject;
         tankHead = Trans.GetChild(1);
         tankGun = tankHead.GetChild(0);
         tankGunFire = tankGun.GetChild(0).gameObject;
@@ -391,7 +391,7 @@ public class TankCon : PlayerBase
         }
     }
 
-
+    /// <summary>地面についているかの判定</summary>
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Grand"))
@@ -402,7 +402,7 @@ public class TankCon : PlayerBase
     //敵がコライダーと接触したら使う
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true)
+        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true && TurnManager.Instance.playerTurn)
         {
             TurnManager.Instance.FoundEnemy = true;
             if (other.gameObject.GetComponent<Enemy>().enemyAppearance != true && !TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
@@ -416,13 +416,13 @@ public class TankCon : PlayerBase
     //敵がコライダーから離れたら使う
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
+        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject) && TurnManager.Instance.playerTurn)
         {
             TurnManager.Instance.enemyDiscovery.Remove(other.gameObject);
             TurnManager.Instance.FoundEnemy = false;
         }
     }
-    //接地判定に使う物
+    /// <summary>地面から離れているかの判定</summary>
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Grand"))

@@ -42,16 +42,6 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    /// <summary>ゲームクリア時に呼び出す</summary>
-    public void EndStage()
-    {
-        TurnManager.Instance.players.Clear();
-        TurnManager.Instance.enemys.Clear();
-        TurnManager.Instance.generalTurn = 0;
-        isGameClear = true;
-        SceneFadeManager.Instance.SceneOutAndChangeSystem();
-    }
-
     ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
     public void Restart()//現状未実装
     {

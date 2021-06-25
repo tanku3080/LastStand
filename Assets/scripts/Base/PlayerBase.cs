@@ -17,16 +17,16 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;
 
-    public MeshRenderer Renderer { get; protected set; } = null;
+    public GameObject PlayerObj { get; protected set; } = null;
 
     public bool IsGranded { get; protected set; } = false;
      
 
     ///<summary>playerの死亡時に呼び出す</summary>
-    protected void PlayerDie(MeshRenderer mesh)
+    protected void PlayerDie(GameObject targer)
     {
-        Trans.position = Vector3.one * (Random.Range(1000,2000));
-        mesh.enabled = false;
+        TurnManager.Instance.CharactorDie(targer);
+        GameManager.Instance.ChengePop(false,targer);
     }
 
     protected float PlayerGetMove(bool isPlayer = false)
@@ -48,8 +48,11 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
         if (playerLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
-            PlayerDie(Renderer);
+            PlayerDie(PlayerObj);
         }
-        gameObject.GetComponent<TankCon>().tankHpBar.value -= damage;
+        else
+        {
+            gameObject.GetComponent<TankCon>().tankHpBar.value = damage;
+        }
     }
 }

@@ -30,7 +30,7 @@ public class Enemy : EnemyBase
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
-        Renderer = gameObject.GetComponent<MeshRenderer>();
+        EnemyObj = gameObject;
         Anime = gameObject.GetComponent<Animator>();
         Trans = gameObject.GetComponent<Transform>();
         tankHead = Trans.GetChild(1);
@@ -79,26 +79,27 @@ public class Enemy : EnemyBase
             enemyMoveNowValue = ETankLimitRange;
         }
         Rd.isKinematic = false;
-        WaitTimer(timerFalg);
         switch (state)//idolを全ての終着点に
         {
             case EnemyState.IDOL:
 
                 timerFalg = true;
+                WaitTimer(timerFalg);
                 if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0)
                 {
                     oneUseFlag = false;
-                    Debug.Log($"移動終了{gameObject.name}");
                     agent.ResetPath();
                     nowCounter = 0;
                     parameterSetFlag = true;
                     TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
                 }
 
-                if (TurnManager.Instance.EnemyMoveVal > 0)
+                if (TurnManager.Instance.EnemyMoveVal > 0 && enemyMoveNowValue > 0)
                 {
-                    Debug.Log($"attackかMoveか{eAtackCount + nowCounter}");
-                    if (isPlayer && eAtackCount > nowCounter) EnemyActionSet(EnemyState.ATACK);
+                    if (isPlayer && eAtackCount > nowCounter)
+                    {
+                        EnemyActionSet(EnemyState.ATACK);
+                    }
                     else EnemyActionSet(EnemyState.MOVE);
                 }
                 break;
@@ -132,15 +133,11 @@ public class Enemy : EnemyBase
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
 
+    /// <summary>プレイヤーを発見した時の挙動</summary>
     void EnemyMove()
     {
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
         {
-            //if (TurnManager.Instance.FoundEnemy)
-            //{
-            //    playerFind = true;
-            //    EnemyActionSet(EnemyState.ATACK);
-            //}
             if (playerFind)
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
@@ -158,30 +155,6 @@ public class Enemy : EnemyBase
             }
             else
             {
-                //if (patrolPos.Length == patrolNum) patrolNum = 0;
-                //Vector3 pointDir = patrolPos[patrolNum].transform.position - Trans.position;
-                //Quaternion rotetion = Quaternion.LookRotation(pointDir);
-                //Trans.rotation = Quaternion.RotateTowards(Trans.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                //float angle = Vector3.Angle(pointDir, Trans.forward);
-                //float a = Vector3.Distance(patrolPos[patrolNum].transform.position, Trans.position);
-                //if (angle < 3)
-                //{
-                //    if (agentSetUpFlag)
-                //    {
-                //        agentSetUpFlag = false;
-                //        enemyMove = true;
-                //        AgentParamSet(enemyMove);
-                //    }
-                //    agent.SetDestination(patrolPos[patrolNum].transform.position);
-                //    agent.nextPosition = Trans.position;
-                //}
-                //else if (angle != 3 && a < 10)
-                //{
-                //    agentSetUpFlag = true;
-                //    enemyMove = false;
-                //    AgentParamSet(enemyMove);
-                //    patrolNum++;
-                //}
                 EnemyMoveStatusSet(enemyAppearance);
             }
         }
@@ -192,12 +165,14 @@ public class Enemy : EnemyBase
     }
     void EnemyMoveStatusSet(bool appearanceFlag)
     {
-        if (appearanceFlag && patrolPos.Length == patrolNum) patrolNum = 0;
-        Vector3 pointDir = (appearanceFlag ? patrolPos[patrolNum].transform.position : NearPlayer().transform.position) - Trans.position;
+        if (appearanceFlag != true && patrolPos.Length == patrolNum) patrolNum = 0;
+        Vector3 pointDir = (appearanceFlag ? NearPlayer().transform.position : patrolPos[patrolNum].transform.position) - Trans.position;
         Quaternion rotetion = Quaternion.LookRotation(pointDir);
         Trans.rotation = Quaternion.RotateTowards(Trans.rotation,rotetion,ETankTurn_Speed * Time.deltaTime);
         float angle = Vector3.Angle(pointDir,Trans.forward);
-        float dis = Vector3.Distance((appearanceFlag?patrolPos[patrolNum].transform.position:NearPlayer().transform.position),Trans.position);
+        float dis = Vector3.Distance(appearanceFlag? NearPlayer().transform.position : patrolPos[patrolNum].transform.position,Trans.position);
+        Debug.Log("distance = " + dis);
+        Debug.Log("angle = " + angle);
         if (angle < 3)
         {
             if (agentSetUpFlag)
@@ -206,8 +181,15 @@ public class Enemy : EnemyBase
                 enemyMove = true;
                 AgentParamSet(enemyMove);
             }
-            agent.SetDestination((appearanceFlag ? patrolPos[patrolNum].transform.position : Trans.position));
+            agent.SetDestination(appearanceFlag ? NearPlayer().transform.position : patrolPos[patrolNum].transform.position);
             agent.nextPosition = Trans.position;
+            if (appearanceFlag)
+            {
+                playerFind = true;
+                enemyMove = false;
+                AgentParamSet(enemyMove);
+                EnemyActionSet(EnemyState.IDOL);
+            }
         }
         else if (angle != 3 && dis < 10)
         {
@@ -215,7 +197,7 @@ public class Enemy : EnemyBase
             agentSetUpFlag = true;
             enemyMove = false;
             AgentParamSet(enemyMove);
-            if (appearanceFlag) patrolNum++;
+            if (appearanceFlag != true) patrolNum++;
         }
     }
     void EnemyMoveLimit()
@@ -234,10 +216,10 @@ public class Enemy : EnemyBase
     {
         float result = Random.Range(0,100);
         time += Time.deltaTime;
-        if (time > 1.5f)
+        if (time > 5f)
         {
             time = 0f;
-            Debug.Log("入った");
+            Debug.Log("入った" + result);
             if (result < 10)//クリティカル
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
@@ -252,11 +234,12 @@ public class Enemy : EnemyBase
             {
                 Debug.Log($"{gameObject.name}が外した");
             }
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
+            ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform, ParticleSystemEXP.ParticleStatus.GUN_FIRE);
+            nowCounter++;
+            EnemyActionSet(EnemyState.IDOL);//
         }
-        GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
-        ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform,ParticleSystemEXP.ParticleStatus.GUN_FIRE);
-        nowCounter++;
-        EnemyActionSet(EnemyState.IDOL);
+        return;
     }
 
     bool oneFlag = true;

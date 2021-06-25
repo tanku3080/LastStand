@@ -449,19 +449,25 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     {
         if (thisObj.CompareTag("Player"))
         {
-            players.Remove(thisObj.GetComponent<TankCon>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
             playerNum++;
             if (playerNum == players.Count) Invoke("DelayGameOver", 2f);
+            else
+            {
+                players.Remove(thisObj.GetComponent<TankCon>());
+                VcamChenge();
+            }
         }
         if (thisObj.CompareTag("Enemy"))
         {
-            Debug.Log("死亡");
-            enemys.Remove(thisObj.GetComponent<Enemy>());
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
             enemyNum++;
             Debug.Log("残りの敵" + enemys.Count);
             if (0 >= enemys.Count) Invoke("DelayGameClear", 2f);
+            else
+            {
+                enemys.Remove(thisObj.GetComponent<Enemy>());
+            }
         }
     }
     /// <summary>GameClear時に呼び出される。Invokeを使う為のメソッド</summary>
@@ -510,8 +516,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>初回以外のバーチャルカメラを切り替える</summary>
     private void VcamChenge()
     {
-        GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
         GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
+        GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
         DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
         AimCon = nowPayer.GetComponent<TankCon>().aimCom;
     }

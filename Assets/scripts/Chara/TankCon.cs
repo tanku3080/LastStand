@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 public class TankCon : PlayerBase
@@ -16,8 +15,8 @@ public class TankCon : PlayerBase
     [SerializeField] public CinemachineVirtualCamera defaultCon;
     [SerializeField] public CinemachineVirtualCamera aimCom;
 
-    //エイム状態かどうかを判定する
-    bool AimFlag = false;
+    /// <summary>エイム状態かどうかを判定する</summary>
+    public bool aimFlag = false;
     //移動キー。HはCompassと連動するためpublicにした
     private float moveV;
     [HideInInspector] public float moveH;
@@ -35,7 +34,7 @@ public class TankCon : PlayerBase
     [HideInInspector] public Slider moveLimitRangeBar;
     //HP
     [HideInInspector] public Slider tankHpBar;
-    //攻撃に必要なレイキャストの変数
+    //攻撃に必要なレイキャスト
     RaycastHit hit;
     //移動音を鳴らすために使う
     bool isMoveBGM = true;
@@ -57,7 +56,6 @@ public class TankCon : PlayerBase
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
         borderLine = tankHead.GetComponent<BoxCollider>();
         borderLine.isTrigger = true;
-        limitCounter = 0;
     }
 
     // Update is called once per frame
@@ -87,7 +85,7 @@ public class TankCon : PlayerBase
                 bool keySet = false;
                 if (Input.GetKey(KeyCode.J)) keySet = true;
                 else if (Input.GetKey(KeyCode.L)) keySet = false;
-                rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (AimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
                 tankHead.rotation *= rotetion;
                 if (isMoveBGM)
                 {
@@ -155,10 +153,10 @@ public class TankCon : PlayerBase
             if (Input.GetButtonUp("Fire2"))
             {
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
-                if (AimFlag) AimFlag = false;
-                else AimFlag = true;
+                if (aimFlag) aimFlag = false;
+                else aimFlag = true;
             }
-            AimMove(AimFlag);
+            AimMove(aimFlag);
         }
         else
         {
@@ -182,7 +180,6 @@ public class TankCon : PlayerBase
 
         if (move && tankSFXFalg)
         {
-            Debug.Log($"moveは{move}でtankSFXFalgは{tankSFXFalg}");
             tankSFXFalg = false;
             if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)
             {
@@ -197,13 +194,11 @@ public class TankCon : PlayerBase
                         t.clip = GameManager.Instance.tankHeadsfx;
                         break;
                 }
-                Debug.Log(t.clip.name);
                 t.Play();
             }
         }
         else
         {
-            Debug.Log($"離れたmoveは{move}でtankSFXFalgは{tankSFXFalg}");
             tankSFXFalg = true;
             t.clip = null;
             t.Stop();
@@ -214,7 +209,7 @@ public class TankCon : PlayerBase
     /// <summary>
     /// aimFlagがtrueならtrue
     /// </summary>
-    void AimMove(bool aim)
+    public void AimMove(bool aim)
     {
         if (aim)
         {

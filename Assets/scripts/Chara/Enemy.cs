@@ -224,7 +224,6 @@ public class Enemy : EnemyBase
         if (time > 5f)
         {
             time = 0f;
-            Debug.Log("入った" + result);
             if (result < 10)//クリティカル
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);

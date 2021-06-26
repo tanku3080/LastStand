@@ -80,7 +80,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     bool timeLlineF = true;
     bool eventF = true;
 
-    /// <summary>アップデート関数内で最初の敵ターンの時に使う変数</summary>
+    /// <summary>アップデート関数内で敵ターンの最初に使うフラグ</summary>
     bool enemyFirstColl = true;
     /// <summary>敵を発見したらtrue</summary>
     [HideInInspector] public bool FoundEnemy = false;
@@ -276,6 +276,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 players.Add(item);
                 TankChoiceStart(item.name);
                 item.playerLife = charactorHp;
+                item.nowHp = charactorHp;
                 item.playerSpeed = charactorSpeed;
                 item.tankHead_R_SPD = tankHeadSpeed;
                 item.tankTurn_Speed = tankTurnSpeed;
@@ -370,6 +371,12 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         {
             if (moveV > 0)
             {
+                //もしエイム中にキャラ切り替えを行ったらエイムを解除する
+                if (nowPayer.GetComponent<TankCon>().aimFlag)
+                {
+                    nowPayer.GetComponent<TankCon>().aimFlag = false;
+                    nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
+                }
                 if (playerNum >= players.Count)
                 {
                     GameManager.Instance.ChengePop(true,endObj);
@@ -381,6 +388,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
+            HPbarMovebarset();
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
@@ -388,6 +396,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer = players[playerNum].gameObject;
             nowPayer.GetComponent<TankCon>().controlAccess = true;
+            hpBar.transform.GetChild(0).GetComponent<Slider>().maxValue = nowPayer.GetComponent<TankCon>().playerLife;
             tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
             VcamChenge();
 
@@ -426,6 +435,16 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         }
         PlayMusic();
 
+    }
+    /// <summary>キャラが切り替わった際にHPbarとMovebaを切り替えるr</summary>
+    void HPbarMovebarset()
+    {
+        foreach (var item in players)
+        {
+            item.GetComponent<TankCon>().moveLimitRangeBar.value = item.GetComponent<TankCon>().moveLimitRangeBar.maxValue;
+            item.GetComponent<TankCon>().tankHpBar.value = item.GetComponent<TankCon>().nowHp;
+            Debug.Log($"移動バーの値{item.GetComponent<TankCon>().tankHpBar.value}と最大値{item.GetComponent<TankCon>().tankHpBar.maxValue}");
+        }
     }
     /// <summary>
     /// 死んだ場合の処理
@@ -494,8 +513,8 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()
     {
+        clickC = !clickC;
         GameManager.Instance.ChengePop(false, tankChengeObj);
-        clickC = true;
     }
     /// <summary>初回以外のバーチャルカメラを切り替える</summary>
     private void VcamChenge()
@@ -518,6 +537,12 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         //プレイヤーが呼んだ場合の処理
         if (playerTurn)
         {
+            //エイム中ならエイムを解除
+            if (nowPayer.GetComponent<TankCon>().aimFlag)
+            {
+                nowPayer.GetComponent<TankCon>().aimFlag = false;
+                nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
+            }
             GameManager.Instance.ChengePop(false,tankChengeObj);
             GameManager.Instance.ChengePop(false,radarObj);
             GameManager.Instance.ChengePop(false,pauseObj);
@@ -527,7 +552,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             GameManager.Instance.ChengePop(false,turretCorrectionF);
             GameManager.Instance.ChengePop(false,announceObj);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
-
             playerTurn = false;
             enemyTurn = true;
             timeLlineF = true;
@@ -539,35 +563,38 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         //敵が呼んだ場合の処理
         if (enemyTurn)
         {
-            Debug.Log("全ての陣営が終了");
             if (maxTurn == generalTurn)
             {
                 SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_OVER);
             }
-            generalTurn++;
-            enemyTurn = false;
-            playerTurn = true;
-            timeLlineF = true;
-            playerNum = 0;
-            enemyNum = 0;
-            nowEnemy.GetComponent<Enemy>().controlAccess = false;
-            nowPayer.GetComponent<TankCon>().controlAccess = false;
-            nowPayer = players[playerNum].gameObject;
-            nowEnemy = enemys[enemyNum].gameObject;
-            tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
-            GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
-            VcamChenge();
-            nowPayer.GetComponent<TankCon>().controlAccess = true;
-            return;
+            else
+            {
+                HPbarMovebarset();
+                generalTurn++;
+                enemyTurn = false;
+                playerTurn = true;
+                timeLlineF = true;
+                playerNum = 0;
+                enemyNum = 0;
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
+                nowPayer.GetComponent<TankCon>().controlAccess = false;
+                nowPayer = players[playerNum].gameObject;
+                nowEnemy = enemys[enemyNum].gameObject;
+                tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
+                GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
+                VcamChenge();
+                nowPayer.GetComponent<TankCon>().controlAccess = true;
+                return;
+            }
         }
     }
     ///<summary>表示されているUIを非表示にするメソッド</summary>
     public void Back()
     {
+        clickC = true;
         GameManager.Instance.ChengePop(false,tankChengeObj);
         GameManager.Instance.ChengePop(false,endObj);
         GameManager.Instance.ChengePop(false,pauseObj);
-        clickC = true;
     }
 
     /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
@@ -634,7 +661,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>
     /// 戦車を選択
     /// </summary>
-    /// <param name="tank">選択する戦車の名前</param>
+    /// <param name="num">選択する戦車の名前</param>
     public void TankChoiceStart(string num)
     {
         TANK_CHOICE tank = TANK_CHOICE.Tiger;

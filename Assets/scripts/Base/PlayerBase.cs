@@ -9,6 +9,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public float tankLimitRange;
     public int tankDamage;
     public int atackCount;
+    [HideInInspector] public int nowHp;
     /// <summary>敵を発見する事の出来る範囲</summary>
     public BoxCollider borderLine = null;
 
@@ -32,7 +33,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     public void Damage(int damage)
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);
-        playerLife -= damage;
+        nowHp -= damage;
         if (playerLife <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
@@ -40,7 +41,7 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
         }
         else
         {
-            gameObject.GetComponent<TankCon>().tankHpBar.value = damage;
+            gameObject.GetComponent<TankCon>().tankHpBar.value -= gameObject.GetComponent<TankCon>().nowHp;
         }
     }
 }

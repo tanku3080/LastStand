@@ -172,6 +172,7 @@ public class TankCon : PlayerBase
     {
         MOVE,HEAD_MOVE,NONE
     }
+    bool tankSFXFalg = true;
     /// <summary>移動に関する音を鳴らす</summary>
     /// <param name="move">tureならアクティブ化</param>
     /// <param name="type">鳴らす音の種類</param>
@@ -179,30 +180,34 @@ public class TankCon : PlayerBase
     {
         var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
 
-        if (move)
+        if (move && tankSFXFalg)
         {
+            Debug.Log($"moveは{move}でtankSFXFalgは{tankSFXFalg}");
+            tankSFXFalg = false;
             if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)
             {
                 switch (type)
                 {
                     case BGMType.MOVE:
+                        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
                         t.clip = GameManager.Instance.tankMoveSfx;
                         break;
                     case BGMType.HEAD_MOVE:
+                        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
                         t.clip = GameManager.Instance.tankHeadsfx;
                         break;
                 }
-                GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
+                Debug.Log(t.clip.name);
                 t.Play();
             }
-            move = false;
         }
         else
         {
+            Debug.Log($"離れたmoveは{move}でtankSFXFalgは{tankSFXFalg}");
+            tankSFXFalg = true;
             t.clip = null;
             t.Stop();
             GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
-            move = true;
         }
     }
     private int limitCounter = 0;

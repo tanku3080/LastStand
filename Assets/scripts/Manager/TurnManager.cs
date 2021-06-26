@@ -569,6 +569,12 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         GameManager.Instance.ChengePop(false,pauseObj);
         clickC = true;
     }
+
+    /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
+    public void GameQuit()
+    {
+        Application.Quit();
+    }
     /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)
     {

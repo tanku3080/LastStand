@@ -388,15 +388,15 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
-            HPbarMovebarset();
+            //HPbarMovebarset();
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
             GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer = players[playerNum].gameObject;
+            HPbarMovebarset();
             nowPayer.GetComponent<TankCon>().controlAccess = true;
-            hpBar.transform.GetChild(0).GetComponent<Slider>().maxValue = nowPayer.GetComponent<TankCon>().playerLife;
             tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
             VcamChenge();
 
@@ -436,14 +436,24 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         PlayMusic();
 
     }
-    /// <summary>キャラが切り替わった際にHPbarとMovebaを切り替えるr</summary>
+    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替えるr</summary>
     void HPbarMovebarset()
     {
         foreach (var item in players)
         {
             item.GetComponent<TankCon>().moveLimitRangeBar.value = item.GetComponent<TankCon>().moveLimitRangeBar.maxValue;
-            item.GetComponent<TankCon>().tankHpBar.value = item.GetComponent<TankCon>().nowHp;
-            Debug.Log($"移動バーの値{item.GetComponent<TankCon>().tankHpBar.value}と最大値{item.GetComponent<TankCon>().tankHpBar.maxValue}");
+        }
+        if (playerTurn)
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].gameObject == nowPayer)
+                {
+                    hpBar.transform.GetChild(0).GetComponent<Slider>().maxValue = nowPayer.GetComponent<TankCon>().playerLife;
+                    hpBar.transform.GetChild(0).GetComponent<Slider>().value = nowPayer.GetComponent<TankCon>().nowHp;
+                    break;
+                }
+            }
         }
     }
     /// <summary>
@@ -582,7 +592,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 nowEnemy = enemys[enemyNum].gameObject;
                 tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
-                VcamChenge();
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
                 return;
             }

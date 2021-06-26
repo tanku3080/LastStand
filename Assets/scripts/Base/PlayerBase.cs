@@ -34,14 +34,10 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);
         nowHp -= damage;
-        if (playerLife <= 0)
+        if (nowHp <= gameObject.GetComponent<TankCon>().tankHpBar.minValue)
         {
             TurnManager.Instance.CharactorDie(gameObject);
             PlayerDie(PlayerObj);
-        }
-        else
-        {
-            gameObject.GetComponent<TankCon>().tankHpBar.value -= gameObject.GetComponent<TankCon>().nowHp;
         }
     }
 }

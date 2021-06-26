@@ -227,12 +227,12 @@ public class Enemy : EnemyBase
             if (result < 10)//クリティカル
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
-                Debug.Log($"{gameObject.name}がプレイヤーに大ダメージ");
+                Debug.Log($"{gameObject.name}が{NearPlayer().name}に大ダメージ");
             }
             else if (result < 50)//成功
             {
                 NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
-                Debug.Log($"{gameObject.name}がプレイヤーにダメージ");
+                Debug.Log($"{gameObject.name}が{NearPlayer().name}にダメージ");
             }
             if (result > 50)
             {

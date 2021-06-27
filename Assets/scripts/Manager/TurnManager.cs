@@ -594,6 +594,7 @@ public class TurnManager : Singleton<TurnManager>
                 nowEnemy = enemys[enemyNum].gameObject;
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
+                dontShoot = false;
                 return;
             }
         }
@@ -601,7 +602,6 @@ public class TurnManager : Singleton<TurnManager>
     ///<summary>表示されているUIを非表示にする</summary>
     public void Back()
     {
-        dontShoot = false;
         clickC = !clickC;
         dontShoot = false;
         playerIsMove = clickC;

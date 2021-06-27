@@ -71,7 +71,6 @@ public class TankCon : PlayerBase
         if (controlAccess && TurnManager.Instance.timeLineEndFlag)
         {
             Rd.isKinematic = false;
-
             if (limitRangeFlag)
             {
                 limitRangeFlag = false;
@@ -152,7 +151,7 @@ public class TankCon : PlayerBase
                     }
                     else
                     {
-                        if (isTankMove)
+                        if (isTankMove && Rd.IsSleeping())
                         {
                             isTankMove = false;
                             isMoveBGM = true;
@@ -228,7 +227,6 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
             if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
             {
-                Debug.Log("エイム攻撃dontShoot:" + TurnManager.Instance.dontShoot);
                 if (atackCount > limitCounter)
                 {
                     limitCounter++;
@@ -355,7 +353,7 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
-                if (RayStart(tankGun.transform.position))
+                if (RayStart(tankGunFire.transform.position))
                 {
                     hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 }
@@ -363,7 +361,7 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit == false && turretCorrection)//砲塔が向いているだけの場合
             {
-                if (RayStart(tankGun.transform.position))
+                if (RayStart(tankGunFire.transform.position))
                 {
                     if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                     else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
@@ -373,7 +371,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            if (RayStart(tankGun.transform.position))
+            if (RayStart(tankGunFire.transform.position))
             {
                 if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
@@ -403,11 +401,10 @@ public class TankCon : PlayerBase
     bool RayStart(Vector3 atackPoint, string num = "Enemy")
     {
         bool f = false;
-        if (Physics.Raycast(atackPoint, transform.forward, out hit, tankLimitRange))
+        if (Physics.Raycast(atackPoint, tankGunFire.transform.forward, out hit,Mathf.Infinity))
         {
             if (hit.collider.CompareTag(num))
             {
-                Debug.Log("当たった");
                 f = true;
             }
         }

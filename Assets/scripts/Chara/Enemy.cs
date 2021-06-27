@@ -273,11 +273,10 @@ public class Enemy : EnemyBase
     bool RayStart(Vector3 atackPoint, string num = "Player")
     {
         bool f = false;
-        if (Physics.Raycast(atackPoint, transform.forward, out hit, ETankLimitRange))
+        if (Physics.Raycast(atackPoint, tankGunFire.transform.forward, out hit,Mathf.Infinity))
         {
             if (hit.collider.CompareTag(num))
             {
-                Debug.Log("当たった");
                 f = true;
             }
         }

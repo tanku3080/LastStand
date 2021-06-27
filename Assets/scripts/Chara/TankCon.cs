@@ -248,7 +248,6 @@ public class TankCon : PlayerBase
                 {
                     TurnManager.Instance.playerIsMove = false;
                 }
-                else TurnManager.Instance.playerIsMove = true;
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
                     if (turretCorrection != false)
@@ -385,6 +384,7 @@ public class TankCon : PlayerBase
         GameManager.Instance.ChengePop(true,tankGunFire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
+        TurnManager.Instance.playerIsMove = true;
     }
 
     /// <summary>クリティカルヒットかどうか判定する</summary>

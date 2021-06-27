@@ -41,6 +41,10 @@ public class TankCon : PlayerBase
     RaycastHit hit;
     //移動音を鳴らすために使う
     bool isMoveBGM = true;
+    //プレイヤーの車体前後に動いているならTrue
+    bool isTankMove = false;
+    /// <summary>プレイヤーの車体が曲がっているとTrue</summary>
+    bool isTankRot = false;
 
     void Start()
     {
@@ -99,13 +103,10 @@ public class TankCon : PlayerBase
                     }
                 }
             }
-            else
+            if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L))//砲塔旋回を辞めたら止まる
             {
-                if (isMoveBGM == false)
-                {
-                    isMoveBGM = true;
-                    TankMoveSFXPlay(false);
-                }
+                isMoveBGM = true;
+                TankMoveSFXPlay(false,BGMType.HEAD_MOVE);
             }
 
             if (IsGranded)
@@ -116,10 +117,11 @@ public class TankCon : PlayerBase
                     moveH = Input.GetAxis("Horizontal");
                     if (moveH != 0)
                     {
+                        isTankRot = true;
                         if (isMoveBGM)
                         {
                             isMoveBGM = false;
-                            TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                            TankMoveSFXPlay(true, BGMType.MOVE);
                         }
                         float rot = moveH * tankTurn_Speed * Time.deltaTime;
                         Quaternion rotetion = Quaternion.Euler(0, rot, 0);
@@ -128,17 +130,20 @@ public class TankCon : PlayerBase
                     }
                     else
                     {
-                        if (isMoveBGM == false)
+                        if (isTankRot)
                         {
+                            isTankRot = false;
                             isMoveBGM = true;
-                            TankMoveSFXPlay(false);
+                            TankMoveSFXPlay(false,BGMType.MOVE);
                         }
                     }
                     //前進後退
                     if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
+                        isTankMove = true;
                         if (isMoveBGM)
                         {
+                            Debug.Log("まえすすむ");
                             isMoveBGM = false;
                             TankMoveSFXPlay(true, BGMType.MOVE);
                         }
@@ -148,10 +153,12 @@ public class TankCon : PlayerBase
                     }
                     else
                     {
-                        if (isMoveBGM == false)
+                        if (isTankMove)
                         {
+                            Debug.Log("とまる");
+                            isTankMove = false;
                             isMoveBGM = true;
-                            TankMoveSFXPlay(false);
+                            TankMoveSFXPlay(false,BGMType.MOVE);
                         }
                     }
                 }
@@ -179,17 +186,16 @@ public class TankCon : PlayerBase
     {
         MOVE,HEAD_MOVE,NONE
     }
-    bool tankSFXFalg = true;
+
     /// <summary>移動に関する音を鳴らす</summary>
     /// <param name="move">tureならアクティブ化</param>
     /// <param name="type">鳴らす音の種類</param>
     void TankMoveSFXPlay(bool move,BGMType type = BGMType.NONE)
     {
         var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
-
-        if (move && tankSFXFalg)
+        Debug.Log($"メソッド内{move}");
+        if (move)
         {
-            tankSFXFalg = false;
             if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)
             {
                 switch (type)
@@ -208,7 +214,6 @@ public class TankCon : PlayerBase
         }
         else
         {
-            tankSFXFalg = true;
             t.clip = null;
             t.Stop();
             GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);

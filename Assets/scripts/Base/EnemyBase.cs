@@ -23,7 +23,8 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public Animator Anime { get; protected set; } = null;
     public Transform Trans { get; protected set; } = null;
     public GameObject EnemyObj { get; protected set; } = null;
-    private Slider slider;
+    protected Slider slider;
+    [HideInInspector] public int enemyNowHp;
 
     protected void EnemyDie(GameObject target)
     {
@@ -34,8 +35,8 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public void Damage(int damager)
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);
-        enemyLife -= damager;
-        if (enemyLife <= 0)
+        enemyNowHp -= damager;
+        if (enemyNowHp <= 0)
         {
             TurnManager.Instance.CharactorDie(gameObject);
             EnemyDie(EnemyObj);
@@ -43,10 +44,9 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
         else
         {
             GameManager.Instance.ChengePop(true, TurnManager.Instance.enemyrHpBar);
-            slider = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<Slider>();
             slider.minValue = 0;
             slider.maxValue = enemyLife;
-            slider.value = TurnManager.Instance.tankDamage;
+            slider.value = enemyNowHp;
             TurnManager.Instance.enemyrHpBar.transform.position = hpBarpos.position;
             TurnManager.Instance.enemyrHpBar.transform.LookAt(TurnManager.Instance.AimCon.transform);
             Invoke(nameof(Stop), 1.5f);

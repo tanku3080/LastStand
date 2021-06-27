@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 
-public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
+public class TurnManager : Singleton<TurnManager>
 {
     /// <summary>戦車のステータスを代入する時に使う</summary>
     public enum TANK_CHOICE
@@ -291,6 +291,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 enemys.Add(enemy);
                 TankChoiceStart(enemy.name);
                 enemy.enemyLife = charactorHp;
+                enemy.enemyNowHp = charactorHp;
                 enemy.enemySpeed = charactorSpeed;
                 enemy.ETankHead_R_SPD = tankHeadSpeed;
                 enemy.ETankTurn_Speed = tankTurnSpeed;
@@ -387,7 +388,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
-            //HPbarMovebarset();
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
@@ -409,6 +409,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             {
                 enemyFirstColl = false;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
+                enemyIsMove = true;
             }
             if (moveV > 0)
             {

@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 public class Enemy : EnemyBase
 {
+    /// <summary>敵の移動ステート</summary>
     enum EnemyState
     {
         IDOL,MOVE,ATACK
@@ -17,6 +19,7 @@ public class Enemy : EnemyBase
     bool playerFind = false;
     /// <summary>敵の巡回ポイントオブジェクト</summary>
     [SerializeField] GameObject[] patrolPos;
+    /// <summary>巡回ポイントの要素数</summary>
     int patrolNum = 0;
     /// <summary>敵に操作権があるかどうか</summary>
     public bool controlAccess = false;
@@ -25,11 +28,11 @@ public class Enemy : EnemyBase
     /// <summary>アクション回数</summary>
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
-    private bool enemyMove = false;
+    [HideInInspector] public bool enemyMove = false;
 
     /// <summary>レイキャストが通っているかを判定</summary>
     bool raycastLine = false;
-
+    /// <summary>移動場所を更新する時に使う</summary>
     bool agentSetUpFlag = true;
     /// <summary>最初にEnemyActionSetが呼ばれたら使う</summary>
     [HideInInspector] public bool parameterSetFlag = false;
@@ -50,7 +53,7 @@ public class Enemy : EnemyBase
         agent = GetComponent<NavMeshAgent>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
-
+        slider = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<Slider>();
         agent.autoBraking = true;
         enemyMove = false;
         AgentParamSet(enemyMove);

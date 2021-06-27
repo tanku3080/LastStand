@@ -143,7 +143,6 @@ public class TankCon : PlayerBase
                         isTankMove = true;
                         if (isMoveBGM)
                         {
-                            Debug.Log("まえすすむ");
                             isMoveBGM = false;
                             TankMoveSFXPlay(true, BGMType.MOVE);
                         }
@@ -155,7 +154,6 @@ public class TankCon : PlayerBase
                     {
                         if (isTankMove)
                         {
-                            Debug.Log("とまる");
                             isTankMove = false;
                             isMoveBGM = true;
                             TankMoveSFXPlay(false,BGMType.MOVE);
@@ -182,6 +180,7 @@ public class TankCon : PlayerBase
 
 
     }
+    /// <summary>再生する音の種類</summary>
     enum BGMType
     {
         MOVE,HEAD_MOVE,NONE
@@ -192,8 +191,7 @@ public class TankCon : PlayerBase
     /// <param name="type">鳴らす音の種類</param>
     void TankMoveSFXPlay(bool move,BGMType type = BGMType.NONE)
     {
-        var t = TurnManager.Instance.tankMove.GetComponent<AudioSource>();
-        Debug.Log($"メソッド内{move}");
+        var t = gameObject.GetComponent<AudioSource>();
         if (move)
         {
             if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)
@@ -201,11 +199,9 @@ public class TankCon : PlayerBase
                 switch (type)
                 {
                     case BGMType.MOVE:
-                        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
                         t.clip = GameManager.Instance.tankMoveSfx;
                         break;
                     case BGMType.HEAD_MOVE:
-                        GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
                         t.clip = GameManager.Instance.tankHeadsfx;
                         break;
                 }
@@ -214,9 +210,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            t.clip = null;
             t.Stop();
-            GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
         }
     }
     /// <summary>攻撃したらプラスする</summary>

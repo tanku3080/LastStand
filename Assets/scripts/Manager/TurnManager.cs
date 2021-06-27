@@ -38,7 +38,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>プレイヤー陣営のBGM</summary>
     [SerializeField] GameObject playerBGM = null;
     [SerializeField] GameObject enemyBGM = null;
-    [HideInInspector] public GameObject tankMove = null;
     [HideInInspector] public Text text1 = null;
     //アナウンス用
     [HideInInspector] public Image announceImage = null;
@@ -313,7 +312,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             AimCon = nowPayer.GetComponent<TankCon>().aimCom;
             GameManager.Instance.ChengePop(false, AimCon.gameObject);
             GameManager.Instance.ChengePop(true, DefCon.gameObject);
-            tankMove = nowPayer.transform.GetChild(3).gameObject;
             nowEnemy = enemys[enemyNum].gameObject;
             nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
             playerTurn = true;
@@ -398,7 +396,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             nowPayer = players[playerNum].gameObject;
             HPbarMovebarset();
             nowPayer.GetComponent<TankCon>().controlAccess = true;
-            tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
             VcamChenge();
 
             player = false;
@@ -594,7 +591,6 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
                 nowPayer.GetComponent<TankCon>().controlAccess = false;
                 nowPayer = players[playerNum].gameObject;
                 nowEnemy = enemys[enemyNum].gameObject;
-                tankMove = nowPayer.transform.GetChild(3).GetComponent<AudioSource>().gameObject;
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
                 return;

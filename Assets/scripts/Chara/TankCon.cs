@@ -360,6 +360,7 @@ public class TankCon : PlayerBase
                 {
                     hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 }
+                else Debug.Log("そもそも敵に砲塔が向いていないから外れた");
             }
             else if (perfectHit == false && turretCorrection)//砲塔が向いているだけの場合
             {
@@ -368,7 +369,7 @@ public class TankCon : PlayerBase
                     if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                     else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
                 }
-                else Debug.Log("砲塔が向いているが外した");
+                else Debug.Log("砲塔が向いているけど命中率を呼んだ結果、外した");
             }
         }
         else

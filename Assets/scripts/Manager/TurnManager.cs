@@ -180,7 +180,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
             dontShoot = false;
-            GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
             playerIsMove = !clickC;
             enemyIsMove = !clickC;
@@ -196,6 +196,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
         else if (Input.GetKeyUp(KeyCode.Q) && playerTurn && clickC == false)
         {
             GameManager.Instance.ChengePop(clickC, radarObj);
+            GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             clickC = true;
         }
     }

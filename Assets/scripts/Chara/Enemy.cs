@@ -203,6 +203,8 @@ public class Enemy : EnemyBase
             }
             agent.SetDestination(appearanceFlag ? NearPlayer().transform.position : patrolPos[patrolNum].transform.position);
             agent.nextPosition = Trans.position;
+            raycastLine = RayStart(tankGunFire.transform.position);
+
             if (appearanceFlag)
             {
                 playerFind = true;

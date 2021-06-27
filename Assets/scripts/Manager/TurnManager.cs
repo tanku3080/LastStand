@@ -567,6 +567,7 @@ public class TurnManager : Singleton<TurnManager>
             playerTurn = false;
             enemyTurn = true;
             timeLlineF = true;
+            nowPayer.GetComponent<TankCon>().TankMoveSFXPlay(false);
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
             MoveCharaSet(false, true);

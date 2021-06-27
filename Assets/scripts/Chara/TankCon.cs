@@ -180,7 +180,7 @@ public class TankCon : PlayerBase
 
     }
     /// <summary>再生する音の種類</summary>
-    enum BGMType
+    [HideInInspector] public enum BGMType
     {
         MOVE,HEAD_MOVE,NONE
     }
@@ -188,7 +188,7 @@ public class TankCon : PlayerBase
     /// <summary>移動に関する音を鳴らす</summary>
     /// <param name="move">tureならアクティブ化</param>
     /// <param name="type">鳴らす音の種類</param>
-    void TankMoveSFXPlay(bool move,BGMType type = BGMType.NONE)
+    public void TankMoveSFXPlay(bool move,BGMType type = BGMType.NONE)
     {
         var t = gameObject.GetComponent<AudioSource>();
         if (move)

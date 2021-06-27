@@ -7,23 +7,31 @@ public class Enemy : EnemyBase
         IDOL,MOVE,ATACK
     }
     public NavMeshAgent agent;
+    /// <summary>敵の射撃位置</summary>
     GameObject tankGunFire = null;
+    /// <summary>敵の車体</summary>
     Transform tankBody = null;
     /// <summary>砲塔がプレイヤーに向いているか</summary>
     bool isPlayer = false;
     ///<summary>接触判定で見つけた場合</summary>
     bool playerFind = false;
+    /// <summary>敵の巡回ポイントオブジェクト</summary>
     [SerializeField] GameObject[] patrolPos;
     int patrolNum = 0;
+    /// <summary>敵に操作権があるかどうか</summary>
     public bool controlAccess = false;
-    //今の移動値
+    /// <summary>敵の今の移動値</summary>
     private float enemyMoveNowValue;
     /// <summary>アクション回数</summary>
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
     private bool enemyMove = false;
 
+    /// <summary>レイキャストが通っているかを判定</summary>
+    bool raycastLine = false;
+
     bool agentSetUpFlag = true;
+    /// <summary>最初にEnemyActionSetが呼ばれたら使う</summary>
     [HideInInspector] public bool parameterSetFlag = false;
     /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue</summary>
     [HideInInspector] public bool enemyAppearance = false;
@@ -57,11 +65,14 @@ public class Enemy : EnemyBase
         EnemyEnebled(TurnManager.Instance.FoundEnemy);
         if (controlAccess && SceneFadeManager.Instance.FadeStop)
         {
-            if (enemyMove)
+            if (TurnManager.Instance.enemyIsMove)
             {
-                EnemyMoveLimit();
+                if (enemyMove)
+                {
+                    EnemyMoveLimit();
+                }
+                EnemyActionSet();
             }
-            EnemyActionSet();
         }
         else
         {
@@ -143,8 +154,6 @@ public class Enemy : EnemyBase
             if (playerFind)
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
-                //敵味方の距離が近すぎる場合あり得ない角度に砲塔を旋回するので修正の必要
-                Debug.Log("発見");
                 enemyMove = false;
                 AgentParamSet(enemyMove);
                 agent.isStopped = true;
@@ -152,8 +161,14 @@ public class Enemy : EnemyBase
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
-                if (angle < 3) isPlayer = true;
+                if (angle < 3)
+                {
+                    isPlayer = true;
+                    raycastLine = RayStart(tankGunFire.transform.position);
+                    Debug.Log($"raycastは{raycastLine}");
+                }
                 else isPlayer = false;
+
             }
             else
             {
@@ -175,8 +190,6 @@ public class Enemy : EnemyBase
         Trans.rotation = Quaternion.RotateTowards(Trans.rotation,rotetion,ETankTurn_Speed * Time.deltaTime);
         float angle = Vector3.Angle(pointDir,Trans.forward);
         float dis = Vector3.Distance(appearanceFlag? NearPlayer().transform.position : patrolPos[patrolNum].transform.position,Trans.position);
-        Debug.Log("distance = " + dis);
-        Debug.Log("angle = " + angle);
         if (angle < 3)
         {
             if (agentSetUpFlag)
@@ -224,19 +237,22 @@ public class Enemy : EnemyBase
         if (time > 5f)
         {
             time = 0f;
-            if (result < 10)//クリティカル
+            if (raycastLine)
             {
-                NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
-                Debug.Log($"{gameObject.name}が{NearPlayer().name}に大ダメージ");
-            }
-            else if (result < 50)//成功
-            {
-                NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
-                Debug.Log($"{gameObject.name}が{NearPlayer().name}にダメージ");
-            }
-            if (result > 50)
-            {
-                Debug.Log($"{gameObject.name}が外した");
+                if (result < 10)//クリティカル
+                {
+                    NearPlayer().GetComponent<TankCon>().Damage(eTankDamage * 2);
+                    Debug.Log($"{gameObject.name}が{NearPlayer().name}に大ダメージ");
+                }
+                else if (result < 50)//成功
+                {
+                    NearPlayer().GetComponent<TankCon>().Damage(eTankDamage);
+                    Debug.Log($"{gameObject.name}が{NearPlayer().name}にダメージ");
+                }
+                if (result > 50)
+                {
+                    Debug.Log($"{gameObject.name}が外した");
+                }
             }
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
             ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform, ParticleSystemEXP.ParticleStatus.GUN_FIRE);
@@ -244,6 +260,25 @@ public class Enemy : EnemyBase
             EnemyActionSet(EnemyState.IDOL);//
         }
         return;
+    }
+
+    //攻撃に必要なレイキャスト
+    RaycastHit hit;
+    /// <summary>rayを飛ばして当たっているか判定</summary>
+    /// <param name="atackPoint">rayの発生地点</param>
+    /// <param name="num">当たっているか判定するオブジェクトのTag名。初期値はEnemy</param>
+    bool RayStart(Vector3 atackPoint, string num = "Player")
+    {
+        bool f = false;
+        if (Physics.Raycast(atackPoint, transform.forward, out hit, ETankLimitRange))
+        {
+            if (hit.collider.CompareTag(num))
+            {
+                Debug.Log("当たった");
+                f = true;
+            }
+        }
+        return f;
     }
 
     bool oneFlag = true;

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 public class RadarCon : MonoBehaviour
 {
@@ -25,6 +23,7 @@ public class RadarCon : MonoBehaviour
             image.color = GetAlphaColor(image.color, speed);
         }
     }
+
     Color GetAlphaColor(Color color,float spd)
     {
         if (color.a == 255f)
@@ -37,7 +36,6 @@ public class RadarCon : MonoBehaviour
             time += Time.deltaTime * 5.0f * spd;
             color.a = Mathf.Sin(time) * 0.5f + 0.5f;
         }
-
         return color;
     }
 }

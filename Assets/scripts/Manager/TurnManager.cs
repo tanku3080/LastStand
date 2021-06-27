@@ -159,7 +159,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             enemyIsMove = !clickC;
             clickC = false;
         }
-        else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf == true)
+        else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
@@ -523,7 +523,10 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()
     {
+        dontShoot = false;
         clickC = !clickC;
+        playerIsMove = clickC;
+        enemyIsMove = clickC;
         GameManager.Instance.ChengePop(false, tankChengeObj);
     }
     /// <summary>初回以外のバーチャルカメラを切り替える</summary>
@@ -597,10 +600,14 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
             }
         }
     }
-    ///<summary>表示されているUIを非表示にするメソッド</summary>
+    ///<summary>表示されているUIを非表示にする</summary>
     public void Back()
     {
-        clickC = true;
+        dontShoot = false;
+        clickC = !clickC;
+        dontShoot = false;
+        playerIsMove = clickC;
+        enemyIsMove = clickC;
         GameManager.Instance.ChengePop(false,tankChengeObj);
         GameManager.Instance.ChengePop(false,endObj);
         GameManager.Instance.ChengePop(false,pauseObj);
@@ -659,7 +666,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     public float tankTurnSpeed;
     /// <summary>キャラの移動速度制限</summary>
     public float tankLimitedSpeed;
-    /// <summary>キャラの有効射程範囲</summary>
+    /// <summary>キャラの有効射程範囲と移動制限値</summary>
     public float tankLimitedRange;
     /// <summary>キャラの索敵範囲</summary>
     public float tankSearchRanges;
@@ -730,6 +737,7 @@ public class TurnManager : Singleton<TurnManager>,InterfaceScripts.ITankChoice
     /// <summary>プレイヤーターンを終わらせたいときに呼び出されるUIに対応したメソッド</summary>
     public void TurnEndUI()
     {
+        Debug.Log("TurnEndUIが呼び出された");
         playerTurn = true;
         GameManager.Instance.ChengePop(false, tankChengeObj);
         GameManager.Instance.ChengePop(false, radarObj);

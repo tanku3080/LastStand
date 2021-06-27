@@ -24,15 +24,18 @@ public class TankCon : PlayerBase
     public bool controlAccess = false;
     //カメラをオンにして操作キャラにカメラを切り替える
     [HideInInspector] public bool cameraActive = true;
+    /// <summary>特殊コマンド「必中」がアクティブ化しているか</summary>
+    bool perfectHit = false;
+    /// <summary>特殊コマンド「敵ロックオン」がアクティブ化しているか</summary>
+    bool turretCorrection = false;
+    /// <summary>移動制限になったかどうか</summary>
+    bool limitRangeFlag = true;
+    /// <summary>攻撃が敵に当たったか</summary>
+    [HideInInspector] public bool atackCheck = false;
 
-    bool perfectHit = false;//命中率
-    bool turretCorrection = false;//精度
-    bool limitRangeFlag = true;//移動制限値
-    [HideInInspector] public bool atackCheck = false;//当たったかどうかのチェック
-
-    //移動制限
+    /// <summary>移動バー</summary>
     [HideInInspector] public Slider moveLimitRangeBar;
-    //HP
+    /// <summary>HPバー</summary>
     [HideInInspector] public Slider tankHpBar;
     //攻撃に必要なレイキャスト
     RaycastHit hit;
@@ -79,18 +82,21 @@ public class TankCon : PlayerBase
                 GameManager.Instance.ChengePop(true, aimCom.gameObject);
                 cameraActive = false;
             }
-            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L))
+            if (Input.GetKey(KeyCode.J)|| Input.GetKey(KeyCode.L))
             {
-                Quaternion rotetion;
-                bool keySet = false;
-                if (Input.GetKey(KeyCode.J)) keySet = true;
-                else if (Input.GetKey(KeyCode.L)) keySet = false;
-                rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                tankHead.rotation *= rotetion;
-                if (isMoveBGM)
+                if (TurnManager.Instance.playerIsMove)
                 {
-                    isMoveBGM = false;
-                    TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                    Quaternion rotetion;
+                    bool keySet = false;
+                    if (Input.GetKey(KeyCode.J)) keySet = true;
+                    else if (Input.GetKey(KeyCode.L)) keySet = false;
+                    rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                    tankHead.rotation *= rotetion;
+                    if (isMoveBGM)
+                    {
+                        isMoveBGM = false;
+                        TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                    }
                 }
             }
             else
@@ -104,46 +110,49 @@ public class TankCon : PlayerBase
 
             if (IsGranded)
             {
-                moveV = Input.GetAxis("Vertical");
-                moveH = Input.GetAxis("Horizontal");
-                if (moveH != 0)
+                if (TurnManager.Instance.playerIsMove)
                 {
-                    if (isMoveBGM)
+                    moveV = Input.GetAxis("Vertical");
+                    moveH = Input.GetAxis("Horizontal");
+                    if (moveH != 0)
                     {
-                        isMoveBGM = false;
-                        TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                        if (isMoveBGM)
+                        {
+                            isMoveBGM = false;
+                            TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
+                        }
+                        float rot = moveH * tankTurn_Speed * Time.deltaTime;
+                        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                        Rd.MoveRotation(Rd.rotation * rotetion);
+                        MoveLimit();
                     }
-                    float rot = moveH * tankTurn_Speed * Time.deltaTime;
-                    Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                    Rd.MoveRotation(Rd.rotation * rotetion);
-                    MoveLimit();
-                }
-                else
-                {
-                    if (isMoveBGM == false)
+                    else
                     {
-                        isMoveBGM = true;
-                        TankMoveSFXPlay(false);
+                        if (isMoveBGM == false)
+                        {
+                            isMoveBGM = true;
+                            TankMoveSFXPlay(false);
+                        }
                     }
-                }
-                //前進後退
-                if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
-                {
-                    if (isMoveBGM)
+                    //前進後退
+                    if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
                     {
-                        isMoveBGM = false;
-                        TankMoveSFXPlay(true, BGMType.MOVE);
+                        if (isMoveBGM)
+                        {
+                            isMoveBGM = false;
+                            TankMoveSFXPlay(true, BGMType.MOVE);
+                        }
+                        float mov = moveV * playerSpeed * Time.deltaTime;
+                        Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                        MoveLimit();
                     }
-                    float mov = moveV * playerSpeed * Time.deltaTime;
-                    Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                    MoveLimit();
-                }
-                else
-                {
-                    if (isMoveBGM == false)
+                    else
                     {
-                        isMoveBGM = true;
-                        TankMoveSFXPlay(false);
+                        if (isMoveBGM == false)
+                        {
+                            isMoveBGM = true;
+                            TankMoveSFXPlay(false);
+                        }
                     }
                 }
             }
@@ -205,6 +214,7 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(move, TurnManager.Instance.tankMove);
         }
     }
+    /// <summary>攻撃したらプラスする</summary>
     private int limitCounter = 0;
     /// <summary>
     /// aimFlagがtrueならtrue
@@ -234,28 +244,49 @@ public class TankCon : PlayerBase
             }
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                if (TurnManager.Instance.playerIsMove != true) TurnManager.Instance.playerIsMove = true;
-                else TurnManager.Instance.playerIsMove = false;
+                if (turretCorrection && perfectHit || turretCorrection || perfectHit)
+                {
+                    TurnManager.Instance.playerIsMove = false;
+                }
+                else TurnManager.Instance.playerIsMove = true;
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
-                    if (TurnManager.Instance.FoundEnemy)
+                    if (turretCorrection != false)
                     {
-                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                        if (turretCorrection) turretCorrection = false;
-                        else turretCorrection = true; //精度100％
-                        GunAccuracy(turretCorrection);
+                        turretCorrection = false;
+                    }
+                    else
+                    {
+                        if (TurnManager.Instance.FoundEnemy)
+                        {
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            turretCorrection = true;
+                            GunAccuracy(turretCorrection);
+                        }
+                        else TurnManager.Instance.AnnounceStart("Not Found Enemy");
                     }
                 }
-                if (Input.GetKeyUp(KeyCode.R))//命中率を100。注意：敵に照準があっている前提
+                if (Input.GetKeyUp(KeyCode.R))//敵に照準が合っていたら命中率を100
                 {
-                    if (perfectHit) perfectHit = false;
-                    else perfectHit = true;
-                    GunDirctionIsEnemy(perfectHit);
+                    if (perfectHit != false)
+                    {
+                        perfectHit = false;
+                    }
+                    else
+                    {
+                        if (TurnManager.Instance.FoundEnemy)
+                        {
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            perfectHit = true;
+                            GunDirctionIsEnemy(perfectHit);
+                        }
+                        else TurnManager.Instance.AnnounceStart("Not Found Enemy");
+                    }
                 }
             }
             else if(TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                TurnManager.Instance.AnnounceStart("Move Value Zero");
+                TurnManager.Instance.AnnounceStart("SP Value Zero");
             }
         }
         else
@@ -331,6 +362,15 @@ public class TankCon : PlayerBase
                     hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 }
             }
+            else if (perfectHit == false && turretCorrection)//砲塔が向いているだけの場合
+            {
+                if (RayStart(tankGun.transform.position))
+                {
+                    if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                    else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                }
+                else Debug.Log("砲塔が向いているが外した");
+            }
         }
         else
         {
@@ -338,7 +378,6 @@ public class TankCon : PlayerBase
             {
                 if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
-                Debug.Log("EnemyLife" + hit.collider.gameObject.GetComponent<Enemy>().enemyLife);
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
@@ -348,7 +387,7 @@ public class TankCon : PlayerBase
         GunAccuracy(turretCorrection = false);
     }
 
-    /// <summary>命中率の結果を真偽値で入れる</summary>
+    /// <summary>クリティカルヒットかどうか判定する</summary>
     /// <returns></returns>
     private bool HitCalculation()
     {

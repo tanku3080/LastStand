@@ -284,7 +284,7 @@ public class Enemy : EnemyBase
         }
         return f;
     }
-
+    /// <summary>NearPlayerメソッドアップデート内でも使えるようにする変数</summary>
     bool oneFlag = true;
     /// <summary>
     /// 一番近い敵のオブジェクトを探す

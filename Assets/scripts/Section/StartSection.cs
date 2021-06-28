@@ -16,7 +16,7 @@ public class StartSection : MonoBehaviour
         {
             objKeep = (GameObject)Instantiate(Resources.Load("Prefab/Managers"), gameObject.transform.parent);
         }
-        SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_OUT,0.01f);
+        SceneFadeManager.Instance.FadeSystem(SceneFadeManager.FADE_STATUS.FADE_OUT,0.02f);
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class StartSection : MonoBehaviour
             {
                 playableObj.Stop();
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
-                SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f, SceneFadeManager.SCENE_STATUS.MEETING);
+                SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f, SceneFadeManager.SCENE_STATUS.MEETING);
             }
         }
     }

@@ -12,8 +12,8 @@ public class TankCon : PlayerBase
 
     public GameObject tankGunFire = null;
 
-    [SerializeField] public CinemachineVirtualCamera defaultCon;
-    [SerializeField] public CinemachineVirtualCamera aimCom;
+    public CinemachineVirtualCamera defaultCon;
+    public CinemachineVirtualCamera aimCom;
 
     /// <summary>エイム状態かどうかを判定する</summary>
     public bool aimFlag = false;
@@ -231,7 +231,6 @@ public class TankCon : PlayerBase
                 {
                     limitCounter++;
                     TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                    //攻撃
                     Atack();
                 }
                 else
@@ -385,7 +384,7 @@ public class TankCon : PlayerBase
         TurnManager.Instance.playerIsMove = true;
     }
 
-    /// <summary>クリティカルヒットかどうか判定する</summary>
+    /// <summary>ヒットか軽ダメージかどうか判定する</summary>
     /// <returns></returns>
     private bool HitCalculation()
     {

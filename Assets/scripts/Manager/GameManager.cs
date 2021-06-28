@@ -31,7 +31,7 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
     }
-    // Update is called once per frame
+
     void Update()
     {
         //デバック用
@@ -39,13 +39,10 @@ public class GameManager : Singleton<GameManager>
         {
             SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_PLAY);
         }
-    }
-
-    ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
-    public void Restart()//現状未実装
-    {
-        source.PlayOneShot(click);
-        SceneFadeManager.Instance.SceneOutAndChangeSystem();
+        if (SceneManager.GetActiveScene().name != "GameOver" && Input.GetKeyUp(KeyCode.O) && SceneFadeManager.Instance.FadeStop)
+        {
+            SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_OVER);
+        }
     }
 
     /// <summary>

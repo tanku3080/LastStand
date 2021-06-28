@@ -135,9 +135,9 @@ public class TurnManager : Singleton<TurnManager>
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, pauseObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
@@ -145,45 +145,45 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             GameManager.Instance.ChengePop(clickC, keyUI);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
             dontShoot = false;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Q) && playerTurn && clickC)//レーダー
         {

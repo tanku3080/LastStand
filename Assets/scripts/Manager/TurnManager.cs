@@ -79,6 +79,11 @@ public class TurnManager : Singleton<TurnManager>
     bool timeLlineF = true;
     bool eventF = true;
 
+    /// <summary>ゲームをクリアしたかどうか</summary>
+    [HideInInspector] public bool isGameClear = false;
+    /// <summary>ゲームオーバーかどうか？</summary>
+    [HideInInspector] public bool isGameOvar = false;
+
     /// <summary>アップデート関数内で敵ターンの最初に使うフラグ</summary>
     bool enemyFirstColl = true;
     /// <summary>敵を発見したらtrue</summary>
@@ -327,12 +332,12 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (players.Count == 0)
         {
-            GameManager.Instance.isGameOvar = true;
+            isGameOvar = true;
             SceneFadeManager.Instance.SceneOutAndChangeSystem();
         }
         if (enemys.Count == 0)
         {
-            GameManager.Instance.isGameClear = true;
+            isGameClear = true;
             SceneFadeManager.Instance.SceneOutAndChangeSystem();
         }
 

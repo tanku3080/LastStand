@@ -163,9 +163,8 @@ public class TankCon : PlayerBase
                 }
             }
 
-
             //右クリック
-            if (Input.GetButtonUp("Fire2"))
+            if (Input.GetButtonUp("Fire2") && TurnManager.Instance.playerIsMove)
             {
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (aimFlag) aimFlag = false;
@@ -308,14 +307,12 @@ public class TankCon : PlayerBase
         }
     }
 
+    /// <summary>リロード機能</summary>
     void Reload()
     {
-        //リロード時間を取りたいなぁーと思う
-        if (limitCounter == atackCount)
-        {
-            limitCounter = 0;
-        }
-        else TurnManager.Instance.AnnounceStart("bullets left.");
+        //攻撃してなかろうとリロード機能は実施される
+        TurnManager.Instance.PlayerMoveVal--;
+        limitCounter = 0;
     }
 
     void GunAccuracy(bool flag)

@@ -166,6 +166,8 @@ public class TankCon : PlayerBase
             //右クリック
             if (Input.GetButtonUp("Fire2") && TurnManager.Instance.playerIsMove)
             {
+                Debug.Log("playerIsmoveがTure");
+
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (aimFlag) aimFlag = false;
                 else aimFlag = true;
@@ -250,15 +252,17 @@ public class TankCon : PlayerBase
             }
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                if (turretCorrection && perfectHit || turretCorrection || perfectHit)
-                {
-                    TurnManager.Instance.playerIsMove = false;
-                }
+                //if (turretCorrection && perfectHit || turretCorrection || perfectHit)
+                //{
+                //    TurnManager.Instance.playerIsMove = false;
+                //}
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
                     if (turretCorrection != false)
                     {
                         turretCorrection = false;
+                        TurnManager.Instance.playerIsMove = true;
+                        GunAccuracy(turretCorrection);
                     }
                     else
                     {
@@ -266,6 +270,7 @@ public class TankCon : PlayerBase
                         {
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
                             turretCorrection = true;
+                            TurnManager.Instance.playerIsMove = false;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
@@ -275,7 +280,9 @@ public class TankCon : PlayerBase
                 {
                     if (perfectHit != false)
                     {
+                        Debug.Log("trueなら");
                         perfectHit = false;
+                        GunDirctionIsEnemy(perfectHit);
                     }
                     else
                     {

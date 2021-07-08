@@ -462,7 +462,7 @@ GameObject:
   - component: {fileID: 1294418474318721282}
   m_Layer: 8
   m_Name: Panzer_II_F_Turret
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -732,6 +732,7 @@ MonoBehaviour:
   atackCheck: 0
   moveLimitRangeBar: {fileID: 0}
   tankHpBar: {fileID: 0}
+  limitCounter: 0
 --- !u!54 &438127125791958105
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -982,7 +983,7 @@ GameObject:
   - component: {fileID: 251785695514810524}
   m_Layer: 8
   m_Name: Panzer_II_F_Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

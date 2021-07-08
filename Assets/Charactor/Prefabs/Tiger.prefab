@@ -362,6 +362,7 @@ MonoBehaviour:
   atackCheck: 0
   moveLimitRangeBar: {fileID: 0}
   tankHpBar: {fileID: 0}
+  limitCounter: 0
 --- !u!65 &7987879693523621867
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -501,7 +502,7 @@ GameObject:
   - component: {fileID: 4774876180890634795}
   m_Layer: 8
   m_Name: Panzer_VI_E_Turret
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -678,7 +679,7 @@ GameObject:
   - component: {fileID: 6849943023546911745}
   m_Layer: 8
   m_Name: Panzer_Vl_Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

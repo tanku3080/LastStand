@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDamage
 {
     /// <summary>味方プレイヤーの体力</summary>
@@ -43,6 +44,11 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     {
         ParticleSystemEXP.Instance.StartParticle(Trans,ParticleSystemEXP.ParticleStatus.HIT);
         nowHp -= damage;
+        if (TurnManager.Instance.nowPayer == gameObject)
+        {
+            TurnManager.Instance.hpBar.transform.GetChild(0).GetComponent<Slider>().maxValue = TurnManager.Instance.nowPayer.GetComponent<TankCon>().playerLife;
+            TurnManager.Instance.hpBar.transform.GetChild(0).GetComponent<Slider>().value = nowHp;
+        }
         if (nowHp <= gameObject.GetComponent<TankCon>().tankHpBar.minValue)
         {
             TurnManager.Instance.CharactorDie(gameObject);

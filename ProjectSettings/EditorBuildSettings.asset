@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameClear.unity
     guid: 48339fe6b1155b14ca6aedb7fb91feea
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: f338f57546f8217419a98815f819e38c
   m_configObjects: {}

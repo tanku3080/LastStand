@@ -223,7 +223,7 @@ public class TankCon : PlayerBase
         }
     }
     /// <summary>攻撃したらプラスする</summary>
-    private int limitCounter = 0;
+    [HideInInspector] public int limitCounter = 0;
     /// <summary>
     /// aimFlagがtrueならtrue
     /// </summary>

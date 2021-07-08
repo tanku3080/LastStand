@@ -54,6 +54,7 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public GameObject hittingTargetR = null;
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
     [HideInInspector] public GameObject turretCorrectionF = null;
+    [SerializeField] Text taskText = null;
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
     public int PlayerMoveVal {get { return playerMoveValue; } set { playerMoveValue = value; }
@@ -128,6 +129,11 @@ public class TurnManager : Singleton<TurnManager>
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
+            }
+            //timeLineが終了したらヒントを表示する
+            if (timeLineEndFlag)
+            {
+                TaskTextSet();
             }
         }
     }
@@ -659,6 +665,37 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>キーボードのUIを非表示にする</summary>
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,keyUI);
+    /// <summary>現在何をすればいいのかを画面上に表示する</summary>
+    public void TaskTextSet()
+    {
+        if (playerTurn)
+        {
+            var playerNow = nowPayer.GetComponent<TankCon>();
+            if (playerNow.limitCounter == playerNow.atackCount)
+            {
+                taskText.text = "Enterキーでターンエンドするかspaceキーで戦車を切り替えてください";
+            }
+            else if (playerNow.limitCounter != playerNow.atackCount)
+            {
+                if (FoundEnemy)
+                {
+                    taskText.text = "右クリックでエイム";
+                    if (playerNow.aimFlag)
+                    {
+                        taskText.text = "精度向上ボタンF、自動エイムボタンRのどちらかを押すか敵に攻撃";
+                    }
+                }
+                else
+                {
+                    taskText.text = "Qキーでレーダーを起動して点滅速度を頼りに敵を探す";
+                }
+            }
+        }
+        else
+        {
+            taskText.text = "敵ターンです。";
+        }
+    }
 
     /// <summary>キャラのHP</summary>
     public int charactorHp;

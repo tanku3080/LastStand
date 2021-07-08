@@ -165,9 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e466604d05ff0fa4b9cb037a737ee23b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroy: 1
-  enemyAtackStop: 0
-  GameUi: 0
   source: {fileID: 0}
   click: {fileID: 8300000, guid: 1219e8aa13fb04f538c35b8d080bbc0a, type: 3}
   cancel: {fileID: 8300000, guid: 5950a8a948fac4595b8b1750744fb22f, type: 3}
@@ -180,9 +177,6 @@ MonoBehaviour:
   RadarSfx: {fileID: 8300000, guid: 349a5d092ededeb43a683783cb5ea234, type: 3}
   atack: {fileID: 8300000, guid: 8c786e07379d16c47a26c5fec26e2c43, type: 3}
   discoverySfx: {fileID: 8300000, guid: 0697771e9a3924c48a39ff63b6ba5c9b, type: 3}
-  isGameScene: 0
-  isGameClear: 0
-  isGameOvar: 0
 --- !u!82 &2650243492874841537
 AudioSource:
   m_ObjectHideFlags: 0
@@ -291,7 +285,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cc656e723b760244acade317831f5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroy: 0
 --- !u!1 &2650243493533048609
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,8 +396,8 @@ CanvasGroup:
   m_GameObject: {fileID: 2650243493533048609}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &2798934931515070287
 MonoBehaviour:
@@ -418,4 +411,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150ccc48d5818fb4f8405031af05fabf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroy: 1

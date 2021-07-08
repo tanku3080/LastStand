@@ -166,8 +166,6 @@ public class TankCon : PlayerBase
             //右クリック
             if (Input.GetButtonUp("Fire2") && TurnManager.Instance.playerIsMove)
             {
-                Debug.Log("playerIsmoveがTure");
-
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (aimFlag) aimFlag = false;
                 else aimFlag = true;

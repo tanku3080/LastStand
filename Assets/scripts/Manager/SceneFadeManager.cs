@@ -7,7 +7,7 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
 {
      public enum SCENE_STATUS
     {
-        START, MEETING, GAME_PLAY, GAME_OVER, GAME_CLEAR,TUTORIAL,AUTO,NONE
+        START, MEETING, GAME_PLAY, GAME_OVER, GAME_CLEAR,AUTO,NONE
     }
     public enum FADE_STATUS
     {
@@ -107,9 +107,6 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
             case SCENE_STATUS.GAME_CLEAR:
                 changeName = "GameClear";
                 break;
-            case SCENE_STATUS.TUTORIAL:
-                changeName = "Tutorial";
-                break;
             case SCENE_STATUS.AUTO:
                 if (nowSceneName == "Start") changeName = "Meeting";
                 else if (nowSceneName == "Meeting") changeName = "GamePlay";
@@ -158,9 +155,6 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
                             break;
                         case SCENE_STATUS.GAME_CLEAR:
                             SceneChangeSystem(SCENE_STATUS.GAME_CLEAR);
-                            break;
-                        case SCENE_STATUS.TUTORIAL:
-                            SceneChangeSystem(SCENE_STATUS.TUTORIAL);
                             break;
                         case SCENE_STATUS.AUTO:
                             SceneChangeSystem(SCENE_STATUS.AUTO);

@@ -54,7 +54,10 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public GameObject hittingTargetR = null;
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
     [HideInInspector] public GameObject turretCorrectionF = null;
+    /// <summary>現在何を行えばいいかヒントをくれるテキスト</summary>
     [SerializeField] Text taskText = null;
+    /// <summary>taskTextに表示しないヒント</summary>
+    [SerializeField] Text ButtonTips = null;
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
     public int PlayerMoveVal {get { return playerMoveValue; } set { playerMoveValue = value; }
@@ -117,6 +120,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false, limitedBar);
         GameManager.Instance.ChengePop(false, hpBar);
         GameManager.Instance.ChengePop(false, enemyrHpBar);
+        ButtonTips.enabled = false;
 
     }
 
@@ -446,7 +450,7 @@ public class TurnManager : Singleton<TurnManager>
         PlayMusic();
 
     }
-    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替えるr</summary>
+    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替える</summary>
     void HPbarMovebarset()
     {
         foreach (var item in players)
@@ -657,7 +661,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
     private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceObj);
 
-    /// <summary>キーボードの対応操作を表示する</summary>
+    /// <summary>キーボードのUIを表示する</summary>
     public void KeyShow()
     {
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.RadarSfx);
@@ -671,6 +675,7 @@ public class TurnManager : Singleton<TurnManager>
         if (playerTurn)
         {
             var playerNow = nowPayer.GetComponent<TankCon>();
+            ButtonTips.enabled = true;
             if (playerNow.limitCounter == playerNow.atackCount)
             {
                 taskText.text = "Enterキーでターンエンドするかspaceキーで戦車を切り替えてください";
@@ -694,6 +699,7 @@ public class TurnManager : Singleton<TurnManager>
         else
         {
             taskText.text = "敵ターンです。";
+            ButtonTips.enabled = false;
         }
     }
 

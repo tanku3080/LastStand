@@ -29,6 +29,7 @@ public class Enemy : EnemyBase
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
     [HideInInspector] public bool enemyMove = false;
+    [SerializeField] SpriteRenderer enemyMaker = null;
 
     /// <summary>レイキャストが通っているかを判定</summary>
     bool raycastLine = false;
@@ -343,5 +344,6 @@ public class Enemy : EnemyBase
         tankHead.GetComponent<MeshRenderer>().enabled = f;
         leftTank.GetComponent<MeshRenderer>().enabled = f;
         rightTank.GetComponent<MeshRenderer>().enabled = f;
+        enemyMaker.GetComponent<SpriteRenderer>().enabled = f;
     }
 }

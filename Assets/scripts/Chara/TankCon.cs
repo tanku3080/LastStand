@@ -193,6 +193,8 @@ public class TankCon : PlayerBase
     {
         var t = gameObject.GetComponent<AudioSource>();
         var t2 = gameObject.transform.GetChild(0).GetComponent<AudioSource>();
+        t.volume = TurnManager.Instance.TankMoveValue;
+        t2.volume = TurnManager.Instance.TankMoveValue;
         if (move)
         {
             if (type == BGMType.MOVE || type == BGMType.HEAD_MOVE)

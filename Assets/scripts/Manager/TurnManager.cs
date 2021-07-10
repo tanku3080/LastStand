@@ -32,12 +32,12 @@ public class TurnManager : Singleton<TurnManager>
     [SerializeField] GameObject moveValue = null;
     //以下はtimeLine   
     private PlayableDirector director;
-    [Header("Timeline用")]public GameObject controlPanel;
+    [Header("Timeline用")] public GameObject controlPanel;
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
     /// <summary>プレイヤー陣営のBGM</summary>
-    [SerializeField] GameObject playerBGM = null;
-    [SerializeField] GameObject enemyBGM = null;
+    [SerializeField] public GameObject playerBGM = null;
+    [SerializeField] public GameObject enemyBGM = null;
     [HideInInspector] public Text text1 = null;
     //アナウンス用
     [HideInInspector] public Image announceImage = null;
@@ -60,8 +60,8 @@ public class TurnManager : Singleton<TurnManager>
     [SerializeField] Text ButtonTips = null;
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
-    public int PlayerMoveVal {get { return playerMoveValue; } set { playerMoveValue = value; }
-}
+    public int PlayerMoveVal { get { return playerMoveValue; } set { playerMoveValue = value; }
+    }
     private int enemyMoveValue = 4;
     /// <summary>敵の行動回数</summary>
     public int EnemyMoveVal { get { return enemyMoveValue; } set { enemyMoveValue = value; } }
@@ -94,6 +94,12 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public bool FoundEnemy = false;
     /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
     [HideInInspector] public List<GameObject> enemyDiscovery = new List<GameObject>();
+    /// <summary>BGMの音量</summary>
+    [HideInInspector] public float BGMValue{ get { return bgmVal; }set { bgmVal = value; } }
+    private float bgmVal = 1f;
+    /// <summary>戦車の移動音の大きさ</summary>
+    [HideInInspector] public float TankMoveValue { get { return tankVal; }set { tankVal = value; } }
+    private float tankVal = 1f;
     void Start()
     {
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
@@ -246,12 +252,14 @@ public class TurnManager : Singleton<TurnManager>
             {
                 if (playerTurn || playerTurn && generalTurn == 1)
                 {
+
                     GameManager.Instance.ChengePop(true, playerBGM);
                     GameManager.Instance.ChengePop(false, enemyBGM);
 
                 }
                 else
                 {
+                    enemyBGM.GetComponent<AudioSource>().volume = BGMValue;
                     GameManager.Instance.ChengePop(true, enemyBGM);
                     GameManager.Instance.ChengePop(false, playerBGM);
                 }
@@ -669,6 +677,8 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>キーボードのUIを非表示にする</summary>
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,keyUI);
+    /// <summary>オーディオを設定する項目</summary>
+    public void AudioSettingButton() => AudioSetting.Instance.ShowAudioSet();
     /// <summary>現在何をすればいいのかを画面上に表示する</summary>
     public void TaskTextSet()
     {
@@ -678,7 +688,7 @@ public class TurnManager : Singleton<TurnManager>
             ButtonTips.enabled = true;
             if (playerNow.limitCounter == playerNow.atackCount)
             {
-                taskText.text = "Enterキーでターンエンドするかspaceキーで戦車を切り替えてください";
+                taskText.text = "Enterキーでターンエンドするか\nspaceキーで戦車を切り替えてください";
             }
             else if (playerNow.limitCounter != playerNow.atackCount)
             {
@@ -687,12 +697,12 @@ public class TurnManager : Singleton<TurnManager>
                     taskText.text = "右クリックでエイム";
                     if (playerNow.aimFlag)
                     {
-                        taskText.text = "精度向上ボタンF、自動エイムボタンRのどちらかを押すか敵に攻撃";
+                        taskText.text = "精度向上ボタンF、自動エイムボタンRの\nどちらかを押すか敵に攻撃";
                     }
                 }
                 else
                 {
-                    taskText.text = "Qキーでレーダーを起動して点滅速度を頼りに敵を探す";
+                    taskText.text = "Qキーでレーダーを起動して\n点滅速度を頼りに敵を探す";
                 }
             }
         }

@@ -12,12 +12,6 @@ public class AudioSetting : Singleton<AudioSetting>
         ESlider.maxValue = 1;
         GameManager.Instance.ChengePop(false,audioetImage.gameObject);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void ShowAudioSet()
     {
         GameManager.Instance.ChengePop(true,audioetImage.gameObject);

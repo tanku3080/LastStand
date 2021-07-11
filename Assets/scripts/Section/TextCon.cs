@@ -34,6 +34,7 @@ public class TextCon : MonoBehaviour
 		asset = Resources.Load<TextAsset>("Text");
 		string stringNum = asset.text;
 		unit = stringNum.Split('\n');
+
 	}
 
 	void Update()
@@ -51,14 +52,14 @@ public class TextCon : MonoBehaviour
 
 			}
 
-			if (count == unit.Length && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
+			if (count == unit.Length -1 && Input.GetKeyDown(KeyCode.Return) || count == unit.Length && Input.GetMouseButtonDown(0))
 			{
 				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.005f);
 			}
 			// 文字の表示が完了してるならクリック時に次の行を表示する
 			if (IsCompleteDisplayText)
 			{
-				if (currentLine < unit.Length && Input.GetMouseButtonDown(0) || currentLine < unit.Length && Input.GetKeyDown(KeyCode.Return))
+				if (currentLine < unit.Length -1 && Input.GetMouseButtonDown(0) || currentLine < unit.Length && Input.GetKeyDown(KeyCode.Return))
 				{
 					GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
 					SetNextLine();
@@ -74,7 +75,7 @@ public class TextCon : MonoBehaviour
 			}
 
 			int displayCharacterCount = (int)(Mathf.Clamp01((Time.time - timeElapsed) / timeUntilDisplay) * currentText.Length);
-			if (displayCharacterCount != lastUpdateCharacter)
+			if (displayCharacterCount != lastUpdateCharacter && currentLine < unit.Length)
 			{
 				uiText.text = currentText.Substring(0, displayCharacterCount);
 				lastUpdateCharacter = displayCharacterCount;

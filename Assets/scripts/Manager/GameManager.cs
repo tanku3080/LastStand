@@ -1,15 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-
 
 public class GameManager : Singleton<GameManager>
 {
-    [HideInInspector] public bool enemyAtackStop = false;
-    [HideInInspector] public bool GameUi = false;
-    public Renderer[] EnemyRender { get; set; }
-
-    //この値がtrueなら敵味方問わず攻撃を停止する
-    public bool GameFlag { get; set; }
     [HideInInspector] public AudioSource source;
     [Tooltip("UIclickボタン")] public AudioClip click;
     [Tooltip("UICancelボタン")] public AudioClip cancel;
@@ -23,31 +15,11 @@ public class GameManager : Singleton<GameManager>
     [Tooltip("攻撃音")] public AudioClip atack;
     [Tooltip("敵発見音")] public AudioClip discoverySfx;
 
-    public bool isGameClear = false;
-    public bool isGameOvar = false;
-
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
     }
-    // Update is called once per frame
-    void Update()
-    {
-        //デバック用
-        if (SceneManager.GetActiveScene().name != "GamePlay" && Input.GetKeyUp(KeyCode.P) && SceneFadeManager.Instance.FadeStop)
-        {
-            SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_PLAY);
-        }
-    }
-
-    ///<summary>リスタートボタンをクリックしたら呼び出し</summary>
-    public void Restart()//現状未実装
-    {
-        source.PlayOneShot(click);
-        SceneFadeManager.Instance.SceneOutAndChangeSystem();
-    }
-
     /// <summary>
     /// 確認メッセージやその他非表示オブジェクトを表示。第3引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
     /// </summary>

@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5090992511560260204
 Transform:
   m_ObjectHideFlags: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 661043638694169574}
-  m_LocalRotation: {x: 0.076126784, y: -0.0000000029219578, z: 2.2308659e-10, w: 0.99709815}
-  m_LocalPosition: {x: 0.24778652, y: -0.05616522, z: -7.961033}
+  m_LocalRotation: {x: 0.07612677, y: 0.000000043584546, z: -0.0000000033276089, w: 0.99709815}
+  m_LocalPosition: {x: 0.24778469, y: -0.056165695, z: -7.961035}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3198563766342029886}
@@ -271,8 +271,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191251992303597032}
-  m_LocalRotation: {x: 0.000000021855694, y: -0.00000004371139, z: 1.0165751e-15,
-    w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -352,7 +351,7 @@ MonoBehaviour:
   tankDamage: 0
   atackCount: 0
   nowHp: 0
-  borderLine: {fileID: 0}
+  borderLine: {fileID: 4774876180890634795}
   tankGunFire: {fileID: 0}
   defaultCon: {fileID: 2847055013916119198}
   aimCom: {fileID: 4946670193906062939}
@@ -363,6 +362,7 @@ MonoBehaviour:
   atackCheck: 0
   moveLimitRangeBar: {fileID: 0}
   tankHpBar: {fileID: 0}
+  limitCounter: 0
 --- !u!65 &7987879693523621867
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -390,7 +390,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -481,7 +481,7 @@ Rigidbody:
   m_GameObject: {fileID: 2191251992303597032}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 4
+  m_Drag: 3.5
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -502,7 +502,7 @@ GameObject:
   - component: {fileID: 4774876180890634795}
   m_Layer: 8
   m_Name: Panzer_VI_E_Turret
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -676,9 +676,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8682051144049579057}
+  - component: {fileID: 6849943023546911745}
   m_Layer: 8
   m_Name: Panzer_Vl_Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -699,6 +700,102 @@ Transform:
   m_Father: {fileID: 2896867665593862139}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &6849943023546911745
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2807027731282501089}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3981341651682903272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1004,8 +1101,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9092621079786991252}
-  m_LocalRotation: {x: 0.03788832, y: -0.0000000021492532, z: 8.1490086e-11, w: 0.999282}
-  m_LocalPosition: {x: 0.24778652, y: -2.5161653, z: 5.778967}
+  m_LocalRotation: {x: 0.037888285, y: 0.000000043680004, z: -0.0000000016561515,
+    w: 0.999282}
+  m_LocalPosition: {x: 0.2477859, y: -2.5161653, z: 5.778967}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1727867365639895260}

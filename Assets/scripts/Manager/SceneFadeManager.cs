@@ -110,8 +110,8 @@ public class SceneFadeManager : Singleton<SceneFadeManager>
             case SCENE_STATUS.AUTO:
                 if (nowSceneName == "Start") changeName = "Meeting";
                 else if (nowSceneName == "Meeting") changeName = "GamePlay";
-                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameClear) changeName = "GameClear";
-                else if (nowSceneName == "GamePlay" && GameManager.Instance.isGameOvar) changeName = "GameOver";
+                else if (nowSceneName == "GamePlay" && TurnManager.Instance.isGameClear) changeName = "GameClear";
+                else if (nowSceneName == "GamePlay" && TurnManager.Instance.isGameOvar) changeName = "GameOver";
                 else changeName = "Start";
                 break;
             case SCENE_STATUS.NONE:

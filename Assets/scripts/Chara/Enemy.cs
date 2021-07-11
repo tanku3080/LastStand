@@ -29,6 +29,7 @@ public class Enemy : EnemyBase
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
     [HideInInspector] public bool enemyMove = false;
+    [SerializeField] SpriteRenderer enemyMaker = null;
 
     /// <summary>レイキャストが通っているかを判定</summary>
     bool raycastLine = false;
@@ -149,7 +150,7 @@ public class Enemy : EnemyBase
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
     }
 
-    /// <summary>i移動するための挙動</summary>
+    /// <summary>移動するための挙動</summary>
     void EnemyMove()
     {
         if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
@@ -168,7 +169,6 @@ public class Enemy : EnemyBase
                 {
                     isPlayer = true;
                     raycastLine = RayStart(tankGunFire.transform.position);
-                    Debug.Log($"raycastは{raycastLine}");
                 }
                 else isPlayer = false;
 
@@ -271,7 +271,7 @@ public class Enemy : EnemyBase
     RaycastHit hit;
     /// <summary>rayを飛ばして当たっているか判定</summary>
     /// <param name="atackPoint">rayの発生地点</param>
-    /// <param name="num">当たっているか判定するオブジェクトのTag名。初期値はEnemy</param>
+    /// <param name="num">当たっているか判定するオブジェクトのTag名</param>
     bool RayStart(Vector3 atackPoint, string num = "Player")
     {
         bool f = false;
@@ -284,7 +284,7 @@ public class Enemy : EnemyBase
         }
         return f;
     }
-
+    /// <summary>NearPlayerメソッドアップデート内でも使えるようにする変数</summary>
     bool oneFlag = true;
     /// <summary>
     /// 一番近い敵のオブジェクトを探す
@@ -343,5 +343,6 @@ public class Enemy : EnemyBase
         tankHead.GetComponent<MeshRenderer>().enabled = f;
         leftTank.GetComponent<MeshRenderer>().enabled = f;
         rightTank.GetComponent<MeshRenderer>().enabled = f;
+        enemyMaker.GetComponent<SpriteRenderer>().enabled = f;
     }
 }

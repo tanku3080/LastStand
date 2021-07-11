@@ -32,12 +32,12 @@ public class TurnManager : Singleton<TurnManager>
     [SerializeField] GameObject moveValue = null;
     //以下はtimeLine   
     private PlayableDirector director;
-    [Header("Timeline用")]public GameObject controlPanel;
+    [Header("Timeline用")] public GameObject controlPanel;
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
     /// <summary>プレイヤー陣営のBGM</summary>
-    [SerializeField] GameObject playerBGM = null;
-    [SerializeField] GameObject enemyBGM = null;
+    [SerializeField] public GameObject playerBGM = null;
+    [SerializeField] public GameObject enemyBGM = null;
     [HideInInspector] public Text text1 = null;
     //アナウンス用
     [HideInInspector] public Image announceImage = null;
@@ -54,10 +54,14 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public GameObject hittingTargetR = null;
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
     [HideInInspector] public GameObject turretCorrectionF = null;
+    /// <summary>現在何を行えばいいかヒントをくれるテキスト</summary>
+    [SerializeField] Text taskText = null;
+    /// <summary>taskTextに表示しないヒント</summary>
+    [SerializeField] Text ButtonTips = null;
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
-    public int PlayerMoveVal {get { return playerMoveValue; } set { playerMoveValue = value; }
-}
+    public int PlayerMoveVal { get { return playerMoveValue; } set { playerMoveValue = value; }
+    }
     private int enemyMoveValue = 4;
     /// <summary>敵の行動回数</summary>
     public int EnemyMoveVal { get { return enemyMoveValue; } set { enemyMoveValue = value; } }
@@ -79,12 +83,23 @@ public class TurnManager : Singleton<TurnManager>
     bool timeLlineF = true;
     bool eventF = true;
 
+    /// <summary>ゲームをクリアしたかどうか</summary>
+    [HideInInspector] public bool isGameClear = false;
+    /// <summary>ゲームオーバーかどうか？</summary>
+    [HideInInspector] public bool isGameOvar = false;
+
     /// <summary>アップデート関数内で敵ターンの最初に使うフラグ</summary>
     bool enemyFirstColl = true;
     /// <summary>敵を発見したらtrue</summary>
     [HideInInspector] public bool FoundEnemy = false;
     /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
     [HideInInspector] public List<GameObject> enemyDiscovery = new List<GameObject>();
+    /// <summary>BGMの音量</summary>
+    [HideInInspector] public float BGMValue{ get { return bgmVal; }set { bgmVal = value; } }
+    private float bgmVal = 1f;
+    /// <summary>戦車の移動音の大きさ</summary>
+    [HideInInspector] public float TankMoveValue { get { return tankVal; }set { tankVal = value; } }
+    private float tankVal = 1f;
     void Start()
     {
         hittingTargetR = specialObj.transform.GetChild(0).gameObject;
@@ -111,6 +126,7 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false, limitedBar);
         GameManager.Instance.ChengePop(false, hpBar);
         GameManager.Instance.ChengePop(false, enemyrHpBar);
+        ButtonTips.enabled = false;
 
     }
 
@@ -124,6 +140,11 @@ public class TurnManager : Singleton<TurnManager>
             {
                 ButtonSelected();
             }
+            //timeLineが終了したらヒントを表示する
+            if (timeLineEndFlag)
+            {
+                TaskTextSet();
+            }
         }
     }
 
@@ -135,9 +156,9 @@ public class TurnManager : Singleton<TurnManager>
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, pauseObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
@@ -145,45 +166,45 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             GameManager.Instance.ChengePop(clickC, keyUI);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC)
         {
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = false;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
             dontShoot = false;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
-            playerIsMove = !clickC;
-            enemyIsMove = !clickC;
             clickC = true;
+            playerIsMove = clickC;
+            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Q) && playerTurn && clickC)//レーダー
         {
@@ -231,12 +252,14 @@ public class TurnManager : Singleton<TurnManager>
             {
                 if (playerTurn || playerTurn && generalTurn == 1)
                 {
+
                     GameManager.Instance.ChengePop(true, playerBGM);
                     GameManager.Instance.ChengePop(false, enemyBGM);
 
                 }
                 else
                 {
+                    enemyBGM.GetComponent<AudioSource>().volume = BGMValue;
                     GameManager.Instance.ChengePop(true, enemyBGM);
                     GameManager.Instance.ChengePop(false, playerBGM);
                 }
@@ -327,12 +350,12 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (players.Count == 0)
         {
-            GameManager.Instance.isGameOvar = true;
+            isGameOvar = true;
             SceneFadeManager.Instance.SceneOutAndChangeSystem();
         }
         if (enemys.Count == 0)
         {
-            GameManager.Instance.isGameClear = true;
+            isGameClear = true;
             SceneFadeManager.Instance.SceneOutAndChangeSystem();
         }
 
@@ -435,7 +458,7 @@ public class TurnManager : Singleton<TurnManager>
         PlayMusic();
 
     }
-    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替えるr</summary>
+    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替える</summary>
     void HPbarMovebarset()
     {
         foreach (var item in players)
@@ -646,7 +669,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
     private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceObj);
 
-    /// <summary>キーボードの対応操作を表示する</summary>
+    /// <summary>キーボードのUIを表示する</summary>
     public void KeyShow()
     {
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.RadarSfx);
@@ -654,6 +677,41 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>キーボードのUIを非表示にする</summary>
     public void KeyImageBack() => GameManager.Instance.ChengePop(false,keyUI);
+    /// <summary>オーディオを設定する項目</summary>
+    public void AudioSettingButton() => AudioSetting.Instance.ShowAudioSet();
+    /// <summary>現在何をすればいいのかを画面上に表示する</summary>
+    public void TaskTextSet()
+    {
+        if (playerTurn)
+        {
+            var playerNow = nowPayer.GetComponent<TankCon>();
+            ButtonTips.enabled = true;
+            if (playerNow.limitCounter == playerNow.atackCount)
+            {
+                taskText.text = "Enterキーでターンエンドするか\nspaceキーで戦車を切り替えてください";
+            }
+            else if (playerNow.limitCounter != playerNow.atackCount)
+            {
+                if (FoundEnemy)
+                {
+                    taskText.text = "右クリックでエイム";
+                    if (playerNow.aimFlag)
+                    {
+                        taskText.text = "精度向上ボタンF、自動エイムボタンRの\nどちらかを押すか敵に攻撃";
+                    }
+                }
+                else
+                {
+                    taskText.text = "Qキーでレーダーを起動して\n点滅速度を頼りに敵を探す";
+                }
+            }
+        }
+        else
+        {
+            taskText.text = "敵ターンです。";
+            ButtonTips.enabled = false;
+        }
+    }
 
     /// <summary>キャラのHP</summary>
     public int charactorHp;

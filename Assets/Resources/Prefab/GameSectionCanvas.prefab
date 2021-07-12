@@ -3167,6 +3167,85 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Key
+--- !u!1 &4423625747388956095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7854497470452893626}
+  - component: {fileID: 4417018537782143718}
+  - component: {fileID: 5009338171478921435}
+  m_Layer: 5
+  m_Name: HitRateText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7854497470452893626
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423625747388956095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7224680036120603264}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 100}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4417018537782143718
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423625747388956095}
+  m_CullTransparentMesh: 1
+--- !u!114 &5009338171478921435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423625747388956095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 60
+    m_FontStyle: 1
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 60
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: 100%
 --- !u!1 &4600056274409022417
 GameObject:
   m_ObjectHideFlags: 0
@@ -5336,6 +5415,7 @@ RectTransform:
   - {fileID: 5001781253131376724}
   - {fileID: 6258314249707202223}
   - {fileID: 3006529070128260401}
+  - {fileID: 7854497470452893626}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5429,24 +5509,24 @@ MonoBehaviour:
   nearEnemy: {fileID: 0}
   hpBar: {fileID: 1109914963004929000}
   enemyrHpBar: {fileID: 0}
-  moveValue: {fileID: 2836205863133284423}
+  turnText: {fileID: 2078921488465599343}
+  director: {fileID: 753125942330055879}
   controlPanel: {fileID: 2277564617760736538}
   timeLineEndFlag: 0
   playerBGM: {fileID: 1696834832916021529}
   enemyBGM: {fileID: 6642333305556841134}
-  text1: {fileID: 0}
-  announceImage: {fileID: 0}
-  annouceText: {fileID: 0}
+  moveValue: {fileID: 5469681049487581030}
+  announceImage: {fileID: 6532434029282888160}
+  annouceText: {fileID: 4309588818793728109}
   tankChengeObj: {fileID: 2797557784679094598}
   pauseObj: {fileID: 7565710700064396553}
   endObj: {fileID: 8360482462630863092}
   radarObj: {fileID: 1341920501660326966}
-  announceObj: {fileID: 3004461486928592440}
   limitedBar: {fileID: 1983006265758137177}
-  specialObj: {fileID: 5744598431724986049}
+  hittingTargetR: {fileID: 4600056274409022417}
+  turretCorrectionF: {fileID: 3042006562466882311}
   keyUI: {fileID: 9068889804241271967}
-  hittingTargetR: {fileID: 0}
-  turretCorrectionF: {fileID: 0}
+  hitRateText: {fileID: 5009338171478921435}
   taskText: {fileID: 1059008528429857567}
   ButtonTips: {fileID: 6876459977728915446}
   playerNum: 0
@@ -5458,6 +5538,7 @@ MonoBehaviour:
   isGameOvar: 0
   FoundEnemy: 0
   enemyDiscovery: []
+  turnEndUi: 0
   charactorHp: 0
   charactorSpeed: 0
   tankHeadSpeed: 0

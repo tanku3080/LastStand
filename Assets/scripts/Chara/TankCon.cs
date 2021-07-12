@@ -47,6 +47,10 @@ public class TankCon : PlayerBase
     bool isTankMove = false;
     /// <summary>プレイヤーの車体が曲がっているとTrue</summary>
     bool isTankRot = false;
+    /// <summary>hitRateTextがactiveならtrue</summary>
+    bool hitRateFalg = false;
+    /// <summary>命中率</summary>
+    int hitRateValue = 0;
 
     void Start()
     {
@@ -237,28 +241,28 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
+
             if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
             {
-                if (atackCount > limitCounter)
+                if (TurnManager.Instance.turnEndUi != true)
                 {
-                    limitCounter++;
-                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                    Atack();
-                }
-                else
-                {
-                    TurnManager.Instance.AnnounceStart("Atack Limit");
+                    if (atackCount > limitCounter)
+                    {
+                        limitCounter++;
+                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                        Atack();
+                    }
+                    else
+                    {
+                        TurnManager.Instance.AnnounceStart("Atack Limit");
+                    }
                 }
             }
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                //if (turretCorrection && perfectHit || turretCorrection || perfectHit)
-                //{
-                //    TurnManager.Instance.playerIsMove = false;
-                //}
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
-                    if (turretCorrection != false)
+                    if (turretCorrection)
                     {
                         turretCorrection = false;
                         TurnManager.Instance.playerIsMove = true;
@@ -268,19 +272,36 @@ public class TankCon : PlayerBase
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
-                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
+                        if (hitRateFalg)
+                        {
+                            hitRateValue = Random.Range(0, 100);
+                            GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
+                            if (perfectHit)
+                            {
+                                TurnManager.Instance.hitRateText.text = $"命中率100%";
+                            }
+                            else
+                            {
+                                TurnManager.Instance.hitRateText.text = $"命中率{hitRateValue}%";
+                            }
+                        }
+                        else
+                        {
+                            TurnManager.Instance.hitRateText.text = null;
+                            GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
+                        }
                     }
                 }
                 if (Input.GetKeyUp(KeyCode.R))//敵に照準が合っていたら命中率を100
                 {
-                    if (perfectHit != false)
+                    if (perfectHit)
                     {
-                        Debug.Log("trueなら");
                         perfectHit = false;
                         GunDirctionIsEnemy(perfectHit);
                     }
@@ -288,15 +309,19 @@ public class TankCon : PlayerBase
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
-                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
                             perfectHit = true;
                             GunDirctionIsEnemy(perfectHit);
+                            if (hitRateFalg && turretCorrection)
+                            {
+                                TurnManager.Instance.hitRateText.text = $"命中率100%";
+                            }
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
                     }
                 }
             }
-            else if(TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
+            else if (TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
                 TurnManager.Instance.AnnounceStart("SP Value Zero");
             }
@@ -322,39 +347,44 @@ public class TankCon : PlayerBase
         limitCounter = 0;
     }
 
+    /// <summary>砲塔を敵に向ける機能</summary>
+    /// <param name="flag">trueなら向ける</param>
     void GunAccuracy(bool flag)
     {
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             tankHead.LookAt(TurnManager.Instance.nearEnemy.transform,Vector3.up);
-            GameManager.Instance.ChengePop(true, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hitRateText.gameObject);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hitRateText.gameObject);
         }
+        hitRateFalg = flag;
     }
 
     /// <summary>
-    /// 命中率を100にする
+    /// 命中率を100にするUIを表示させる
     /// </summary>
     void GunDirctionIsEnemy(bool flag)
     {
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            GameManager.Instance.ChengePop(true,TurnManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hittingTargetR);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.hittingTargetR);
         }
     }
     void Atack()

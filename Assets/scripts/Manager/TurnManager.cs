@@ -21,43 +21,49 @@ public class TurnManager : Singleton<TurnManager>
     private readonly int maxTurn = 5;
     [Header("味方操作キャラ")] public List<TankCon> players = null;
     [Header("敵キャラ")] public List<Enemy> enemys = null;
+
     //現在の操作キャラ
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
     [HideInInspector] public GameObject nearEnemy = null;
+
     [Header("体力ゲージ")] public GameObject hpBar = null;
     [Header("敵体力ゲージ")] public GameObject enemyrHpBar = null;
-    private GameObject turnText = null;
-    //移動回数
-    [SerializeField] GameObject moveValue = null;
+
+    public GameObject turnText = null;
+
     //以下はtimeLine   
-    private PlayableDirector director;
-    [Header("Timeline用")] public GameObject controlPanel;
+    public PlayableDirector director;
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
+
     /// <summary>プレイヤー陣営のBGM</summary>
-    [SerializeField] public GameObject playerBGM = null;
-    [SerializeField] public GameObject enemyBGM = null;
-    [HideInInspector] public Text text1 = null;
+    public GameObject playerBGM = null;
+    public GameObject enemyBGM = null;
+
+    /// <summary>移動回数</summary>
+    public Text moveValue = null;
     //アナウンス用
-    [HideInInspector] public Image announceImage = null;
-    [HideInInspector] public Text annouceText = null;
+    [SerializeField] Image announceImage = null;
+    [SerializeField] Text annouceText = null;
+
     [Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [Header("ターンエンドUI")] public GameObject endObj = null;
     [Header("レーダUI")] public GameObject radarObj = null;
-    [Header("アナウンスUI")] public GameObject announceObj = null;
     [Header("移動制限")] public GameObject limitedBar = null;
-    [Header("特殊状態")] public GameObject specialObj = null;
-    [Header("キーボードの画像")] public GameObject keyUI = null;
-    /// <summary>スペシャルアクションキーRが押されたときに表示するオブジェクト</summary>
-    [HideInInspector] public GameObject hittingTargetR = null;
+    /// <summary>スペシャルアクションキーRが押された時に表示するオブジェクト</summary>
+    [Header("特殊キーR")] public GameObject hittingTargetR = null;
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
-    [HideInInspector] public GameObject turretCorrectionF = null;
+    [Header("特殊キーF")] public GameObject turretCorrectionF = null;
+    [Header("キーボードの画像")] public GameObject keyUI = null;
+    /// <summary>命中率を表示するためのテキスト</summary>
+    [Header("命中率を表示するテキスト")] public Text hitRateText = null;
     /// <summary>現在何を行えばいいかヒントをくれるテキスト</summary>
     [SerializeField] Text taskText = null;
-    /// <summary>taskTextに表示しないヒント</summary>
+    /// <summary>taskTextに表示しない部分のヒント</summary>
     [SerializeField] Text ButtonTips = null;
+
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
     public int PlayerMoveVal { get { return playerMoveValue; } set { playerMoveValue = value; }
@@ -100,16 +106,9 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>戦車の移動音の大きさ</summary>
     [HideInInspector] public float TankMoveValue { get { return tankVal; }set { tankVal = value; } }
     private float tankVal = 1f;
+    [HideInInspector] public bool turnEndUi = false;
     void Start()
     {
-        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
-        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
-        announceImage = announceObj.transform.GetChild(0).GetComponent<Image>();
-        annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
-        text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
-        turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
-        turnText.GetComponent<Text>();
-        director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
         GameManager.Instance.ChengePop(false, tankChengeObj);
         GameManager.Instance.ChengePop(false, radarObj);
         GameManager.Instance.ChengePop(false, pauseObj);
@@ -117,15 +116,16 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false, endObj);
         GameManager.Instance.ChengePop(false, hittingTargetR);
         GameManager.Instance.ChengePop(false, turretCorrectionF);
-        GameManager.Instance.ChengePop(false, announceObj);
+        GameManager.Instance.ChengePop(false, announceImage.gameObject);
         GameManager.Instance.ChengePop(false, keyUI);
-        GameManager.Instance.ChengePop(false, controlPanel);
-        GameManager.Instance.ChengePop(false, moveValue);
+        GameManager.Instance.ChengePop(false, director.gameObject);
+        GameManager.Instance.ChengePop(false, moveValue.gameObject);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
         GameManager.Instance.ChengePop(false, limitedBar);
         GameManager.Instance.ChengePop(false, hpBar);
         GameManager.Instance.ChengePop(false, enemyrHpBar);
+        GameManager.Instance.ChengePop(false,hitRateText.gameObject);
         ButtonTips.enabled = false;
 
     }
@@ -193,13 +193,15 @@ public class TurnManager : Singleton<TurnManager>
             dontShoot = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
+            turnEndUi = clickC;
             clickC = false;
             playerIsMove = clickC;
             enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
-            dontShoot = false;
+            dontShoot = clickC;
+            turnEndUi = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
             clickC = true;
@@ -286,7 +288,7 @@ public class TurnManager : Singleton<TurnManager>
         {
             turnFirstNumFlag = false;
 
-            MoveCounterText(text1);
+            MoveCounterText(moveValue);
             nearEnemy = null;
             timeLlineF = true;
             eventF = true;
@@ -325,7 +327,7 @@ public class TurnManager : Singleton<TurnManager>
                 enemy.eAtackCount = atackCounter;
                 enemy.parameterSetFlag = true;
             }
-            GameManager.Instance.ChengePop(true, moveValue);
+            GameManager.Instance.ChengePop(true, moveValue.gameObject);
             GameManager.Instance.ChengePop(true, hpBar);
             nowPayer = players[playerNum].gameObject;
             nowPayer.GetComponent<TankCon>().controlAccess = true;
@@ -536,7 +538,8 @@ public class TurnManager : Singleton<TurnManager>
         else
         {
             dontShoot = false;
-            MoveCounterText(text1);
+            MoveCounterText(moveValue);
+            GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             MoveCharaSet(true, false, playerMoveValue);
         }
         GameManager.Instance.ChengePop(false, tankChengeObj);
@@ -585,8 +588,9 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false,endObj);
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
-            GameManager.Instance.ChengePop(false,announceObj);
+            GameManager.Instance.ChengePop(false,announceImage.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
+            GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             playerTurn = false;
             enemyTurn = true;
             timeLlineF = true;
@@ -626,6 +630,7 @@ public class TurnManager : Singleton<TurnManager>
     ///<summary>表示されているUIを非表示にする</summary>
     public void Back()
     {
+        turnEndUi = false;
         clickC = !clickC;
         dontShoot = false;
         playerIsMove = clickC;
@@ -644,7 +649,7 @@ public class TurnManager : Singleton<TurnManager>
     void TimeLineStop(PlayableDirector stop)
     {
         stop.Stop();
-        GameManager.Instance.ChengePop(false,controlPanel);
+        GameManager.Instance.ChengePop(false,director.gameObject);
         GameManager.Instance.ChengePop(true,limitedBar);
         timeLlineF = false;
         playerIsMove = true;
@@ -654,20 +659,20 @@ public class TurnManager : Singleton<TurnManager>
     void StartTimeLine()
     {
         timeLineEndFlag = false;
-        GameManager.Instance.ChengePop(true,controlPanel);
+        GameManager.Instance.ChengePop(true,director.gameObject);
         director.Play();
     }
     /// <summary>画面上に指定の文字列を一定時間表示するためのメソッド</summary>
     /// <param name="n">表示させたい文字列</param>
     public void AnnounceStart(string n = null)
     {
-        GameManager.Instance.ChengePop(true,announceObj);
+        GameManager.Instance.ChengePop(true,announceImage.gameObject);
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
         annouceText.text = n;
         Invoke(nameof(AnnounceStartInvoke), 3f);
     }
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
-    private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceObj);
+    private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceImage.gameObject);
 
     /// <summary>キーボードのUIを表示する</summary>
     public void KeyShow()
@@ -791,21 +796,6 @@ public class TurnManager : Singleton<TurnManager>
         }
     }
 
-    /// <summary>プレイヤーターンを終わらせたいときに呼び出されるUIに対応したメソッド</summary>
-    public void TurnEndUI()
-    {
-        Debug.Log("TurnEndUIが呼び出された");
-        playerTurn = true;
-        GameManager.Instance.ChengePop(false, tankChengeObj);
-        GameManager.Instance.ChengePop(false, radarObj);
-        GameManager.Instance.ChengePop(false, pauseObj);
-        GameManager.Instance.ChengePop(false, limitedBar);
-        GameManager.Instance.ChengePop(false, endObj);
-        GameManager.Instance.ChengePop(false, hittingTargetR);
-        GameManager.Instance.ChengePop(false, turretCorrectionF);
-        GameManager.Instance.ChengePop(false, announceObj);
-        GameManager.Instance.ChengePop(false, keyUI);
-    }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()
     {

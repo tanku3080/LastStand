@@ -352,7 +352,10 @@ MonoBehaviour:
   atackCount: 0
   nowHp: 0
   borderLine: {fileID: 4774876180890634795}
-  tankGunFire: {fileID: 0}
+  tankHead: {fileID: 5579813169647829867}
+  tankGun: {fileID: 1336145784037996353}
+  tankBody: {fileID: 8682051144049579057}
+  tankGunFire: {fileID: 6616878039149714478}
   defaultCon: {fileID: 2847055013916119198}
   aimCom: {fileID: 4946670193906062939}
   aimFlag: 0
@@ -611,7 +614,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2643829865452519171}
   m_LocalRotation: {x: -2.4802382e-10, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0000007671131, y: 0.38062012, z: 1.1863588}
+  m_LocalPosition: {x: -0, y: 0.38062012, z: 1.1863588}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5858926518654186696}

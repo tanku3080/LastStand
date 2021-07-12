@@ -722,7 +722,10 @@ MonoBehaviour:
   atackCount: 0
   nowHp: 0
   borderLine: {fileID: 1294418474318721282}
-  tankGunFire: {fileID: 0}
+  tankHead: {fileID: 940224541748008019}
+  tankGun: {fileID: 4346572232089888573}
+  tankBody: {fileID: 4409215363246378132}
+  tankGunFire: {fileID: 609806896631480480}
   defaultCon: {fileID: 7576060103055054428}
   aimCom: {fileID: 8274577534991772504}
   aimFlag: 0

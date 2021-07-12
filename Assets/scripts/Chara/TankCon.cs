@@ -6,11 +6,11 @@ public class TankCon : PlayerBase
     //ティーガー戦車は上下に0から∔65度
     //AddRelativeForceを使えば斜面での移動に最適かも
     //xの射角は入れない
-    Transform tankHead = null;
-    private Transform tankGun = null;
-    private Transform tankBody = null;
+    [SerializeField] Transform tankHead = null;
+    [SerializeField] Transform tankGun = null;
+    [SerializeField] Transform tankBody = null;
 
-    public GameObject tankGunFire = null;
+    [SerializeField] GameObject tankGunFire = null;
 
     public CinemachineVirtualCamera defaultCon;
     public CinemachineVirtualCamera aimCom;
@@ -57,10 +57,6 @@ public class TankCon : PlayerBase
         Rd = GetComponent<Rigidbody>();
         Trans = GetComponent<Transform>();
         PlayerObj = gameObject;
-        tankHead = Trans.GetChild(1);
-        tankGun = tankHead.GetChild(0);
-        tankGunFire = tankGun.GetChild(0).gameObject;
-        tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
         moveLimitRangeBar = TurnManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();

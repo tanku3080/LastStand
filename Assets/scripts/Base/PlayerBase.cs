@@ -22,6 +22,8 @@ public abstract class PlayerBase : MonoBehaviour,InterfaceScripts.ICharactorDama
     [HideInInspector] public int nowHp;
     /// <summary>敵を発見する事の出来る範囲</summary>
     public BoxCollider borderLine = null;
+    /// <summary>使用戦車の車種</summary>
+    public string tankType = null;
 
 
     public Rigidbody Rd { get; protected set; } = null;

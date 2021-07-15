@@ -57,7 +57,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
     [Header("特殊キーF")] public GameObject turretCorrectionF = null;
     [Header("キーボードの画像")] public GameObject keyUI = null;
-    /// <summary>命中率を表示するためのテキスト</summary>
+    /// <summary>命中率を表示するためのテキストで「F」を押された時に限り表示されるオブジェクト</summary>
     [Header("命中率を表示するテキスト")] public Text hitRateText = null;
     /// <summary>現在何を行えばいいかヒントをくれるテキスト</summary>
     [SerializeField] Text taskText = null;
@@ -229,7 +229,9 @@ public class TurnManager : Singleton<TurnManager>
     {
         float nearDis = 0;
         GameObject targetObj = null;
-        foreach (Enemy obj in TurnManager.Instance.enemys)
+
+        //近くの敵を探して返す
+        foreach (Enemy obj in enemys)
         {
             var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
             if (nearDis == 0 || nearDis > timDis)
@@ -246,7 +248,7 @@ public class TurnManager : Singleton<TurnManager>
     public void PlayMusic(bool isStop = false)
     {
 
-        //以下の変数は音楽を鳴らすのに必要な物
+        //音楽を鳴らすのに必要な変数
         bool isMusicPlayFlag = true;
         if (isMusicPlayFlag)
         {
@@ -279,23 +281,18 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>ゲームシーンで毎フレーム呼ばれるメソッド</summary>
     void TurnManag()
     {
+        //ターン数を表示するTimeLineを表示するための処理
         if (eventF)
         {
             director.stopped += TimeLineStop;
             eventF = false;
         }
+
+        //最初のターンの一番最初に行う処理
         if (generalTurn == 1 && turnFirstNumFlag)
         {
             turnFirstNumFlag = false;
-
-            MoveCounterText(moveValue);
-            nearEnemy = null;
-            timeLlineF = true;
-            eventF = true;
-            nowPayer = null;
-            nowEnemy = null;
-            players.Clear();
-            enemys.Clear();
+            //各種ステータスを各キャラに代入する
             foreach (var item in FindObjectsOfType<TankCon>())
             {
                 players.Add(item);
@@ -310,6 +307,7 @@ public class TurnManager : Singleton<TurnManager>
                 item.tankDamage = tankDamage;
                 item.borderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
                 item.atackCount = atackCounter;
+                item.tankType = tankTypeName;
             }
             foreach (var enemy in FindObjectsOfType<Enemy>())
             {
@@ -326,18 +324,34 @@ public class TurnManager : Singleton<TurnManager>
                 enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
                 enemy.eAtackCount = atackCounter;
                 enemy.parameterSetFlag = true;
+                enemy.tankType = tankTypeName;
             }
-            GameManager.Instance.ChengePop(true, moveValue.gameObject);
+
+            //最初に軽戦車を操作できるようにソートを行う
+            if (players[playerNum].GetComponent<TankCon>().tankType != "1_light")
+            {
+                players.Reverse();
+            }
+
             GameManager.Instance.ChengePop(true, hpBar);
+
+            //今の操作キャラを代入する
             nowPayer = players[playerNum].gameObject;
+            //最初に動かすキャラのアクセス権をtrueにする
             nowPayer.GetComponent<TankCon>().controlAccess = true;
+
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer.GetComponent<Rigidbody>().isKinematic = true;
+
+            //エイムようと通常状態のカメラを代入
             DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
             AimCon = nowPayer.GetComponent<TankCon>().aimCom;
+
             GameManager.Instance.ChengePop(false, AimCon.gameObject);
             GameManager.Instance.ChengePop(true, DefCon.gameObject);
+
+            //敵Turnになると最初に動かすキャラを代入する
             nowEnemy = enemys[enemyNum].gameObject;
             nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
             playerTurn = true;
@@ -350,6 +364,8 @@ public class TurnManager : Singleton<TurnManager>
             TurnTextMove();
             StartTimeLine();
         }
+
+        //プレイヤーが0になるか敵が0になると対応したシーン(GameOver,GameClea)に遷移する
         if (players.Count == 0)
         {
             isGameOvar = true;
@@ -538,7 +554,6 @@ public class TurnManager : Singleton<TurnManager>
         else
         {
             dontShoot = false;
-            MoveCounterText(moveValue);
             GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             MoveCharaSet(true, false, playerMoveValue);
         }
@@ -737,6 +752,10 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>キャラの攻撃回数</summary>
     public int atackCounter;
     /// <summary>
+    /// 戦車の車種
+    /// </summary>
+    public string tankTypeName;
+    /// <summary>
     /// 戦車を選択
     /// </summary>
     /// <param name="num">選択する戦車の名前</param>
@@ -759,6 +778,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 50f;
                 tankDamage = 35;
                 atackCounter = 1;
+                tankTypeName = "3_hevy";
                 break;
             case TANK_CHOICE.Panzer2:
                 charactorHp = 50;
@@ -770,6 +790,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 100f;
                 tankDamage = 20;
                 atackCounter = 2;
+                tankTypeName = "1_light";
                 break;
             case TANK_CHOICE.Shaman:
                 charactorHp = 80;
@@ -781,6 +802,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 50f;
                 tankDamage = 35;
                 atackCounter = 1;
+                tankTypeName = "3_hevy";
                 break;
             case TANK_CHOICE.Stuart:
                 charactorHp = 30;
@@ -792,6 +814,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 100f;
                 tankDamage = 20;
                 atackCounter = 2;
+                tankTypeName = "1_light";
                 break;
         }
     }

@@ -233,6 +233,8 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.moveValue.gameObject);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
@@ -403,8 +405,11 @@ public class TankCon : PlayerBase
             {
                 if (RayStart(tankGunFire.transform.position))
                 {
-                    if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                    else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                    if (hitRateValue > Random.Range(0,50))
+                    {
+                        if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                        else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                    }
                 }
                 else Debug.Log("砲塔が向いているけど命中率を呼んだ結果、外した");
             }
@@ -413,8 +418,12 @@ public class TankCon : PlayerBase
         {
             if (RayStart(tankGunFire.transform.position))
             {
-                if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                hitRateValue = Random.Range(0,100);
+                if (hitRateValue > Random.Range(0,100))
+                {
+                    if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                    else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                }
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);

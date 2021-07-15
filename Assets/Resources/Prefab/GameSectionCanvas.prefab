@@ -4200,7 +4200,7 @@ GameObject:
   - component: {fileID: 1216614380108458532}
   - component: {fileID: 5469681049487581030}
   m_Layer: 5
-  m_Name: Text
+  m_Name: moveCounterText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5511,7 +5511,6 @@ MonoBehaviour:
   enemyrHpBar: {fileID: 0}
   turnText: {fileID: 2078921488465599343}
   director: {fileID: 753125942330055879}
-  controlPanel: {fileID: 2277564617760736538}
   timeLineEndFlag: 0
   playerBGM: {fileID: 1696834832916021529}
   enemyBGM: {fileID: 6642333305556841134}
@@ -5548,6 +5547,7 @@ MonoBehaviour:
   tankSearchRanges: 0
   tankDamage: 0
   atackCounter: 0
+  tankTypeName: 
 --- !u!114 &2364724086868252124
 MonoBehaviour:
   m_ObjectHideFlags: 0

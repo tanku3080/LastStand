@@ -11,13 +11,20 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public float ETankLimitRange;
     protected Transform tankHead = null;
     protected Transform tankGun = null;
-    protected Transform leftTank;
-    protected Transform rightTank;
+
+    /// <summary>戦車を見えなくするために入れる戦車の履帯</summary>
+    protected Transform leftTank,rightTank;
+
     /// <summary>プレイヤーを発見する事の出来る範囲</summary>
     public BoxCollider EborderLine = null;
+    /// <summary>攻撃力</summary>
     public int eTankDamage;
+    /// <summary>攻撃カウント</summary>
     public int eAtackCount;
+    /// <summary>hpバーの位置を入れる位置</summary>
     public Transform hpBarpos = null;
+    /// <summary>戦車の車種</summary>
+    public string tankType = null;
 
     public Rigidbody Rd { get; protected set; } = null;
     public Animator Anime { get; protected set; } = null;

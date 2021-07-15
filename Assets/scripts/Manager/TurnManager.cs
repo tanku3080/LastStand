@@ -418,6 +418,7 @@ public class TurnManager : Singleton<TurnManager>
                     nowPayer.GetComponent<TankCon>().aimFlag = false;
                     nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
                 }
+                //現在のプレイヤーが配列の最後にある時に限りターンエンドUIを表示する
                 if (playerNum >= players.Count)
                 {
                     GameManager.Instance.ChengePop(true,endObj);
@@ -429,6 +430,7 @@ public class TurnManager : Singleton<TurnManager>
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
+
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
@@ -527,7 +529,7 @@ public class TurnManager : Singleton<TurnManager>
     public void DelayGameClear() => GameSceneChange();
     /// <summary>GameOver時に呼び出される。Invokeを使う為のメソッド</summary>
     public void DelayGameOver() => GameSceneChange();
-    /// <summary>ゲームプレイからの切り替えで使う。待機時間を使わないならこれを使う</summary>
+    /// <summary>ゲームプレイからの切り替えで使う。待機時間を使わないなら直接これを使う</summary>
     /// <param name="status">切り替え先のシーン</param>
     public void GameSceneChange()
     {
@@ -596,6 +598,7 @@ public class TurnManager : Singleton<TurnManager>
                 nowPayer.GetComponent<TankCon>().aimFlag = false;
                 nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
             }
+            //プレイヤーターン時のUIを非表示にする
             GameManager.Instance.ChengePop(false,tankChengeObj);
             GameManager.Instance.ChengePop(false,radarObj);
             GameManager.Instance.ChengePop(false,pauseObj);
@@ -606,9 +609,12 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false,announceImage.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(false,hitRateText.gameObject);
+
             playerTurn = false;
             enemyTurn = true;
             timeLlineF = true;
+
+            //音楽を切り替える
             nowPayer.GetComponent<TankCon>().TankMoveSFXPlay(false);
             nowPayer.GetComponent<TankCon>().controlAccess = false;
             enemyFirstColl = true;
@@ -618,6 +624,7 @@ public class TurnManager : Singleton<TurnManager>
         //敵が呼んだ場合の処理
         if (enemyTurn)
         {
+            //敵がこれを呼び出した際に指定ターンになっていたらゲームオーバーシーンに遷移する
             if (maxTurn == generalTurn)
             {
                 SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_OVER);
@@ -658,7 +665,16 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
     public void GameQuit()
     {
-        Application.Quit();
+        //buildした状態ならQuit
+        if (Application.isPlaying)
+        {
+            Application.Quit();
+
+        }
+        else
+        {
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
     }
     /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)

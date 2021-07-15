@@ -380,7 +380,7 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>残りアクション回数を表示するためのメソッド</summary>
     /// <param name="text">表示するためのテキスト</param>
-    public void MoveCounterText(Text text) => text.text = $"MOVE: {PlayerMoveVal}";
+    public void MoveCounterText(Text text) => text.text = $"SP: {PlayerMoveVal}";
     /// <summary>ターン開始時にどの陣営のターンか表示する為のメソッド</summary>
     void TurnTextMove()
     {

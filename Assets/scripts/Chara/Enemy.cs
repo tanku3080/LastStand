@@ -153,7 +153,7 @@ public class Enemy : EnemyBase
     /// <summary>移動するための挙動</summary>
     void EnemyMove()
     {
-        if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
+        if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0 && TurnManager.Instance.enemyTurn)
         {
             if (playerFind)
             {
@@ -164,6 +164,7 @@ public class Enemy : EnemyBase
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
+                Debug.Log("回転中");
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
                 if (angle < 3)
                 {

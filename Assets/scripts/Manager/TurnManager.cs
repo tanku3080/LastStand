@@ -431,13 +431,20 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
 
+            //今操作しているプレイヤーのコントロール権をなくす
             nowPayer.GetComponent<TankCon>().controlAccess = false;
+
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
             GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
+
+            //次のプレイヤーをセットする
             nowPayer = players[playerNum].gameObject;
+
             HPbarMovebarset();
+
+            //次のプレイヤーのコントロールアクセス権をアクティブ化
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             VcamChenge();
 
@@ -609,6 +616,7 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false,announceImage.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(false,hitRateText.gameObject);
+            GameManager.Instance.ChengePop(false,moveValue.gameObject);
 
             playerTurn = false;
             enemyTurn = true;
@@ -645,6 +653,7 @@ public class TurnManager : Singleton<TurnManager>
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
                 dontShoot = false;
+                turnEndUi = false;
                 return;
             }
         }
@@ -718,6 +727,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>現在何をすればいいのかを画面上に表示する</summary>
     public void TaskTextSet()
     {
+        //プレイヤーターンに限り有効。それぞれの条件に合致したテキストを表示させる
         if (playerTurn)
         {
             var playerNow = nowPayer.GetComponent<TankCon>();

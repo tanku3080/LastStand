@@ -242,6 +242,7 @@ public class TankCon : PlayerBase
 
             if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
             {
+                Debug.Log("攻撃開始");
                 if (TurnManager.Instance.turnEndUi != true)
                 {
                     if (atackCount > limitCounter)
@@ -331,6 +332,7 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);
             GameManager.Instance.ChengePop(false,aimCom.gameObject);
+            GameManager.Instance.ChengePop(false,TurnManager.Instance.moveValue.gameObject);
             var p = tankGun.transform.rotation;
             p.x = 0;
             p.z = 0;

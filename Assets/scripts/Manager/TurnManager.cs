@@ -674,16 +674,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
     public void GameQuit()
     {
-        //buildした状態ならQuit
-        if (Application.isPlaying)
-        {
-            Application.Quit();
-
-        }
-        else
-        {
-            UnityEditor.EditorApplication.isPlaying = false;
-        }
+        Application.Quit();
     }
     /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)

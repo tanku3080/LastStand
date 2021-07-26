@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 205644769545250705}
   m_Layer: 0
   m_Name: Stuart
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -433,8 +433,13 @@ MonoBehaviour:
   hpBarpos: {fileID: 8442342482970970984}
   tankType: 
   enemyNowHp: 0
+  isDie: 0
   agent: {fileID: 8706369397841036453}
-  patrolPos: []
+  patrolPos:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   controlAccess: 0
   nowCounter: 0
   enemyMove: 0
@@ -602,6 +607,7 @@ GameObject:
   - component: {fileID: 6110328811495728772}
   - component: {fileID: 314017997725354200}
   - component: {fileID: 2506700398636156406}
+  - component: {fileID: 1508226543}
   m_Layer: 0
   m_Name: M5A1_Stuart_Turret
   m_TagString: Untagged
@@ -673,3 +679,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1508226543
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7959255750150524292}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5703778, y: 0.89470696, z: 1.7709566}
+  m_Center: {x: 0, y: 0, z: 0}

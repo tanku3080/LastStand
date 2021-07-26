@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 /// <summary>
-/// テキスト表示と編成画面の表示
+/// テキスト表示
 /// </summary>
 public class TextCon : MonoBehaviour
 {
@@ -29,8 +29,11 @@ public class TextCon : MonoBehaviour
 
 	void Start()
 	{
+		//特定のゲームオブジェクトをシーン内から検索してuiTextに格納する
 		uiText = GameObject.Find("Texts").GetComponent<TextMeshProUGUI>();
+		//ResourcesファイルにあるフォントをuiTextのfontにアタッチする
 		uiText.font = Resources.Load<TMP_FontAsset>("font/mplus-1mn-regular SDF");
+		//読み込むテキストをassetに格納
 		asset = Resources.Load<TextAsset>("Text");
 		string stringNum = asset.text;
 		unit = stringNum.Split('\n');
@@ -46,6 +49,8 @@ public class TextCon : MonoBehaviour
 				SetNextLine();
 				firstSet = false;
 			}
+
+			//Pボタンを押すとフェードを行いゲーム本編に遷移する
 			if (Input.GetKeyUp(KeyCode.P))
 			{
 				SceneFadeManager.Instance.SceneOutAndChangeSystem(0.005f);
@@ -85,6 +90,7 @@ public class TextCon : MonoBehaviour
 	}
 
 
+	/// <summary>次のテキストを用意する</summary>
 	void SetNextLine()
 	{
 		currentText = unit[currentLine];

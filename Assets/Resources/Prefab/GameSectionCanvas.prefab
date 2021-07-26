@@ -5811,7 +5811,7 @@ GameObject:
   - component: {fileID: 3246635605100851451}
   - component: {fileID: 503987826280659063}
   - component: {fileID: 8027960592524116759}
-  - component: {fileID: 4774245041416341720}
+  - component: {fileID: 3853417981455196616}
   m_Layer: 5
   m_Name: EnemyPointer
   m_TagString: Untagged
@@ -5876,7 +5876,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4774245041416341720
+--- !u!114 &3853417981455196616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

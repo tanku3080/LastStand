@@ -94,8 +94,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>ゲームオーバーかどうか？</summary>
     [HideInInspector] public bool isGameOvar = false;
 
-    /// <summary>アップデート関数内で敵ターンの最初に使うフラグ</summary>
-    bool enemyFirstColl = true;
+
     /// <summary>敵を発見したらtrue</summary>
     [HideInInspector] public bool FoundEnemy = false;
     /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
@@ -109,6 +108,7 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public bool turnEndUi = false;
     void Start()
     {
+        //特定のオブジェクトを非アクティブ化する
         GameManager.Instance.ChengePop(false, tankChengeObj);
         GameManager.Instance.ChengePop(false, radarObj);
         GameManager.Instance.ChengePop(false, pauseObj);
@@ -132,10 +132,16 @@ public class TurnManager : Singleton<TurnManager>
 
     void Update()
     {
+        //シーン遷移の際に行われるフェードが終了次第処理を開始する
         if (SceneFadeManager.Instance.FadeStop)
         {
+            //レーダーや特殊キーに使うため近い敵を探してnearEnemyに格納する
             nearEnemy = SerchTag(nowPayer);
+
+            //ターン全体の処理
             TurnManag();
+
+            //UIを表示するボタンが押されたらButtonSelected()メソッド内で処理を行う
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
@@ -151,6 +157,8 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>対応するボタンのいずれかが押されたら処理を行う</summary>
     public void ButtonSelected()
     {
+        //いずれかのボタンが押された場合キャラクターは攻撃、移動が出来ないようになる。
+        //また、もう一度同じボタンを押された場合やイベント処理でBack()を使っているボタンが押された場合UIを非表示にする
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
             dontShoot = clickC;
@@ -248,7 +256,7 @@ public class TurnManager : Singleton<TurnManager>
     public void PlayMusic(bool isStop = false)
     {
 
-        //音楽を鳴らすのに必要な変数
+        //updateメソッド内で処理を行うのでisMusicPlayFlagで毎フレーム中身が呼び出されないようにする
         bool isMusicPlayFlag = true;
         if (isMusicPlayFlag)
         {
@@ -292,7 +300,7 @@ public class TurnManager : Singleton<TurnManager>
         if (generalTurn == 1 && turnFirstNumFlag)
         {
             turnFirstNumFlag = false;
-            //各種ステータスを各キャラに代入する
+            //各種ステータスを各キャラの指定の値に代入する
             foreach (var item in FindObjectsOfType<TankCon>())
             {
                 players.Add(item);
@@ -333,6 +341,7 @@ public class TurnManager : Singleton<TurnManager>
                 players.Reverse();
             }
 
+            //プレイヤーターンが必ず最初に来るようにしているのでhpBarを表示する
             GameManager.Instance.ChengePop(true, hpBar);
 
             //今の操作キャラを代入する
@@ -340,6 +349,7 @@ public class TurnManager : Singleton<TurnManager>
             //最初に動かすキャラのアクセス権をtrueにする
             nowPayer.GetComponent<TankCon>().controlAccess = true;
 
+            //通常カメラとエイム用のカメラが入っているゲームオブジェクトをアクティブ化する
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer.GetComponent<Rigidbody>().isKinematic = true;
@@ -348,16 +358,19 @@ public class TurnManager : Singleton<TurnManager>
             DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
             AimCon = nowPayer.GetComponent<TankCon>().aimCom;
 
+            //カメラを通常状態にする
             GameManager.Instance.ChengePop(false, AimCon.gameObject);
             GameManager.Instance.ChengePop(true, DefCon.gameObject);
 
-            //敵Turnになると最初に動かすキャラを代入する
+            //敵Turnになると最初に動かすキャラを代入して、BGMを鳴らす
             nowEnemy = enemys[enemyNum].gameObject;
             nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
             playerTurn = true;
             generalTurn = 1;
             PlayMusic();
         }
+
+        //現在のターンを画面上に表示するためにTimeLineを作動させる
         if (timeLlineF)
         {
             
@@ -365,7 +378,7 @@ public class TurnManager : Singleton<TurnManager>
             StartTimeLine();
         }
 
-        //プレイヤーが0になるか敵が0になると対応したシーン(GameOver,GameClea)に遷移する
+        //プレイヤーが0になるか敵が0になると対応したシーン(GameOver,GameClear)に遷移する
         if (players.Count == 0)
         {
             isGameOvar = true;
@@ -386,6 +399,7 @@ public class TurnManager : Singleton<TurnManager>
     {
 
         Text text = turnText.GetComponent<Text>();
+        //状況に応じて表示するテキストを変更する処理
         if (generalTurn == maxTurn)
         {
             text.text = "Last";
@@ -408,6 +422,7 @@ public class TurnManager : Singleton<TurnManager>
     /// <param name="enemy">enemyの場合はtrue</param>
     public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
+        //playerTurnと引数playeがtrueなら現在操作しているキャラの変更処理を行う
         if (playerTurn && player)
         {
             if (moveV > 0)
@@ -418,7 +433,7 @@ public class TurnManager : Singleton<TurnManager>
                     nowPayer.GetComponent<TankCon>().aimFlag = false;
                     nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
                 }
-                //現在のプレイヤーが配列の最後にある時に限りターンエンドUIを表示する
+                //現在のプレイヤーがplayers配列の最後にある時に限りターンエンドUIを表示する
                 if (playerNum >= players.Count)
                 {
                     GameManager.Instance.ChengePop(true,endObj);
@@ -434,6 +449,7 @@ public class TurnManager : Singleton<TurnManager>
             //今操作しているプレイヤーのコントロール権をなくす
             nowPayer.GetComponent<TankCon>().controlAccess = false;
 
+            //次の操作プレイヤーの為に特殊コマンドボタンのUIやカメラを非アクティブ化する
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
             GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
@@ -453,14 +469,11 @@ public class TurnManager : Singleton<TurnManager>
             playerNum++;
         }
 
+        //elayerTurnと引数enemyがtrueなら現在操作しているキャラの変更処理を行う
         if (enemyTurn && enemy)
         {
-            if (enemyFirstColl)
-            {
-                enemyFirstColl = false;
-                nowEnemy.GetComponent<Enemy>().controlAccess = true;
-                enemyIsMove = true;
-            }
+            nowEnemy.GetComponent<Enemy>().controlAccess = true;
+            enemyIsMove = true;
             if (moveV > 0)
             {
                 if (enemys.Count >= enemyNum || nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount)
@@ -485,9 +498,10 @@ public class TurnManager : Singleton<TurnManager>
         PlayMusic();
 
     }
-    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替える</summary>
+    /// <summary>キャラが切り替わった際にPlayerのHPbarとMovebarを切り替える</summary>
     void HPbarMovebarset()
     {
+        //全てのPlayerに設定されている最大HPを代入する
         foreach (var item in players)
         {
             item.GetComponent<TankCon>().moveLimitRangeBar.value = item.GetComponent<TankCon>().moveLimitRangeBar.maxValue;
@@ -510,6 +524,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     public void CharactorDie(GameObject thisObj)
     {
+        //撃破用のパーティクルを再生して条件に当てはまっていないか確認を行う
         if (thisObj.CompareTag("Player"))
         {
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
@@ -625,7 +640,6 @@ public class TurnManager : Singleton<TurnManager>
             //音楽を切り替える
             nowPayer.GetComponent<TankCon>().TankMoveSFXPlay(false);
             nowPayer.GetComponent<TankCon>().controlAccess = false;
-            enemyFirstColl = true;
             MoveCharaSet(false, true);
             return;
         }
@@ -672,10 +686,7 @@ public class TurnManager : Singleton<TurnManager>
     }
 
     /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
-    public void GameQuit()
-    {
-        Application.Quit();
-    }
+    public void GameQuit() => Application.Quit();
     /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)
     {

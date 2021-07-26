@@ -5,10 +5,6 @@ public class RadarCon : MonoBehaviour
     public Image image;
     float time = 0;
     float speed;
-    void Start()
-    {
-        image = gameObject.GetComponent<Image>();
-    }
 
     private void Update()
     {

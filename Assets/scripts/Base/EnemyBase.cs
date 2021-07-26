@@ -41,6 +41,10 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     protected Slider slider;
     [HideInInspector] public int enemyNowHp;
 
+    /// <summary>このキャラは現在撃破されているか判定する</summary>
+    [HideInInspector] public bool isDie = false;
+
+
     /// <summary>継承先のスクリプトをアタッチしている敵が倒されたら行う処理</summary>
     /// <param name="target">倒された敵</param>
     protected void EnemyDie(GameObject target)
@@ -60,6 +64,7 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
         //現在のHPが0以下なら敵を倒す処理に移行する
         if (enemyNowHp <= 0)
         {
+            isDie = true;
             EnemyDie(EnemyObj);
         }
         else

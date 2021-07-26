@@ -241,11 +241,14 @@ public class TurnManager : Singleton<TurnManager>
         //近くの敵を探して返す
         foreach (Enemy obj in enemys)
         {
-            var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
-            if (nearDis == 0 || nearDis > timDis)
+            if (obj.isDie == false)
             {
-                nearDis = timDis;
-                targetObj = obj.gameObject;
+                var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
+                if (nearDis == 0 || nearDis > timDis)
+                {
+                    nearDis = timDis;
+                    targetObj = obj.gameObject;
+                }
             }
         }
         return targetObj;

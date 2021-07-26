@@ -39,6 +39,7 @@ public class Enemy : EnemyBase
     [HideInInspector] public bool parameterSetFlag = false;
     /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue</summary>
     [HideInInspector] public bool enemyAppearance = false;
+
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -164,7 +165,6 @@ public class Enemy : EnemyBase
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
-                Debug.Log("回転中");
                 float angle = Vector3.Angle(pointDir, tankGun.forward);
                 if (angle < 3)
                 {
@@ -263,6 +263,7 @@ public class Enemy : EnemyBase
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
             ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform, ParticleSystemEXP.ParticleStatus.GUN_FIRE);
             nowCounter++;
+            Debug.Log("攻撃を行った");
             EnemyActionSet(EnemyState.IDOL);//
         }
         return;

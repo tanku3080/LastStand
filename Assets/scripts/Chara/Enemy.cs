@@ -72,6 +72,7 @@ public class Enemy : EnemyBase
         {
             if (TurnManager.Instance.enemyIsMove)
             {
+                Debug.Log("現在動いている敵" + gameObject.name);
                 if (enemyMove)
                 {
                     EnemyMoveLimit();

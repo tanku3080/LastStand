@@ -335,6 +335,7 @@ GameObject:
   - component: {fileID: 3830658205450257265}
   - component: {fileID: 8706369397841036453}
   - component: {fileID: 205644769545250705}
+  - component: {fileID: 1508226543}
   m_Layer: 0
   m_Name: Stuart
   m_TagString: Enemy
@@ -484,6 +485,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!65 &1508226543
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6606005299345233778}
+  m_Material: {fileID: 13400000, guid: ea67e942e0ae2404fa9f96792537d732, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.209623, y: 1.6425272, z: 4.794449}
+  m_Center: {x: 0.00000023841858, y: 0.87733775, z: -0.047833562}
 --- !u!1 &6725285967994303298
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,7 +621,7 @@ GameObject:
   - component: {fileID: 6110328811495728772}
   - component: {fileID: 314017997725354200}
   - component: {fileID: 2506700398636156406}
-  - component: {fileID: 1508226543}
+  - component: {fileID: 2066026133968829693}
   m_Layer: 0
   m_Name: M5A1_Stuart_Turret
   m_TagString: Untagged
@@ -679,7 +693,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1508226543
+--- !u!65 &2066026133968829693
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -150,6 +150,7 @@ public class Enemy : EnemyBase
         agent.speed = f ? enemySpeed / 4 : 0;
         agent.angularSpeed = f ? ETankTurn_Speed : 0;
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
+        agent.isStopped = !f;
     }
 
     /// <summary>移動するための挙動</summary>
@@ -162,7 +163,6 @@ public class Enemy : EnemyBase
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 enemyMove = false;
                 AgentParamSet(enemyMove);
-                agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);

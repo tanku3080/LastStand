@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamage
 {
@@ -39,6 +40,8 @@ public abstract class EnemyBase : MonoBehaviour,InterfaceScripts.ICharactorDamag
     public Transform Trans { get; protected set; } = null;
     public GameObject EnemyObj { get; protected set; } = null;
     protected Slider slider;
+    public NavMeshAgent agent;
+
     [HideInInspector] public int enemyNowHp;
 
     /// <summary>このキャラは現在撃破されているか判定する</summary>

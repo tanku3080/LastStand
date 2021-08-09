@@ -87,15 +87,16 @@ public class TankCon : PlayerBase
                 GameManager.Instance.ChengePop(true, aimCom.gameObject);
                 cameraActive = false;
             }
-            if (Input.GetKey(KeyCode.J)|| Input.GetKey(KeyCode.L))
+            var mouseVal = Input.GetAxis("Mouse X");
+            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
             {
                 if (TurnManager.Instance.playerIsMove)
                 {
                     Quaternion rotetion;
                     bool keySet = false;
-                    if (Input.GetKey(KeyCode.J)) keySet = true;
-                    else if (Input.GetKey(KeyCode.L)) keySet = false;
-                    rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
+                    if (Input.GetKey(KeyCode.J) || mouseVal < 0) keySet = true;
+                    else if (Input.GetKey(KeyCode.L) || mouseVal > 0) keySet = false;
+                    rotetion = Quaternion.Euler((aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime * (keySet ? Vector3.down : Vector3.up));
                     tankHead.rotation *= rotetion;
                     if (isMoveBGM_turret)
                     {
@@ -104,7 +105,7 @@ public class TankCon : PlayerBase
                     }
                 }
             }
-            if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L))//砲塔旋回を辞めたら止まる
+            if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
             {
                 isMoveBGM_turret = true;
                 TankMoveSFXPlay(false,BGMType.HEAD_MOVE);

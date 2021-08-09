@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.AI;
 public class Enemy : EnemyBase
 {
     /// <summary>敵の移動ステート</summary>
@@ -8,7 +7,6 @@ public class Enemy : EnemyBase
     {
         IDOL,MOVE,ATACK
     }
-    public NavMeshAgent agent;
     /// <summary>敵の射撃位置</summary>
     GameObject tankGunFire = null;
     /// <summary>敵の車体</summary>
@@ -52,7 +50,6 @@ public class Enemy : EnemyBase
         tankBody = Trans.GetChild(0);
         leftTank = tankBody.GetChild(0);
         rightTank = tankBody.GetChild(1);
-        agent = GetComponent<NavMeshAgent>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
         slider = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<Slider>();
@@ -150,7 +147,7 @@ public class Enemy : EnemyBase
         agent.speed = f ? enemySpeed / 4 : 0;
         agent.angularSpeed = f ? ETankTurn_Speed : 0;
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
-        agent.isStopped = !f;
+        Debug.Log("paramValue:" + f);
     }
 
     /// <summary>移動するための挙動</summary>

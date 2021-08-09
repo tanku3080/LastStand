@@ -85,6 +85,7 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public bool dontShoot = false;
     /// <summary>戦車を切り替えるフラグ</summary>
     [HideInInspector] public bool tankChangeFlag = false;
+
     //timeline関連
     bool timeLlineF = true;
     bool eventF = true;
@@ -105,6 +106,8 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>戦車の移動音の大きさ</summary>
     [HideInInspector] public float TankMoveValue { get { return tankVal; }set { tankVal = value; } }
     private float tankVal = 1f;
+
+
     [HideInInspector] public bool turnEndUi = false;
     void Start()
     {

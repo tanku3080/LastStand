@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using Cinemachine;
 public class TankCon : PlayerBase
 {
-    //ティーガー戦車は上下に0から∔65度
     //AddRelativeForceを使えば斜面での移動に最適かも
     //xの射角は入れない
     [SerializeField] Transform tankHead = null;
@@ -70,7 +69,7 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        if (controlAccess && TurnManager.Instance.timeLineEndFlag)
+        if (controlAccess && TurnManager.Instance.timeLineEndFlag && TurnManager.Instance.clickC)
         {
             Rd.isKinematic = false;
             if (limitRangeFlag)

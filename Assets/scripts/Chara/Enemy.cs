@@ -102,7 +102,6 @@ public class Enemy : EnemyBase
                 if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0)
                 {
                     oneUseFlag = false;
-                    agent.ResetPath();
                     nowCounter = 0;
                     parameterSetFlag = true;
                     TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
@@ -147,7 +146,6 @@ public class Enemy : EnemyBase
         agent.speed = f ? enemySpeed / 4 : 0;
         agent.angularSpeed = f ? ETankTurn_Speed : 0;
         agent.acceleration = f ? ETankLimitSpeed / 2 : 0;
-        Debug.Log("paramValue:" + f);
     }
 
     /// <summary>移動するための挙動</summary>

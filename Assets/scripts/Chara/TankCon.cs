@@ -51,6 +51,9 @@ public class TankCon : PlayerBase
     /// <summary>命中率</summary>
     int hitRateValue = 0;
 
+    /// <summary>命中率を表示するオブジェクトを格納する</summary>
+    [SerializeField] private LineRenderer m_lineRenderer = null;
+
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
@@ -69,7 +72,7 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        if (controlAccess && TurnManager.Instance.timeLineEndFlag && TurnManager.Instance.clickC)
+        if (controlAccess && TurnManager.Instance.timeLineEndFlag && TurnManager.Instance.playerIsMove)
         {
             Rd.isKinematic = false;
             if (limitRangeFlag)
@@ -283,11 +286,14 @@ public class TankCon : PlayerBase
                             GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
                             if (perfectHit)
                             {
+                                //確実に敵に命中するので100%の文字を入れる
                                 TurnManager.Instance.hitRateText.text = $"命中率100%";
+                                //TargetUI(hitRateValue);
                             }
                             else
                             {
                                 TurnManager.Instance.hitRateText.text = $"命中率{hitRateValue}%";
+                                //TargetUI(hitRateValue);
                             }
                         }
                         else
@@ -314,6 +320,7 @@ public class TankCon : PlayerBase
                             if (hitRateFalg && turretCorrection)
                             {
                                 TurnManager.Instance.hitRateText.text = $"命中率100%";
+                                //TargetUI(hitRateValue);
                             }
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
@@ -345,6 +352,36 @@ public class TankCon : PlayerBase
         //攻撃してなかろうとリロード機能は実施される
         TurnManager.Instance.PlayerMoveVal--;
         limitCounter = 0;
+    }
+    /// <summary>命中率を円の大きさで表す機能</summary>
+    void TargetUI(float radius,float lineWidth = 0.1f)
+    {
+        m_lineRenderer.GetComponent<LineRenderer>();
+        //radiusは1を最高値として計算する
+        radius /= 10;
+        radius /= 100;
+        radius -= 1;
+
+        //もしも半径が0になったら円縮小の最小値を代入する
+        if (radius == 0)
+        {
+            radius = -0.99f;
+        }
+
+        int segments = 380;
+        m_lineRenderer.startWidth = lineWidth;
+        m_lineRenderer.endWidth = lineWidth;
+        m_lineRenderer.positionCount = segments;
+        var points = new Vector3[segments];
+        for (int i = 0; i < segments; i++)
+        {
+            //x,yの中心座標は0にする
+            var rad = Mathf.Deg2Rad * (i * 380f / segments);
+            var x = aimCom.transform.position.x + Mathf.Sin(rad) * radius;
+            var y = aimCom.transform.position.y + Mathf.Cos(rad) * radius;
+            points[i] = new Vector3(x, y, 0);
+        }
+        m_lineRenderer.SetPositions(points);
     }
 
     /// <summary>砲塔を敵に向ける機能</summary>

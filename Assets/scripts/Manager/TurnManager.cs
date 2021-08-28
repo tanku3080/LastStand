@@ -742,21 +742,21 @@ public class TurnManager : Singleton<TurnManager>
             ButtonTips.enabled = true;
             if (playerNow.limitCounter == playerNow.atackCount)
             {
-                taskText.text = "Enterキーでターンエンドするか\nspaceキーで戦車を切り替えてください";
+                taskText.text = "<color=red>Enter</color>キーでターンエンドするか\nspaceキーで戦車を切り替えてください";
             }
             else if (playerNow.limitCounter != playerNow.atackCount)
             {
                 if (FoundEnemy)
                 {
-                    taskText.text = "右クリックでエイム";
+                    taskText.text = "<color=red>右クリック</color>でエイム";
                     if (playerNow.aimFlag)
                     {
-                        taskText.text = "精度向上ボタンF、自動エイムボタンRの\nどちらかを押すか敵に攻撃";
+                        taskText.text = "精度向上ボタン<color=red>F</color>、自動エイムボタン<color=red>R</color>の\nどちらかを押すか敵に攻撃";
                     }
                 }
                 else
                 {
-                    taskText.text = "Qキーでレーダーを起動して\n点滅速度を頼りに敵を探す";
+                    taskText.text = "<color=red>Q</color>キーでレーダーを起動して\n点滅速度を頼りに敵を探す";
                 }
             }
         }

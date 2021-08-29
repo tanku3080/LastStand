@@ -27,6 +27,8 @@ public class Enemy : EnemyBase
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
     [HideInInspector] public bool enemyMove = false;
+
+    /// <summary>敵の頭上に表示する識別敵味方識別マーク</summary>
     [SerializeField] SpriteRenderer enemyMaker = null;
 
     /// <summary>レイキャストが通っているかを判定</summary>
@@ -61,8 +63,7 @@ public class Enemy : EnemyBase
         AgentParamSet(enemyMove);
        
     }
-    /// <summary>switch文で行動終了する際に使う変数</summary>
-    bool oneUseFlag = true;
+
     /// <summary>待機を有効にする</summary>
     private bool timerFalg = false;
     private void Update()
@@ -101,17 +102,21 @@ public class Enemy : EnemyBase
             case EnemyState.IDOL:
 
                 timerFalg = true;
+
+                //指定時間待機する
                 WaitTimer(timerFalg);
-                if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0 || playerNotFound)
+
+                //攻撃上限、移動回数、移動値が0か、巡回ポイントを一巡してもPlayerを発見できなかった場合
+                if (eAtackCount == nowCounter || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0 || playerNotFound)
                 {
                     playerNotFound = false;
-                    oneUseFlag = false;
                     nowCounter = 0;
                     parameterSetFlag = true;
                     AgentParamSet(false);
                     TurnManager.Instance.MoveCharaSet(false, true);
                 }
 
+                //敵の行動回数または移動値が0以上なら攻撃か移動を選択
                 if (TurnManager.Instance.EnemyMoveVal > 0 && enemyMoveNowValue > 0)
                 {
                     if (isPlayer && eAtackCount > nowCounter)

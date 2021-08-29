@@ -174,7 +174,7 @@ public class TankCon : PlayerBase
             }
 
             //右クリックを押してエイムモードに移行する
-            if (Input.GetButtonUp("Fire2") && tankHeadDontMove)
+            if (Input.GetButtonUp("Fire2") && TurnManager.Instance.uiActive == false)
             {
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (aimFlag) aimFlag = false;
@@ -250,7 +250,7 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
-            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false && TurnManager.Instance.uiActive == false)
+            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false && TurnManager.Instance.uiActive == false && tankHeadDontMove)
             {
                 Debug.Log("攻撃開始");
                 if (atackCount > limitCounter)
@@ -273,6 +273,7 @@ public class TankCon : PlayerBase
                         turretCorrection = false;
                         TurnManager.Instance.playerIsMove = true;
                         tankHeadDontMove = true;
+                        TurnManager.Instance.uiActive = false;
                         GunAccuracy(turretCorrection);
                     }
                     else
@@ -283,6 +284,7 @@ public class TankCon : PlayerBase
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
                             tankHeadDontMove = false;
+                            TurnManager.Instance.uiActive = true;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
@@ -290,6 +292,7 @@ public class TankCon : PlayerBase
                         //命中率の値を計算して表示する為の処理
                         if (hitRateFalg)
                         {
+                            TurnManager.Instance.uiActive = true;
                             hitRateValue = Random.Range(0, 100);
                             GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
                             if (perfectHit)
@@ -306,6 +309,7 @@ public class TankCon : PlayerBase
                         }
                         else
                         {
+                            TurnManager.Instance.uiActive = false;
                             TurnManager.Instance.hitRateText.text = null;
                             GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
                         }
@@ -345,6 +349,7 @@ public class TankCon : PlayerBase
             //エイムモードを解除する
             TurnManager.Instance.playerIsMove = true;
             tankHeadDontMove = true;
+            TurnManager.Instance.uiActive = false;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);

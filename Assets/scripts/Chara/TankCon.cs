@@ -51,6 +51,9 @@ public class TankCon : PlayerBase
     /// <summary>命中率</summary>
     int hitRateValue = 0;
 
+    /// <summary>falseなら砲塔に関連する動作が出来なくなる</summary>
+    private bool tankHeadDontMove = true;
+
     /// <summary>命中率を表示するオブジェクトを格納する</summary>
     [SerializeField] private LineRenderer m_lineRenderer = null;
 
@@ -72,102 +75,106 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        if (controlAccess && TurnManager.Instance.timeLineEndFlag && TurnManager.Instance.playerIsMove)
+        if (controlAccess && TurnManager.Instance.timeLineEndFlag)
         {
-            Rd.isKinematic = false;
-            if (limitRangeFlag)
+            //playerIsMoveがtrueなら操作権を与えられた戦車が操作できるようになる
+            if (TurnManager.Instance.playerIsMove)
             {
-                limitRangeFlag = false;
-                moveLimitRangeBar.maxValue = tankLimitRange;
-                moveLimitRangeBar.value = tankLimitRange;
-                tankHpBar.maxValue = playerLife;
-                tankHpBar.value = playerLife;
-            }
-            if (cameraActive)
-            {
-                GameManager.Instance.ChengePop(true, defaultCon.gameObject);
-                GameManager.Instance.ChengePop(true, aimCom.gameObject);
-                cameraActive = false;
-            }
-            var mouseVal = Input.GetAxis("Mouse X");
-            if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
-            {
-                if (TurnManager.Instance.playerIsMove)
+                Rd.isKinematic = false;
+                if (limitRangeFlag)
                 {
-                    Quaternion rotetion;
-                    bool keySet = false;
-                    if (Input.GetKey(KeyCode.J) || mouseVal < 0) keySet = true;
-                    else if (Input.GetKey(KeyCode.L) || mouseVal > 0) keySet = false;
-                    rotetion = Quaternion.Euler((aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime * (keySet ? Vector3.down : Vector3.up));
-                    tankHead.rotation *= rotetion;
-                    if (isMoveBGM_turret)
-                    {
-                        isMoveBGM_turret = false;
-                        TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
-                    }
+                    limitRangeFlag = false;
+                    moveLimitRangeBar.maxValue = tankLimitRange;
+                    moveLimitRangeBar.value = tankLimitRange;
+                    tankHpBar.maxValue = playerLife;
+                    tankHpBar.value = playerLife;
                 }
-            }
-            if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
-            {
-                isMoveBGM_turret = true;
-                TankMoveSFXPlay(false,BGMType.HEAD_MOVE);
-            }
-
-            if (IsGranded)
-            {
-                if (TurnManager.Instance.playerIsMove)
+                if (cameraActive)
                 {
-                    moveV = Input.GetAxis("Vertical");
-                    moveH = Input.GetAxis("Horizontal");
-                    if (moveH != 0)
+                    GameManager.Instance.ChengePop(true, defaultCon.gameObject);
+                    GameManager.Instance.ChengePop(true, aimCom.gameObject);
+                    cameraActive = false;
+                }
+                var mouseVal = Input.GetAxis("Mouse X");
+                if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
+                {
+                    if (TurnManager.Instance.playerIsMove)
                     {
-                        isTankRot = true;
-                        if (isMoveBGM_body)
+                        Quaternion rotetion;
+                        bool keySet = false;
+                        if (Input.GetKey(KeyCode.J) || mouseVal < 0) keySet = true;
+                        else if (Input.GetKey(KeyCode.L) || mouseVal > 0) keySet = false;
+                        rotetion = Quaternion.Euler((aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime * (keySet ? Vector3.down : Vector3.up));
+                        tankHead.rotation *= rotetion;
+                        if (isMoveBGM_turret)
                         {
-                            isMoveBGM_body = false;
-                            TankMoveSFXPlay(true, BGMType.MOVE);
-                        }
-                        float rot = moveH * tankTurn_Speed * Time.deltaTime;
-                        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                        Rd.MoveRotation(Rd.rotation * rotetion);
-                        MoveLimit();
-                    }
-                    else
-                    {
-                        if (isTankRot)
-                        {
-                            isTankRot = false;
-                            isMoveBGM_body = true;
-                            TankMoveSFXPlay(false,BGMType.MOVE);
-                        }
-                    }
-                    //前進後退
-                    if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
-                    {
-                        isTankMove = true;
-                        if (isMoveBGM_body)
-                        {
-                            isMoveBGM_body = false;
-                            TankMoveSFXPlay(true, BGMType.MOVE);
-                        }
-                        float mov = moveV * playerSpeed * Time.deltaTime;
-                        Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        MoveLimit();
-                    }
-                    else
-                    {
-                        if (isTankMove && Rd.IsSleeping())
-                        {
-                            isTankMove = false;
-                            isMoveBGM_body = true;
-                            TankMoveSFXPlay(false,BGMType.MOVE);
+                            isMoveBGM_turret = false;
+                            TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                         }
                     }
                 }
+                if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
+                {
+                    isMoveBGM_turret = true;
+                    TankMoveSFXPlay(false, BGMType.HEAD_MOVE);
+                }
+
+                if (IsGranded)
+                {
+                    if (TurnManager.Instance.playerIsMove)
+                    {
+                        moveV = Input.GetAxis("Vertical");
+                        moveH = Input.GetAxis("Horizontal");
+                        if (moveH != 0)
+                        {
+                            isTankRot = true;
+                            if (isMoveBGM_body)
+                            {
+                                isMoveBGM_body = false;
+                                TankMoveSFXPlay(true, BGMType.MOVE);
+                            }
+                            float rot = moveH * tankTurn_Speed * Time.deltaTime;
+                            Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                            Rd.MoveRotation(Rd.rotation * rotetion);
+                            MoveLimit();
+                        }
+                        else
+                        {
+                            if (isTankRot)
+                            {
+                                isTankRot = false;
+                                isMoveBGM_body = true;
+                                TankMoveSFXPlay(false, BGMType.MOVE);
+                            }
+                        }
+                        //前進後退
+                        if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
+                        {
+                            isTankMove = true;
+                            if (isMoveBGM_body)
+                            {
+                                isMoveBGM_body = false;
+                                TankMoveSFXPlay(true, BGMType.MOVE);
+                            }
+                            float mov = moveV * playerSpeed * Time.deltaTime;
+                            Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                            MoveLimit();
+                        }
+                        else
+                        {
+                            if (isTankMove && Rd.IsSleeping())
+                            {
+                                isTankMove = false;
+                                isMoveBGM_body = true;
+                                TankMoveSFXPlay(false, BGMType.MOVE);
+                            }
+                        }
+                    }
+                }
             }
 
-            //右クリック
-            if (Input.GetButtonUp("Fire2") && TurnManager.Instance.playerIsMove)
+            //右クリックを押してエイムモードに移行する
+            if (Input.GetButtonUp("Fire2") && tankHeadDontMove)
             {
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
                 if (aimFlag) aimFlag = false;
@@ -243,21 +250,18 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
-            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
+            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false && TurnManager.Instance.uiActive == false)
             {
                 Debug.Log("攻撃開始");
-                if (TurnManager.Instance.turnEndUi != true)
+                if (atackCount > limitCounter)
                 {
-                    if (atackCount > limitCounter)
-                    {
-                        limitCounter++;
-                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                        Atack();
-                    }
-                    else
-                    {
-                        TurnManager.Instance.AnnounceStart("Atack Limit");
-                    }
+                    limitCounter++;
+                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                    Atack();
+                }
+                else
+                {
+                    TurnManager.Instance.AnnounceStart("Atack Limit");
                 }
             }
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
@@ -268,6 +272,7 @@ public class TankCon : PlayerBase
                     {
                         turretCorrection = false;
                         TurnManager.Instance.playerIsMove = true;
+                        tankHeadDontMove = true;
                         GunAccuracy(turretCorrection);
                     }
                     else
@@ -277,9 +282,12 @@ public class TankCon : PlayerBase
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
+                            tankHeadDontMove = false;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
+
+                        //命中率の値を計算して表示する為の処理
                         if (hitRateFalg)
                         {
                             hitRateValue = Random.Range(0, 100);
@@ -334,7 +342,9 @@ public class TankCon : PlayerBase
         }
         else
         {
+            //エイムモードを解除する
             TurnManager.Instance.playerIsMove = true;
+            tankHeadDontMove = true;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);

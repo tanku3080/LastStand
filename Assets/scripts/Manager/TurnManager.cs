@@ -431,6 +431,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     /// <param name="player">playerの場合はtrue</param>
     /// <param name="enemy">enemyの場合はtrue</param>
+    /// <param name="moveV">対象キャラの残り行動回数</param>
     public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
         //playerTurnと引数playeがtrueなら現在操作しているキャラの変更処理を行う
@@ -483,28 +484,21 @@ public class TurnManager : Singleton<TurnManager>
         //elayerTurnと引数enemyがtrueなら現在操作しているキャラの変更処理を行う
         if (enemyTurn && enemy)
         {
-            nowEnemy.GetComponent<Enemy>().controlAccess = true;
-            enemyIsMove = true;
-            if (moveV > 0)
+            if (enemys.Count <= enemyNum)
             {
-                if (enemys.Count >= enemyNum || nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount)
-                {
-                    enemyNum = 0;
-                    nowEnemy.GetComponent<Enemy>().controlAccess = false;
-                    TurnEnd();
-                }
-                else
-                {
-                    enemyNum++;
-                    moveV--;
-                }
+                enemyNum = 0;
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
+                TurnEnd();
             }
             else
             {
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
                 nowEnemy = enemys[enemyNum].gameObject;
+                enemyNum++;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
+                enemyIsMove = true;
+                EnemyMoveVal--;
             }
-            enemy = false;
         }
         PlayMusic();
 

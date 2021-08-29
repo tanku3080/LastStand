@@ -433,9 +433,9 @@ MonoBehaviour:
   eAtackCount: 0
   hpBarpos: {fileID: 8442342482970970984}
   tankType: 
+  agent: {fileID: 8706369397841036453}
   enemyNowHp: 0
   isDie: 0
-  agent: {fileID: 8706369397841036453}
   patrolPos:
   - {fileID: 0}
   - {fileID: 0}
@@ -455,8 +455,8 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6606005299345233778}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
-  m_Radius: 2.349391
+  m_AgentTypeID: 0
+  m_Radius: 2.94
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -465,8 +465,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2.65
-  m_BaseOffset: 0.18
+  m_Height: 2.2
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!54 &205644769545250705

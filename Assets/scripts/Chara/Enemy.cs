@@ -38,6 +38,9 @@ public class Enemy : EnemyBase
     /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue</summary>
     [HideInInspector] public bool enemyAppearance = false;
 
+    /// <summary>パトロールポイントを一巡してPlayerを見つける事が出来なかったらtrue</summary>
+    private bool playerNotFound = false;
+
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -99,12 +102,14 @@ public class Enemy : EnemyBase
 
                 timerFalg = true;
                 WaitTimer(timerFalg);
-                if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0)
+                if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0 || playerNotFound)
                 {
+                    playerNotFound = false;
                     oneUseFlag = false;
                     nowCounter = 0;
                     parameterSetFlag = true;
-                    TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                    AgentParamSet(false);
+                    TurnManager.Instance.MoveCharaSet(false, true);
                 }
 
                 if (TurnManager.Instance.EnemyMoveVal > 0 && enemyMoveNowValue > 0)
@@ -140,7 +145,7 @@ public class Enemy : EnemyBase
     }
 
     /// <summary>ナビメッシュで動いている敵の移動の可否を決める</summary>
-    /// <param name="f"></param>
+    /// <param name="f">trueなら移動できるfalseなら移動不可</param>
     private void AgentParamSet(bool f)
     {
         agent.speed = f ? enemySpeed / 4 : 0;
@@ -184,7 +189,14 @@ public class Enemy : EnemyBase
     /// <param name="appearanceFlag">trueなら攻撃移動。falseなら巡回</param>
     void EnemyMoveStatusSet(bool appearanceFlag)
     {
-        if (appearanceFlag != true && patrolPos.Length == patrolNum) patrolNum = 0;
+        if (appearanceFlag != true && patrolPos.Length == patrolNum)
+        {
+            playerNotFound = true;
+            patrolNum = 0;
+            EnemyActionSet(EnemyState.IDOL);
+        }
+
+        //もしもappearanceFlagがtrueなら近くのPlayerを代入する。falseなら巡回ポイントを代入
         Vector3 pointDir = (appearanceFlag ? NearPlayer().transform.position : patrolPos[patrolNum].transform.position) - Trans.position;
         Quaternion rotetion = Quaternion.LookRotation(pointDir);
         Trans.rotation = Quaternion.RotateTowards(Trans.rotation,rotetion,ETankTurn_Speed * Time.deltaTime);
@@ -216,7 +228,7 @@ public class Enemy : EnemyBase
             agentSetUpFlag = true;
             enemyMove = false;
             AgentParamSet(enemyMove);
-            if (appearanceFlag != true) patrolNum++;
+            if (appearanceFlag == false) patrolNum++;
         }
     }
     /// <summary>移動出来なくなるする為のメソッド</summary>

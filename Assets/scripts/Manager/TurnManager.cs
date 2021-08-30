@@ -86,8 +86,8 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public int enemyNum = 0;
     /// <summary>UIが呼び出されている事を確認する</summary>
     [HideInInspector] public bool clickC = true;
-    /// <summary>撃たない場合true</summary>
-    [HideInInspector] public bool dontShoot = false;
+
+
     /// <summary>戦車を切り替えるフラグ</summary>
     [HideInInspector] public bool tankChangeFlag = false;
 
@@ -172,7 +172,6 @@ public class TurnManager : Singleton<TurnManager>
         //また、もう一度同じボタンを押された場合やイベント処理でBack()を使っているボタンが押された場合UIを非表示にする
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, pauseObj);
@@ -180,7 +179,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, pauseObj);
@@ -189,7 +187,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
@@ -197,7 +194,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
@@ -205,7 +201,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
@@ -213,7 +208,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
-            dontShoot = clickC;
             uiActive = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
@@ -420,8 +414,8 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
-            if (playerTurn) text.text = "Player ";
-            if (enemyTurn) text.text = "Enemy ";
+            if (playerTurn) text.text = "Player";
+            if (enemyTurn) text.text = "Enemy";
             text.text += generalTurn + "Turn";
         }
     }
@@ -582,7 +576,6 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
-            dontShoot = false;
             GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             MoveCharaSet(true, false, playerMoveValue);
         }
@@ -592,7 +585,6 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()
     {
-        dontShoot = false;
         clickC = !clickC;
         playerIsMove = clickC;
         enemyIsMove = clickC;
@@ -671,7 +663,6 @@ public class TurnManager : Singleton<TurnManager>
                 nowEnemy = enemys[enemyNum].gameObject;
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
-                dontShoot = false;
                 uiActive = false;
                 return;
             }
@@ -680,9 +671,8 @@ public class TurnManager : Singleton<TurnManager>
     ///<summary>表示されているUIを非表示にする</summary>
     public void Back()
     {
-        clickC = !clickC;
         uiActive = clickC;
-        dontShoot = clickC;
+        clickC = !clickC;
         playerIsMove = clickC;
         enemyIsMove = clickC;
         GameManager.Instance.ChengePop(false,tankChengeObj);

@@ -52,7 +52,7 @@ public class TankCon : PlayerBase
     int hitRateValue = 0;
 
     /// <summary>falseなら砲塔に関連する動作が出来なくなる</summary>
-    private bool tankHeadDontMove = true;
+    private bool tankHeadDontMove = false;
 
     /// <summary>命中率を表示するオブジェクトを格納する</summary>
     [SerializeField] private LineRenderer m_lineRenderer = null;
@@ -250,20 +250,29 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
-            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false && TurnManager.Instance.uiActive == false && tankHeadDontMove)
+            if (Input.GetButtonUp("Fire1"))
             {
-                Debug.Log("攻撃開始");
-                if (atackCount > limitCounter)
+                if (TurnManager.Instance.uiActive == false && tankHeadDontMove)
                 {
-                    limitCounter++;
-                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                    Atack();
+                    Debug.Log("攻撃開始");
+                    if (atackCount > limitCounter)
+                    {
+                        limitCounter++;
+                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                        Atack();
+                    }
+                    else
+                    {
+                        TurnManager.Instance.AnnounceStart("Atack Limit");
+                    }
                 }
-                else
+
+                if (TurnManager.Instance.uiActive == false)
                 {
-                    TurnManager.Instance.AnnounceStart("Atack Limit");
+                    tankHeadDontMove = true;
                 }
             }
+
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
@@ -272,8 +281,6 @@ public class TankCon : PlayerBase
                     {
                         turretCorrection = false;
                         TurnManager.Instance.playerIsMove = true;
-                        tankHeadDontMove = true;
-                        TurnManager.Instance.uiActive = false;
                         GunAccuracy(turretCorrection);
                     }
                     else
@@ -283,8 +290,6 @@ public class TankCon : PlayerBase
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
-                            tankHeadDontMove = false;
-                            TurnManager.Instance.uiActive = true;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
@@ -292,24 +297,20 @@ public class TankCon : PlayerBase
                         //命中率の値を計算して表示する為の処理
                         if (hitRateFalg)
                         {
-                            TurnManager.Instance.uiActive = true;
                             hitRateValue = Random.Range(0, 100);
                             GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
                             if (perfectHit)
                             {
                                 //確実に敵に命中するので100%の文字を入れる
                                 TurnManager.Instance.hitRateText.text = $"命中率100%";
-                                //TargetUI(hitRateValue);
                             }
                             else
                             {
                                 TurnManager.Instance.hitRateText.text = $"命中率{hitRateValue}%";
-                                //TargetUI(hitRateValue);
                             }
                         }
                         else
                         {
-                            TurnManager.Instance.uiActive = false;
                             TurnManager.Instance.hitRateText.text = null;
                             GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
                         }
@@ -332,7 +333,6 @@ public class TankCon : PlayerBase
                             if (hitRateFalg && turretCorrection)
                             {
                                 TurnManager.Instance.hitRateText.text = $"命中率100%";
-                                //TargetUI(hitRateValue);
                             }
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
@@ -348,8 +348,6 @@ public class TankCon : PlayerBase
         {
             //エイムモードを解除する
             TurnManager.Instance.playerIsMove = true;
-            tankHeadDontMove = true;
-            TurnManager.Instance.uiActive = false;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);
@@ -359,44 +357,6 @@ public class TankCon : PlayerBase
             p.x = 0;
             p.z = 0;
         }
-    }
-
-    /// <summary>リロード機能</summary>
-    void Reload()
-    {
-        //攻撃してなかろうとリロード機能は実施される
-        TurnManager.Instance.PlayerMoveVal--;
-        limitCounter = 0;
-    }
-    /// <summary>命中率を円の大きさで表す機能</summary>
-    void TargetUI(float radius,float lineWidth = 0.1f)
-    {
-        m_lineRenderer.GetComponent<LineRenderer>();
-        //radiusは1を最高値として計算する
-        radius /= 10;
-        radius /= 100;
-        radius -= 1;
-
-        //もしも半径が0になったら円縮小の最小値を代入する
-        if (radius == 0)
-        {
-            radius = -0.99f;
-        }
-
-        int segments = 380;
-        m_lineRenderer.startWidth = lineWidth;
-        m_lineRenderer.endWidth = lineWidth;
-        m_lineRenderer.positionCount = segments;
-        var points = new Vector3[segments];
-        for (int i = 0; i < segments; i++)
-        {
-            //x,yの中心座標は0にする
-            var rad = Mathf.Deg2Rad * (i * 380f / segments);
-            var x = aimCom.transform.position.x + Mathf.Sin(rad) * radius;
-            var y = aimCom.transform.position.y + Mathf.Cos(rad) * radius;
-            points[i] = new Vector3(x, y, 0);
-        }
-        m_lineRenderer.SetPositions(points);
     }
 
     /// <summary>砲塔を敵に向ける機能</summary>

@@ -229,7 +229,6 @@ public class Enemy : EnemyBase
         }
         else if (angle != 3 && dis < 10)
         {
-            Debug.Log("次のステップ");
             agentSetUpFlag = true;
             enemyMove = false;
             AgentParamSet(enemyMove);

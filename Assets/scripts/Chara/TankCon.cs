@@ -51,11 +51,9 @@ public class TankCon : PlayerBase
     /// <summary>命中率</summary>
     int hitRateValue = 0;
 
-    /// <summary>falseなら砲塔に関連する動作が出来なくなる</summary>
-    private bool tankHeadDontMove = false;
+    /// <summary>trueなら砲塔に関連する動作が出来なくなる</summary>
+    private bool tankHeadDontMove = true;
 
-    /// <summary>命中率を表示するオブジェクトを格納する</summary>
-    [SerializeField] private LineRenderer m_lineRenderer = null;
 
     void Start()
     {
@@ -174,11 +172,14 @@ public class TankCon : PlayerBase
             }
 
             //右クリックを押してエイムモードに移行する
-            if (Input.GetButtonUp("Fire2") && TurnManager.Instance.uiActive == false)
+            if (Input.GetButtonDown("Fire2"))
             {
-                GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
-                if (aimFlag) aimFlag = false;
-                else aimFlag = true;
+                if (TurnManager.Instance.uiActive == false || TurnManager.Instance.uiActive)
+                {
+                    GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
+                    if (aimFlag) aimFlag = false;
+                    else aimFlag = true;
+                }
             }
             AimMove(aimFlag);
         }
@@ -252,9 +253,9 @@ public class TankCon : PlayerBase
 
             if (Input.GetButtonUp("Fire1"))
             {
-                if (TurnManager.Instance.uiActive == false && tankHeadDontMove)
+                if (tankHeadDontMove && !TurnManager.Instance.uiActive || !tankHeadDontMove && TurnManager.Instance.uiActive)
                 {
-                    Debug.Log("攻撃開始");
+                    tankHeadDontMove = false;
                     if (atackCount > limitCounter)
                     {
                         limitCounter++;
@@ -267,9 +268,9 @@ public class TankCon : PlayerBase
                     }
                 }
 
-                if (TurnManager.Instance.uiActive == false)
+                if (TurnManager.Instance.anyPushButton)
                 {
-                    tankHeadDontMove = true;
+                    tankHeadDontMove = !TurnManager.Instance.uiActive;
                 }
             }
 
@@ -280,6 +281,7 @@ public class TankCon : PlayerBase
                     if (turretCorrection)
                     {
                         turretCorrection = false;
+                        TurnManager.Instance.uiActive = false;
                         TurnManager.Instance.playerIsMove = true;
                         GunAccuracy(turretCorrection);
                     }
@@ -288,6 +290,7 @@ public class TankCon : PlayerBase
                         if (TurnManager.Instance.FoundEnemy)
                         {
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                            TurnManager.Instance.uiActive = true;
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
                             GunAccuracy(turretCorrection);
@@ -321,6 +324,7 @@ public class TankCon : PlayerBase
                     if (perfectHit)
                     {
                         perfectHit = false;
+                        TurnManager.Instance.uiActive = false;
                         GunDirctionIsEnemy(perfectHit);
                     }
                     else
@@ -328,6 +332,7 @@ public class TankCon : PlayerBase
                         if (TurnManager.Instance.FoundEnemy)
                         {
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                            TurnManager.Instance.uiActive = true;
                             perfectHit = true;
                             GunDirctionIsEnemy(perfectHit);
                             if (hitRateFalg && turretCorrection)

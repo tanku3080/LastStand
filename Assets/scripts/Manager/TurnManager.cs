@@ -456,7 +456,7 @@ public class TurnManager : Singleton<TurnManager>
                 else
                 {
                     playerNum += 1;
-                    moveV -= 1;
+                    PlayerMoveVal -= 1;
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
@@ -478,8 +478,6 @@ public class TurnManager : Singleton<TurnManager>
             //次のプレイヤーのコントロールアクセス権をアクティブ化
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             VcamChenge();
-
-            player = false;
          
             playerNum++;
         }

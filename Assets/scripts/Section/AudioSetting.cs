@@ -12,6 +12,7 @@ public class AudioSetting : Singleton<AudioSetting>
         ESlider.maxValue = 1;
         GameManager.Instance.ChengePop(false,audioetImage.gameObject);
     }
+    /// <summary>オーディオImageを表示する</summary>
     public void ShowAudioSet()
     {
         GameManager.Instance.ChengePop(true,audioetImage.gameObject);
@@ -19,6 +20,7 @@ public class AudioSetting : Singleton<AudioSetting>
         ESlider.value = TurnManager.Instance.TankMoveValue;
     }
 
+    /// <summary>設定した項目を反映する</summary>
     public void OKButton()
     {
         TurnManager.Instance.BGMValue = BGMSlider.value;
@@ -27,6 +29,7 @@ public class AudioSetting : Singleton<AudioSetting>
         TurnManager.Instance.enemyBGM.GetComponent<AudioSource>().volume = BGMSlider.value;
     }
 
+    /// <summary>設定した項目を反映しない</summary>
     public void NOButton()
     {
         GameManager.Instance.ChengePop(false,audioetImage.gameObject);

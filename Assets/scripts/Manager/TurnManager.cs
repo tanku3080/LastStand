@@ -21,50 +21,61 @@ public class TurnManager : Singleton<TurnManager>
     private readonly int maxTurn = 5;
     [Header("味方操作キャラ")] public List<TankCon> players = null;
     [Header("敵キャラ")] public List<Enemy> enemys = null;
+
     //現在の操作キャラ
     [HideInInspector] public GameObject nowPayer = null;
     [HideInInspector] public GameObject nowEnemy = null;
     [HideInInspector] public GameObject nearEnemy = null;
+
     [Header("体力ゲージ")] public GameObject hpBar = null;
     [Header("敵体力ゲージ")] public GameObject enemyrHpBar = null;
-    private GameObject turnText = null;
-    //移動回数
-    [SerializeField] GameObject moveValue = null;
+
+    public GameObject turnText = null;
+
     //以下はtimeLine   
-    private PlayableDirector director;
-    [Header("Timeline用")] public GameObject controlPanel;
+    public PlayableDirector director;
     /// <summary>timeLineが終わったらtrue</summary>
     [HideInInspector] public bool timeLineEndFlag = false;
+
     /// <summary>プレイヤー陣営のBGM</summary>
-    [SerializeField] public GameObject playerBGM = null;
-    [SerializeField] public GameObject enemyBGM = null;
-    [HideInInspector] public Text text1 = null;
+    public GameObject playerBGM = null;
+    public GameObject enemyBGM = null;
+
+    /// <summary>移動回数</summary>
+    public Text moveValue = null;
+
+
     //アナウンス用
-    [HideInInspector] public Image announceImage = null;
-    [HideInInspector] public Text annouceText = null;
+    [SerializeField] Image announceImage = null;
+    [SerializeField] Text annouceText = null;
+
     [Header("戦車切替確認ボタン")] public GameObject tankChengeObj = null;
     [Header("ポーズ画面UI")] public GameObject pauseObj = null;
     [Header("ターンエンドUI")] public GameObject endObj = null;
     [Header("レーダUI")] public GameObject radarObj = null;
-    [Header("アナウンスUI")] public GameObject announceObj = null;
     [Header("移動制限")] public GameObject limitedBar = null;
-    [Header("特殊状態")] public GameObject specialObj = null;
-    [Header("キーボードの画像")] public GameObject keyUI = null;
-    /// <summary>スペシャルアクションキーRが押されたときに表示するオブジェクト</summary>
-    [HideInInspector] public GameObject hittingTargetR = null;
+    /// <summary>スペシャルアクションキーRが押された時に表示するオブジェクト</summary>
+    [Header("特殊キーR")] public GameObject hittingTargetR = null;
     /// <summary>スペシャルアクションキーFが押されたときに表示するオブジェクト</summary>
-    [HideInInspector] public GameObject turretCorrectionF = null;
+    [Header("特殊キーF")] public GameObject turretCorrectionF = null;
+    [Header("キーボードの画像")] public GameObject keyUI = null;
+    /// <summary>命中率を表示するためのテキストで「F」を押された時に限り表示されるオブジェクト</summary>
+    [Header("命中率を表示するテキスト")] public Text hitRateText = null;
     /// <summary>現在何を行えばいいかヒントをくれるテキスト</summary>
     [SerializeField] Text taskText = null;
-    /// <summary>taskTextに表示しないヒント</summary>
+    /// <summary>taskTextに表示しない部分のヒント</summary>
     [SerializeField] Text ButtonTips = null;
+
     private int playerMoveValue = 5;
     /// <summary>味方の行動回数</summary>
-    public int PlayerMoveVal { get { return playerMoveValue; } set { playerMoveValue = value; }
-    }
+    public int PlayerMoveVal { get { return playerMoveValue; } set { playerMoveValue = value; } }
+
+
     private int enemyMoveValue = 4;
     /// <summary>敵の行動回数</summary>
     public int EnemyMoveVal { get { return enemyMoveValue; } set { enemyMoveValue = value; } }
+
+
     /// <summary>通常状態のカメラ</summary>
     public CinemachineVirtualCamera DefCon { get; set; }
     /// <summary>エイム状態のカメラ</summary>
@@ -75,23 +86,25 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public int enemyNum = 0;
     /// <summary>UIが呼び出されている事を確認する</summary>
     [HideInInspector] public bool clickC = true;
-    /// <summary>撃たない場合true</summary>
-    [HideInInspector] public bool dontShoot = false;
+
+
     /// <summary>戦車を切り替えるフラグ</summary>
     [HideInInspector] public bool tankChangeFlag = false;
+
     //timeline関連
-    bool timeLlineF = true;
-    bool eventF = true;
+    bool timeLineStart = true;
+    bool eventStart = true;
 
     /// <summary>ゲームをクリアしたかどうか</summary>
     [HideInInspector] public bool isGameClear = false;
     /// <summary>ゲームオーバーかどうか？</summary>
     [HideInInspector] public bool isGameOvar = false;
 
-    /// <summary>アップデート関数内で敵ターンの最初に使うフラグ</summary>
-    bool enemyFirstColl = true;
+
     /// <summary>敵を発見したらtrue</summary>
     [HideInInspector] public bool FoundEnemy = false;
+
+
     /// <summary>敵の接触判定した際に音を鳴らすか判断するのに使う</summary>
     [HideInInspector] public List<GameObject> enemyDiscovery = new List<GameObject>();
     /// <summary>BGMの音量</summary>
@@ -100,16 +113,16 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>戦車の移動音の大きさ</summary>
     [HideInInspector] public float TankMoveValue { get { return tankVal; }set { tankVal = value; } }
     private float tankVal = 1f;
+
+
+    public bool anyPushButton = false;
+
+
+    /// <summary>playerが表示するUIが出ているか？</summary>
+    [HideInInspector] public bool uiActive = false;
     void Start()
     {
-        hittingTargetR = specialObj.transform.GetChild(0).gameObject;
-        turretCorrectionF = specialObj.transform.GetChild(1).gameObject;
-        announceImage = announceObj.transform.GetChild(0).GetComponent<Image>();
-        annouceText = announceImage.transform.GetChild(0).GetComponent<Text>();
-        text1 = moveValue.transform.GetChild(0).GetChild(0).GetComponent<Text>();
-        turnText = controlPanel.transform.GetChild(0).GetChild(0).gameObject;
-        turnText.GetComponent<Text>();
-        director = controlPanel.transform.GetChild(0).GetComponent<PlayableDirector>();
+        //指定のオブジェクトを非アクティブ化する
         GameManager.Instance.ChengePop(false, tankChengeObj);
         GameManager.Instance.ChengePop(false, radarObj);
         GameManager.Instance.ChengePop(false, pauseObj);
@@ -117,25 +130,32 @@ public class TurnManager : Singleton<TurnManager>
         GameManager.Instance.ChengePop(false, endObj);
         GameManager.Instance.ChengePop(false, hittingTargetR);
         GameManager.Instance.ChengePop(false, turretCorrectionF);
-        GameManager.Instance.ChengePop(false, announceObj);
+        GameManager.Instance.ChengePop(false, announceImage.gameObject);
         GameManager.Instance.ChengePop(false, keyUI);
-        GameManager.Instance.ChengePop(false, controlPanel);
-        GameManager.Instance.ChengePop(false, moveValue);
+        GameManager.Instance.ChengePop(false, director.gameObject);
+        GameManager.Instance.ChengePop(false, moveValue.gameObject);
         GameManager.Instance.ChengePop(false, playerBGM);
         GameManager.Instance.ChengePop(false, enemyBGM);
         GameManager.Instance.ChengePop(false, limitedBar);
         GameManager.Instance.ChengePop(false, hpBar);
         GameManager.Instance.ChengePop(false, enemyrHpBar);
+        GameManager.Instance.ChengePop(false,hitRateText.gameObject);
         ButtonTips.enabled = false;
 
     }
 
     void Update()
     {
+        //シーン遷移の際に行われるフェードが終了次第処理を開始する
         if (SceneFadeManager.Instance.FadeStop)
         {
+            //レーダーや特殊キーに使うため近い敵を探してnearEnemyに格納する
             nearEnemy = SerchTag(nowPayer);
+
+            //ターン全体の処理
             TurnManag();
+
+            //UIを表示するボタンが押されたらButtonSelected()メソッド内で処理を行う
             if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.Return))
             {
                 ButtonSelected();
@@ -151,61 +171,62 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>対応するボタンのいずれかが押されたら処理を行う</summary>
     public void ButtonSelected()
     {
+        //いずれかのボタンが押された場合キャラクターは攻撃、移動が出来ないようになる。
+        //また、もう一度同じボタンを押された場合やイベント処理でBack()を使っているボタンが押された場合UIを非表示にする
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
-            dontShoot = clickC;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             clickC = false;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
-            dontShoot = clickC;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             GameManager.Instance.ChengePop(clickC, keyUI);
             clickC = true;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC)
         {
-            dontShoot = clickC;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
             clickC = false;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
-            dontShoot = clickC;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
             clickC = true;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
         if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC)
         {
-            dontShoot = clickC;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
             clickC = false;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
-            dontShoot = false;
+            uiActive = clickC;
+            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
             clickC = true;
-            playerIsMove = clickC;
-            enemyIsMove = clickC;
         }
+
+        playerIsMove = clickC;
+        enemyIsMove = clickC;
+
+
         if (Input.GetKeyUp(KeyCode.Q) && playerTurn && clickC)//レーダー
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
@@ -227,13 +248,18 @@ public class TurnManager : Singleton<TurnManager>
     {
         float nearDis = 0;
         GameObject targetObj = null;
-        foreach (Enemy obj in TurnManager.Instance.enemys)
+
+        //近くの敵を探して返す
+        foreach (Enemy obj in enemys)
         {
-            var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
-            if (nearDis == 0 || nearDis > timDis)
+            if (obj.isDie == false)
             {
-                nearDis = timDis;
-                targetObj = obj.gameObject;
+                var timDis = Vector3.Distance(obj.transform.position, nowObj.transform.position);
+                if (nearDis == 0 || nearDis > timDis)
+                {
+                    nearDis = timDis;
+                    targetObj = obj.gameObject;
+                }
             }
         }
         return targetObj;
@@ -244,7 +270,7 @@ public class TurnManager : Singleton<TurnManager>
     public void PlayMusic(bool isStop = false)
     {
 
-        //以下の変数は音楽を鳴らすのに必要な物
+        //updateメソッド内で処理を行うのでisMusicPlayFlagで毎フレーム中身が呼び出されないようにする
         bool isMusicPlayFlag = true;
         if (isMusicPlayFlag)
         {
@@ -277,23 +303,18 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>ゲームシーンで毎フレーム呼ばれるメソッド</summary>
     void TurnManag()
     {
-        if (eventF)
+        //ターン数を表示するTimeLineを表示するための処理
+        if (eventStart)
         {
             director.stopped += TimeLineStop;
-            eventF = false;
+            eventStart = false;
         }
+
+        //最初のターンの一番最初に行う処理
         if (generalTurn == 1 && turnFirstNumFlag)
         {
             turnFirstNumFlag = false;
-
-            MoveCounterText(text1);
-            nearEnemy = null;
-            timeLlineF = true;
-            eventF = true;
-            nowPayer = null;
-            nowEnemy = null;
-            players.Clear();
-            enemys.Clear();
+            //各種ステータスを各キャラの指定の値に代入する
             foreach (var item in FindObjectsOfType<TankCon>())
             {
                 players.Add(item);
@@ -308,6 +329,7 @@ public class TurnManager : Singleton<TurnManager>
                 item.tankDamage = tankDamage;
                 item.borderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
                 item.atackCount = atackCounter;
+                item.tankType = tankTypeName;
             }
             foreach (var enemy in FindObjectsOfType<Enemy>())
             {
@@ -324,30 +346,53 @@ public class TurnManager : Singleton<TurnManager>
                 enemy.EborderLine.size = new Vector3(tankSearchRanges, 1f, tankSearchRanges);
                 enemy.eAtackCount = atackCounter;
                 enemy.parameterSetFlag = true;
+                enemy.tankType = tankTypeName;
             }
-            GameManager.Instance.ChengePop(true, moveValue);
+
+            //最初に軽戦車を操作できるようにソートを行う
+            if (players[playerNum].GetComponent<TankCon>().tankType != "1_light")
+            {
+                players.Reverse();
+            }
+
+            //プレイヤーターンが必ず最初に来るようにしているのでhpBarを表示する
             GameManager.Instance.ChengePop(true, hpBar);
+
+            //今の操作キャラを代入する
             nowPayer = players[playerNum].gameObject;
+            //最初に動かすキャラのアクセス権をtrueにする
             nowPayer.GetComponent<TankCon>().controlAccess = true;
+
+            //通常カメラとエイム用のカメラが入っているゲームオブジェクトをアクティブ化する
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
             nowPayer.GetComponent<Rigidbody>().isKinematic = true;
+
+            //エイムようと通常状態のカメラを代入
             DefCon = nowPayer.GetComponent<TankCon>().defaultCon;
             AimCon = nowPayer.GetComponent<TankCon>().aimCom;
+
+            //カメラを通常状態にする
             GameManager.Instance.ChengePop(false, AimCon.gameObject);
             GameManager.Instance.ChengePop(true, DefCon.gameObject);
+
+            //敵Turnになると最初に動かすキャラを代入して、BGMを鳴らす
             nowEnemy = enemys[enemyNum].gameObject;
             nowEnemy.GetComponent<Rigidbody>().isKinematic = false;
             playerTurn = true;
             generalTurn = 1;
             PlayMusic();
         }
-        if (timeLlineF)
+
+        //現在のターンを画面上に表示するためにTimeLineを作動させる
+        if (timeLineStart)
         {
             
             TurnTextMove();
             StartTimeLine();
         }
+
+        //プレイヤーが0になるか敵が0になると対応したシーン(GameOver,GameClear)に遷移する
         if (players.Count == 0)
         {
             isGameOvar = true;
@@ -362,12 +407,13 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>残りアクション回数を表示するためのメソッド</summary>
     /// <param name="text">表示するためのテキスト</param>
-    public void MoveCounterText(Text text) => text.text = $"MOVE: {PlayerMoveVal}";
+    public void MoveCounterText(Text text) => text.text = $"SP: {PlayerMoveVal}";
     /// <summary>ターン開始時にどの陣営のターンか表示する為のメソッド</summary>
     void TurnTextMove()
     {
 
         Text text = turnText.GetComponent<Text>();
+        //状況に応じて表示するテキストを変更する処理
         if (generalTurn == maxTurn)
         {
             text.text = "Last";
@@ -377,8 +423,8 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
-            if (playerTurn) text.text = "Player ";
-            if (enemyTurn) text.text = "Enemy ";
+            if (playerTurn) text.text = "Player";
+            if (enemyTurn) text.text = "Enemy";
             text.text += generalTurn + "Turn";
         }
     }
@@ -388,8 +434,10 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     /// <param name="player">playerの場合はtrue</param>
     /// <param name="enemy">enemyの場合はtrue</param>
+    /// <param name="moveV">対象キャラの残り行動回数</param>
     public void MoveCharaSet(bool player,bool enemy,int moveV = 0)
     {
+        //playerTurnと引数playeがtrueなら現在操作しているキャラの変更処理を行う
         if (playerTurn && player)
         {
             if (moveV > 0)
@@ -400,6 +448,7 @@ public class TurnManager : Singleton<TurnManager>
                     nowPayer.GetComponent<TankCon>().aimFlag = false;
                     nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
                 }
+                //現在のプレイヤーがplayers配列の最後にある時に限りターンエンドUIを表示する
                 if (playerNum >= players.Count)
                 {
                     GameManager.Instance.ChengePop(true,endObj);
@@ -411,13 +460,22 @@ public class TurnManager : Singleton<TurnManager>
                     Debug.Log("通常" + players.Count + "ナンバー" + playerNum);
                 }
             }
+
+            //今操作しているプレイヤーのコントロール権をなくす
             nowPayer.GetComponent<TankCon>().controlAccess = false;
+
+            //次の操作プレイヤーの為に特殊コマンドボタンのUIやカメラを非アクティブ化する
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
             GameManager.Instance.ChengePop(false,nowPayer.GetComponent<TankCon>().defaultCon.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().aimCom.gameObject);
+
+            //次のプレイヤーをセットする
             nowPayer = players[playerNum].gameObject;
+
             HPbarMovebarset();
+
+            //次のプレイヤーのコントロールアクセス権をアクティブ化
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             VcamChenge();
 
@@ -426,41 +484,32 @@ public class TurnManager : Singleton<TurnManager>
             playerNum++;
         }
 
+        //elayerTurnと引数enemyがtrueなら現在操作しているキャラの変更処理を行う
         if (enemyTurn && enemy)
         {
-            if (enemyFirstColl)
+            if (enemys.Count <= enemyNum)
             {
-                enemyFirstColl = false;
-                nowEnemy.GetComponent<Enemy>().controlAccess = true;
-                enemyIsMove = true;
-            }
-            if (moveV > 0)
-            {
-                if (enemys.Count >= enemyNum || nowEnemy.GetComponent<Enemy>().nowCounter >= nowEnemy.GetComponent<Enemy>().eAtackCount)
-                {
-                    enemyNum = 0;
-                    nowEnemy.GetComponent<Enemy>().controlAccess = false;
-                    TurnEnd();
-                }
-                else
-                {
-                    enemyNum++;
-                    moveV--;
-                }
+                enemyNum = 0;
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
+                TurnEnd();
             }
             else
             {
+                nowEnemy.GetComponent<Enemy>().controlAccess = false;
                 nowEnemy = enemys[enemyNum].gameObject;
+                enemyNum++;
                 nowEnemy.GetComponent<Enemy>().controlAccess = true;
+                enemyIsMove = true;
+                EnemyMoveVal--;
             }
-            enemy = false;
         }
         PlayMusic();
 
     }
-    /// <summary>キャラが切り替わった際にHPbarとMovebarを切り替える</summary>
+    /// <summary>キャラが切り替わった際にPlayerのHPbarとMovebarを切り替える</summary>
     void HPbarMovebarset()
     {
+        //全てのPlayerに設定されている最大HPを代入する
         foreach (var item in players)
         {
             item.GetComponent<TankCon>().moveLimitRangeBar.value = item.GetComponent<TankCon>().moveLimitRangeBar.maxValue;
@@ -483,6 +532,7 @@ public class TurnManager : Singleton<TurnManager>
     /// </summary>
     public void CharactorDie(GameObject thisObj)
     {
+        //撃破用のパーティクルを再生して条件に当てはまっていないか確認を行う
         if (thisObj.CompareTag("Player"))
         {
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
@@ -509,7 +559,7 @@ public class TurnManager : Singleton<TurnManager>
     public void DelayGameClear() => GameSceneChange();
     /// <summary>GameOver時に呼び出される。Invokeを使う為のメソッド</summary>
     public void DelayGameOver() => GameSceneChange();
-    /// <summary>ゲームプレイからの切り替えで使う。待機時間を使わないならこれを使う</summary>
+    /// <summary>ゲームプレイからの切り替えで使う。待機時間を使わないなら直接これを使う</summary>
     /// <param name="status">切り替え先のシーン</param>
     public void GameSceneChange()
     {
@@ -535,8 +585,7 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
-            dontShoot = false;
-            MoveCounterText(text1);
+            GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             MoveCharaSet(true, false, playerMoveValue);
         }
         GameManager.Instance.ChengePop(false, tankChengeObj);
@@ -545,7 +594,6 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()
     {
-        dontShoot = false;
         clickC = !clickC;
         playerIsMove = clickC;
         enemyIsMove = clickC;
@@ -578,6 +626,7 @@ public class TurnManager : Singleton<TurnManager>
                 nowPayer.GetComponent<TankCon>().aimFlag = false;
                 nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
             }
+            //プレイヤーターン時のUIを非表示にする
             GameManager.Instance.ChengePop(false,tankChengeObj);
             GameManager.Instance.ChengePop(false,radarObj);
             GameManager.Instance.ChengePop(false,pauseObj);
@@ -585,20 +634,25 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false,endObj);
             GameManager.Instance.ChengePop(false,hittingTargetR);
             GameManager.Instance.ChengePop(false,turretCorrectionF);
-            GameManager.Instance.ChengePop(false,announceObj);
+            GameManager.Instance.ChengePop(false,announceImage.gameObject);
             GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
+            GameManager.Instance.ChengePop(false,hitRateText.gameObject);
+            GameManager.Instance.ChengePop(false,moveValue.gameObject);
+
             playerTurn = false;
             enemyTurn = true;
-            timeLlineF = true;
+            timeLineStart = true;
+
+            //音楽を切り替える
             nowPayer.GetComponent<TankCon>().TankMoveSFXPlay(false);
             nowPayer.GetComponent<TankCon>().controlAccess = false;
-            enemyFirstColl = true;
             MoveCharaSet(false, true);
             return;
         }
         //敵が呼んだ場合の処理
         if (enemyTurn)
         {
+            //敵がこれを呼び出した際に指定ターンになっていたらゲームオーバーシーンに遷移する
             if (maxTurn == generalTurn)
             {
                 SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.GAME_OVER);
@@ -609,7 +663,7 @@ public class TurnManager : Singleton<TurnManager>
                 generalTurn++;
                 enemyTurn = false;
                 playerTurn = true;
-                timeLlineF = true;
+                timeLineStart = true;
                 playerNum = 0;
                 enemyNum = 0;
                 nowEnemy.GetComponent<Enemy>().controlAccess = false;
@@ -618,7 +672,7 @@ public class TurnManager : Singleton<TurnManager>
                 nowEnemy = enemys[enemyNum].gameObject;
                 GameManager.Instance.ChengePop(false, nowPayer.GetComponent<TankCon>().moveLimitRangeBar.gameObject);
                 nowPayer.GetComponent<TankCon>().controlAccess = true;
-                dontShoot = false;
+                uiActive = false;
                 return;
             }
         }
@@ -626,8 +680,9 @@ public class TurnManager : Singleton<TurnManager>
     ///<summary>表示されているUIを非表示にする</summary>
     public void Back()
     {
+        uiActive = clickC;
+        anyPushButton = clickC;
         clickC = !clickC;
-        dontShoot = false;
         playerIsMove = clickC;
         enemyIsMove = clickC;
         GameManager.Instance.ChengePop(false,tankChengeObj);
@@ -636,17 +691,14 @@ public class TurnManager : Singleton<TurnManager>
     }
 
     /// <summary>スタントアロンで実行中のアプリを終了する場合に使う</summary>
-    public void GameQuit()
-    {
-        Application.Quit();
-    }
+    public void GameQuit() => Application.Quit();
     /// <summary>TimeLineの再生が終わった際に呼ばれる</summary>
     void TimeLineStop(PlayableDirector stop)
     {
         stop.Stop();
-        GameManager.Instance.ChengePop(false,controlPanel);
+        GameManager.Instance.ChengePop(false,director.gameObject);
         GameManager.Instance.ChengePop(true,limitedBar);
-        timeLlineF = false;
+        timeLineStart = false;
         playerIsMove = true;
         timeLineEndFlag = true;
     }
@@ -654,20 +706,20 @@ public class TurnManager : Singleton<TurnManager>
     void StartTimeLine()
     {
         timeLineEndFlag = false;
-        GameManager.Instance.ChengePop(true,controlPanel);
+        GameManager.Instance.ChengePop(true,director.gameObject);
         director.Play();
     }
     /// <summary>画面上に指定の文字列を一定時間表示するためのメソッド</summary>
     /// <param name="n">表示させたい文字列</param>
     public void AnnounceStart(string n = null)
     {
-        GameManager.Instance.ChengePop(true,announceObj);
+        GameManager.Instance.ChengePop(true,announceImage.gameObject);
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
         annouceText.text = n;
         Invoke(nameof(AnnounceStartInvoke), 3f);
     }
     /// <summary>AnnounceStartのInvokeでしか使わない</summary>
-    private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceObj);
+    private void AnnounceStartInvoke() => GameManager.Instance.ChengePop(false,announceImage.gameObject);
 
     /// <summary>キーボードのUIを表示する</summary>
     public void KeyShow()
@@ -682,27 +734,28 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>現在何をすればいいのかを画面上に表示する</summary>
     public void TaskTextSet()
     {
+        //プレイヤーターンに限り有効。それぞれの条件に合致したテキストを表示させる
         if (playerTurn)
         {
             var playerNow = nowPayer.GetComponent<TankCon>();
             ButtonTips.enabled = true;
             if (playerNow.limitCounter == playerNow.atackCount)
             {
-                taskText.text = "Enterキーでターンエンドするか\nspaceキーで戦車を切り替えてください";
+                taskText.text = "<color=red>Enter</color>キーでターンエンドするか\nspaceキーで戦車を切り替えてください";
             }
             else if (playerNow.limitCounter != playerNow.atackCount)
             {
                 if (FoundEnemy)
                 {
-                    taskText.text = "右クリックでエイム";
+                    taskText.text = "<color=red>右クリック</color>でエイム";
                     if (playerNow.aimFlag)
                     {
-                        taskText.text = "精度向上ボタンF、自動エイムボタンRの\nどちらかを押すか敵に攻撃";
+                        taskText.text = "精度向上ボタン<color=red>F</color>、自動エイムボタン<color=red>R</color>の\nどちらかを押すか敵に攻撃";
                     }
                 }
                 else
                 {
-                    taskText.text = "Qキーでレーダーを起動して\n点滅速度を頼りに敵を探す";
+                    taskText.text = "<color=red>Q</color>キーでレーダーを起動して\n点滅速度を頼りに敵を探す";
                 }
             }
         }
@@ -732,6 +785,10 @@ public class TurnManager : Singleton<TurnManager>
     /// <summary>キャラの攻撃回数</summary>
     public int atackCounter;
     /// <summary>
+    /// 戦車の車種
+    /// </summary>
+    public string tankTypeName;
+    /// <summary>
     /// 戦車を選択
     /// </summary>
     /// <param name="num">選択する戦車の名前</param>
@@ -754,6 +811,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 50f;
                 tankDamage = 35;
                 atackCounter = 1;
+                tankTypeName = "3_hevy";
                 break;
             case TANK_CHOICE.Panzer2:
                 charactorHp = 50;
@@ -765,6 +823,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 100f;
                 tankDamage = 20;
                 atackCounter = 2;
+                tankTypeName = "1_light";
                 break;
             case TANK_CHOICE.Shaman:
                 charactorHp = 80;
@@ -776,6 +835,7 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 50f;
                 tankDamage = 35;
                 atackCounter = 1;
+                tankTypeName = "3_hevy";
                 break;
             case TANK_CHOICE.Stuart:
                 charactorHp = 30;
@@ -787,25 +847,11 @@ public class TurnManager : Singleton<TurnManager>
                 tankSearchRanges = 100f;
                 tankDamage = 20;
                 atackCounter = 2;
+                tankTypeName = "1_light";
                 break;
         }
     }
 
-    /// <summary>プレイヤーターンを終わらせたいときに呼び出されるUIに対応したメソッド</summary>
-    public void TurnEndUI()
-    {
-        Debug.Log("TurnEndUIが呼び出された");
-        playerTurn = true;
-        GameManager.Instance.ChengePop(false, tankChengeObj);
-        GameManager.Instance.ChengePop(false, radarObj);
-        GameManager.Instance.ChengePop(false, pauseObj);
-        GameManager.Instance.ChengePop(false, limitedBar);
-        GameManager.Instance.ChengePop(false, endObj);
-        GameManager.Instance.ChengePop(false, hittingTargetR);
-        GameManager.Instance.ChengePop(false, turretCorrectionF);
-        GameManager.Instance.ChengePop(false, announceObj);
-        GameManager.Instance.ChengePop(false, keyUI);
-    }
     /// <summary>タイトルボタンをクリックしたら呼び出し</summary>
     public void Title()
     {

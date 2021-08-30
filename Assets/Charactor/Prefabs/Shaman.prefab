@@ -400,8 +400,10 @@ MonoBehaviour:
   eTankDamage: 0
   eAtackCount: 0
   hpBarpos: {fileID: 2365309110208978173}
-  enemyNowHp: 0
+  tankType: 
   agent: {fileID: 5819920205099797134}
+  enemyNowHp: 0
+  isDie: 0
   patrolPos:
   - {fileID: 0}
   - {fileID: 0}

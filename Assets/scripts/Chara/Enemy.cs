@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.AI;
 public class Enemy : EnemyBase
 {
     /// <summary>敵の移動ステート</summary>
@@ -8,7 +7,6 @@ public class Enemy : EnemyBase
     {
         IDOL,MOVE,ATACK
     }
-    public NavMeshAgent agent;
     /// <summary>敵の射撃位置</summary>
     GameObject tankGunFire = null;
     /// <summary>敵の車体</summary>
@@ -29,6 +27,8 @@ public class Enemy : EnemyBase
     public int nowCounter = 0;
     /// <summary>敵が動いていたらtrue</summary>
     [HideInInspector] public bool enemyMove = false;
+
+    /// <summary>敵の頭上に表示する識別敵味方識別マーク</summary>
     [SerializeField] SpriteRenderer enemyMaker = null;
 
     /// <summary>レイキャストが通っているかを判定</summary>
@@ -39,6 +39,10 @@ public class Enemy : EnemyBase
     [HideInInspector] public bool parameterSetFlag = false;
     /// <summary>プレイヤーが敵を発見した場合や、攻撃を受けた場合にtrue</summary>
     [HideInInspector] public bool enemyAppearance = false;
+
+    /// <summary>パトロールポイントを一巡してPlayerを見つける事が出来なかったらtrue</summary>
+    private bool playerNotFound = false;
+
     private void Start()
     {
         Rd = gameObject.GetComponent<Rigidbody>();
@@ -51,7 +55,6 @@ public class Enemy : EnemyBase
         tankBody = Trans.GetChild(0);
         leftTank = tankBody.GetChild(0);
         rightTank = tankBody.GetChild(1);
-        agent = GetComponent<NavMeshAgent>();
         EborderLine = tankHead.GetComponent<BoxCollider>();
         EborderLine.isTrigger = true;
         slider = TurnManager.Instance.enemyrHpBar.transform.GetChild(0).GetComponent<Slider>();
@@ -60,8 +63,7 @@ public class Enemy : EnemyBase
         AgentParamSet(enemyMove);
        
     }
-    /// <summary>switch文で行動終了する際に使う変数</summary>
-    bool oneUseFlag = true;
+
     /// <summary>待機を有効にする</summary>
     private bool timerFalg = false;
     private void Update()
@@ -71,6 +73,7 @@ public class Enemy : EnemyBase
         {
             if (TurnManager.Instance.enemyIsMove)
             {
+                Debug.Log("現在動いている敵" + gameObject.name);
                 if (enemyMove)
                 {
                     EnemyMoveLimit();
@@ -99,16 +102,21 @@ public class Enemy : EnemyBase
             case EnemyState.IDOL:
 
                 timerFalg = true;
+
+                //指定時間待機する
                 WaitTimer(timerFalg);
-                if (eAtackCount == nowCounter || eAtackCount == nowCounter && oneUseFlag || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0)
+
+                //攻撃上限、移動回数、移動値が0か、巡回ポイントを一巡してもPlayerを発見できなかった場合
+                if (eAtackCount == nowCounter || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0 || playerNotFound)
                 {
-                    oneUseFlag = false;
-                    agent.ResetPath();
+                    playerNotFound = false;
                     nowCounter = 0;
                     parameterSetFlag = true;
-                    TurnManager.Instance.MoveCharaSet(false, true, TurnManager.Instance.EnemyMoveVal);
+                    AgentParamSet(false);
+                    TurnManager.Instance.MoveCharaSet(false, true);
                 }
 
+                //敵の行動回数または移動値が0以上なら攻撃か移動を選択
                 if (TurnManager.Instance.EnemyMoveVal > 0 && enemyMoveNowValue > 0)
                 {
                     if (isPlayer && eAtackCount > nowCounter)
@@ -142,7 +150,7 @@ public class Enemy : EnemyBase
     }
 
     /// <summary>ナビメッシュで動いている敵の移動の可否を決める</summary>
-    /// <param name="f"></param>
+    /// <param name="f">trueなら移動できるfalseなら移動不可</param>
     private void AgentParamSet(bool f)
     {
         agent.speed = f ? enemySpeed / 4 : 0;
@@ -153,14 +161,13 @@ public class Enemy : EnemyBase
     /// <summary>移動するための挙動</summary>
     void EnemyMove()
     {
-        if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0)
+        if (!isPlayer && TurnManager.Instance.EnemyMoveVal > 0 && TurnManager.Instance.enemyTurn)
         {
             if (playerFind)
             {
                 //発見したプレイヤーの中で一番近い物に照準を合わせる
                 enemyMove = false;
                 AgentParamSet(enemyMove);
-                agent.isStopped = true;
                 Vector3 pointDir = NearPlayer().transform.position - tankHead.position;
                 Quaternion rotetion = Quaternion.LookRotation(pointDir);
                 tankHead.rotation = Quaternion.RotateTowards(tankHead.rotation, rotetion, ETankTurn_Speed * Time.deltaTime);
@@ -187,7 +194,14 @@ public class Enemy : EnemyBase
     /// <param name="appearanceFlag">trueなら攻撃移動。falseなら巡回</param>
     void EnemyMoveStatusSet(bool appearanceFlag)
     {
-        if (appearanceFlag != true && patrolPos.Length == patrolNum) patrolNum = 0;
+        if (appearanceFlag != true && patrolPos.Length == patrolNum)
+        {
+            playerNotFound = true;
+            patrolNum = 0;
+            EnemyActionSet(EnemyState.IDOL);
+        }
+
+        //もしもappearanceFlagがtrueなら近くのPlayerを代入する。falseなら巡回ポイントを代入
         Vector3 pointDir = (appearanceFlag ? NearPlayer().transform.position : patrolPos[patrolNum].transform.position) - Trans.position;
         Quaternion rotetion = Quaternion.LookRotation(pointDir);
         Trans.rotation = Quaternion.RotateTowards(Trans.rotation,rotetion,ETankTurn_Speed * Time.deltaTime);
@@ -215,11 +229,10 @@ public class Enemy : EnemyBase
         }
         else if (angle != 3 && dis < 10)
         {
-            Debug.Log("次のステップ");
             agentSetUpFlag = true;
             enemyMove = false;
             AgentParamSet(enemyMove);
-            if (appearanceFlag != true) patrolNum++;
+            if (appearanceFlag == false) patrolNum++;
         }
     }
     /// <summary>移動出来なくなるする為のメソッド</summary>
@@ -262,6 +275,7 @@ public class Enemy : EnemyBase
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);
             ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform, ParticleSystemEXP.ParticleStatus.GUN_FIRE);
             nowCounter++;
+            Debug.Log("攻撃を行った");
             EnemyActionSet(EnemyState.IDOL);//
         }
         return;

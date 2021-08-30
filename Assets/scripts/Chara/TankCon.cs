@@ -3,14 +3,13 @@ using UnityEngine.UI;
 using Cinemachine;
 public class TankCon : PlayerBase
 {
-    //ティーガー戦車は上下に0から∔65度
     //AddRelativeForceを使えば斜面での移動に最適かも
     //xの射角は入れない
-    Transform tankHead = null;
-    private Transform tankGun = null;
-    private Transform tankBody = null;
+    [SerializeField] Transform tankHead = null;
+    [SerializeField] Transform tankGun = null;
+    [SerializeField] Transform tankBody = null;
 
-    public GameObject tankGunFire = null;
+    [SerializeField] GameObject tankGunFire = null;
 
     public CinemachineVirtualCamera defaultCon;
     public CinemachineVirtualCamera aimCom;
@@ -47,16 +46,20 @@ public class TankCon : PlayerBase
     bool isTankMove = false;
     /// <summary>プレイヤーの車体が曲がっているとTrue</summary>
     bool isTankRot = false;
+    /// <summary>hitRateTextがactiveならtrue</summary>
+    bool hitRateFalg = false;
+    /// <summary>命中率</summary>
+    int hitRateValue = 0;
+
+    /// <summary>trueなら砲塔に関連する動作が出来なくなる</summary>
+    private bool tankHeadDontMove = true;
+
 
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
         Trans = GetComponent<Transform>();
         PlayerObj = gameObject;
-        tankHead = Trans.GetChild(1);
-        tankGun = tankHead.GetChild(0);
-        tankGunFire = tankGun.GetChild(0).gameObject;
-        tankBody = Trans.GetChild(0);
         aimCom = TurnManager.Instance.AimCon;
         defaultCon = TurnManager.Instance.DefCon;
         moveLimitRangeBar = TurnManager.Instance.limitedBar.transform.GetChild(0).GetComponent<Slider>();
@@ -72,103 +75,111 @@ public class TankCon : PlayerBase
     {
         if (controlAccess && TurnManager.Instance.timeLineEndFlag)
         {
-            Rd.isKinematic = false;
-            if (limitRangeFlag)
+            //playerIsMoveがtrueなら操作権を与えられた戦車が操作できるようになる
+            if (TurnManager.Instance.playerIsMove)
             {
-                limitRangeFlag = false;
-                moveLimitRangeBar.maxValue = tankLimitRange;
-                moveLimitRangeBar.value = tankLimitRange;
-                tankHpBar.maxValue = playerLife;
-                tankHpBar.value = playerLife;
-            }
-            if (cameraActive)
-            {
-                GameManager.Instance.ChengePop(true, defaultCon.gameObject);
-                GameManager.Instance.ChengePop(true, aimCom.gameObject);
-                cameraActive = false;
-            }
-            if (Input.GetKey(KeyCode.J)|| Input.GetKey(KeyCode.L))
-            {
-                if (TurnManager.Instance.playerIsMove)
+                Rd.isKinematic = false;
+                if (limitRangeFlag)
                 {
-                    Quaternion rotetion;
-                    bool keySet = false;
-                    if (Input.GetKey(KeyCode.J)) keySet = true;
-                    else if (Input.GetKey(KeyCode.L)) keySet = false;
-                    rotetion = Quaternion.Euler((keySet ? Vector3.down : Vector3.up) * (aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime);
-                    tankHead.rotation *= rotetion;
-                    if (isMoveBGM_turret)
-                    {
-                        isMoveBGM_turret = false;
-                        TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
-                    }
+                    limitRangeFlag = false;
+                    moveLimitRangeBar.maxValue = tankLimitRange;
+                    moveLimitRangeBar.value = tankLimitRange;
+                    tankHpBar.maxValue = playerLife;
+                    tankHpBar.value = playerLife;
                 }
-            }
-            if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L))//砲塔旋回を辞めたら止まる
-            {
-                isMoveBGM_turret = true;
-                TankMoveSFXPlay(false,BGMType.HEAD_MOVE);
-            }
-
-            if (IsGranded)
-            {
-                if (TurnManager.Instance.playerIsMove)
+                if (cameraActive)
                 {
-                    moveV = Input.GetAxis("Vertical");
-                    moveH = Input.GetAxis("Horizontal");
-                    if (moveH != 0)
+                    GameManager.Instance.ChengePop(true, defaultCon.gameObject);
+                    GameManager.Instance.ChengePop(true, aimCom.gameObject);
+                    cameraActive = false;
+                }
+                var mouseVal = Input.GetAxis("Mouse X");
+                if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
+                {
+                    if (TurnManager.Instance.playerIsMove)
                     {
-                        isTankRot = true;
-                        if (isMoveBGM_body)
+                        Quaternion rotetion;
+                        bool keySet = false;
+                        if (Input.GetKey(KeyCode.J) || mouseVal < 0) keySet = true;
+                        else if (Input.GetKey(KeyCode.L) || mouseVal > 0) keySet = false;
+                        rotetion = Quaternion.Euler((aimFlag ? tankHead_R_SPD : tankHead_R_SPD / 0.5f) * Time.deltaTime * (keySet ? Vector3.down : Vector3.up));
+                        tankHead.rotation *= rotetion;
+                        if (isMoveBGM_turret)
                         {
-                            isMoveBGM_body = false;
-                            TankMoveSFXPlay(true, BGMType.MOVE);
-                        }
-                        float rot = moveH * tankTurn_Speed * Time.deltaTime;
-                        Quaternion rotetion = Quaternion.Euler(0, rot, 0);
-                        Rd.MoveRotation(Rd.rotation * rotetion);
-                        MoveLimit();
-                    }
-                    else
-                    {
-                        if (isTankRot)
-                        {
-                            isTankRot = false;
-                            isMoveBGM_body = true;
-                            TankMoveSFXPlay(false,BGMType.MOVE);
-                        }
-                    }
-                    //前進後退
-                    if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
-                    {
-                        isTankMove = true;
-                        if (isMoveBGM_body)
-                        {
-                            isMoveBGM_body = false;
-                            TankMoveSFXPlay(true, BGMType.MOVE);
-                        }
-                        float mov = moveV * playerSpeed * Time.deltaTime;
-                        Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
-                        MoveLimit();
-                    }
-                    else
-                    {
-                        if (isTankMove && Rd.IsSleeping())
-                        {
-                            isTankMove = false;
-                            isMoveBGM_body = true;
-                            TankMoveSFXPlay(false,BGMType.MOVE);
+                            isMoveBGM_turret = false;
+                            TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                         }
                     }
                 }
+                if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
+                {
+                    isMoveBGM_turret = true;
+                    TankMoveSFXPlay(false, BGMType.HEAD_MOVE);
+                }
+
+                if (IsGranded)
+                {
+                    if (TurnManager.Instance.playerIsMove)
+                    {
+                        moveV = Input.GetAxis("Vertical");
+                        moveH = Input.GetAxis("Horizontal");
+                        if (moveH != 0)
+                        {
+                            isTankRot = true;
+                            if (isMoveBGM_body)
+                            {
+                                isMoveBGM_body = false;
+                                TankMoveSFXPlay(true, BGMType.MOVE);
+                            }
+                            float rot = moveH * tankTurn_Speed * Time.deltaTime;
+                            Quaternion rotetion = Quaternion.Euler(0, rot, 0);
+                            Rd.MoveRotation(Rd.rotation * rotetion);
+                            MoveLimit();
+                        }
+                        else
+                        {
+                            if (isTankRot)
+                            {
+                                isTankRot = false;
+                                isMoveBGM_body = true;
+                                TankMoveSFXPlay(false, BGMType.MOVE);
+                            }
+                        }
+                        //前進後退
+                        if (moveV != 0 && Rd.velocity.magnitude != tankLimitSpeed || moveV != 0 && Rd.velocity.magnitude != -tankLimitSpeed)
+                        {
+                            isTankMove = true;
+                            if (isMoveBGM_body)
+                            {
+                                isMoveBGM_body = false;
+                                TankMoveSFXPlay(true, BGMType.MOVE);
+                            }
+                            float mov = moveV * playerSpeed * Time.deltaTime;
+                            Rd.AddForce(tankBody.transform.forward * mov, ForceMode.Force);
+                            MoveLimit();
+                        }
+                        else
+                        {
+                            if (isTankMove && Rd.IsSleeping())
+                            {
+                                isTankMove = false;
+                                isMoveBGM_body = true;
+                                TankMoveSFXPlay(false, BGMType.MOVE);
+                            }
+                        }
+                    }
+                }
             }
 
-            //右クリック
-            if (Input.GetButtonUp("Fire2") && TurnManager.Instance.playerIsMove)
+            //右クリックを押してエイムモードに移行する
+            if (Input.GetButtonDown("Fire2"))
             {
-                GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
-                if (aimFlag) aimFlag = false;
-                else aimFlag = true;
+                if (TurnManager.Instance.uiActive == false || TurnManager.Instance.uiActive)
+                {
+                    GameManager.Instance.source.PlayOneShot(GameManager.Instance.fire2sfx);
+                    if (aimFlag) aimFlag = false;
+                    else aimFlag = true;
+                }
             }
             AimMove(aimFlag);
         }
@@ -233,34 +244,44 @@ public class TankCon : PlayerBase
     {
         if (aim)
         {
+            GameManager.Instance.ChengePop(true, TurnManager.Instance.moveValue.gameObject);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
             GameManager.Instance.ChengePop(false,moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,aimCom.gameObject);
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
-            if (Input.GetButtonUp("Fire1") && TurnManager.Instance.dontShoot == false)
+
+            if (Input.GetButtonUp("Fire1"))
             {
-                if (atackCount > limitCounter)
+                if (tankHeadDontMove && !TurnManager.Instance.uiActive || !tankHeadDontMove && TurnManager.Instance.uiActive)
                 {
-                    limitCounter++;
-                    TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
-                    Atack();
+                    tankHeadDontMove = false;
+                    if (atackCount > limitCounter)
+                    {
+                        limitCounter++;
+                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                        Atack();
+                    }
+                    else
+                    {
+                        TurnManager.Instance.AnnounceStart("Atack Limit");
+                    }
                 }
-                else
+
+                if (TurnManager.Instance.anyPushButton)
                 {
-                    TurnManager.Instance.AnnounceStart("Atack Limit");
+                    tankHeadDontMove = !TurnManager.Instance.uiActive;
                 }
             }
+
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
-                //if (turretCorrection && perfectHit || turretCorrection || perfectHit)
-                //{
-                //    TurnManager.Instance.playerIsMove = false;
-                //}
                 if (Input.GetKeyUp(KeyCode.F))//砲塔を向ける
                 {
-                    if (turretCorrection != false)
+                    if (turretCorrection)
                     {
                         turretCorrection = false;
+                        TurnManager.Instance.uiActive = false;
                         TurnManager.Instance.playerIsMove = true;
                         GunAccuracy(turretCorrection);
                     }
@@ -268,93 +289,119 @@ public class TankCon : PlayerBase
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
-                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                            TurnManager.Instance.uiActive = true;
                             turretCorrection = true;
                             TurnManager.Instance.playerIsMove = false;
                             GunAccuracy(turretCorrection);
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
+
+                        //命中率の値を計算して表示する為の処理
+                        if (hitRateFalg)
+                        {
+                            hitRateValue = Random.Range(0, 100);
+                            GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
+                            if (perfectHit)
+                            {
+                                //確実に敵に命中するので100%の文字を入れる
+                                TurnManager.Instance.hitRateText.text = $"命中率100%";
+                            }
+                            else
+                            {
+                                TurnManager.Instance.hitRateText.text = $"命中率{hitRateValue}%";
+                            }
+                        }
+                        else
+                        {
+                            TurnManager.Instance.hitRateText.text = null;
+                            GameManager.Instance.ChengePop(hitRateFalg, TurnManager.Instance.hitRateText.gameObject);
+                        }
                     }
                 }
                 if (Input.GetKeyUp(KeyCode.R))//敵に照準が合っていたら命中率を100
                 {
-                    if (perfectHit != false)
+                    if (perfectHit)
                     {
-                        Debug.Log("trueなら");
                         perfectHit = false;
+                        TurnManager.Instance.uiActive = false;
                         GunDirctionIsEnemy(perfectHit);
                     }
                     else
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
-                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                            TurnManager.Instance.uiActive = true;
                             perfectHit = true;
                             GunDirctionIsEnemy(perfectHit);
+                            if (hitRateFalg && turretCorrection)
+                            {
+                                TurnManager.Instance.hitRateText.text = $"命中率100%";
+                            }
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
                     }
                 }
             }
-            else if(TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
+            else if (TurnManager.Instance.PlayerMoveVal == 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
             {
                 TurnManager.Instance.AnnounceStart("SP Value Zero");
             }
         }
         else
         {
+            //エイムモードを解除する
             TurnManager.Instance.playerIsMove = true;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);
             GameManager.Instance.ChengePop(false,aimCom.gameObject);
+            GameManager.Instance.ChengePop(false,TurnManager.Instance.moveValue.gameObject);
             var p = tankGun.transform.rotation;
             p.x = 0;
             p.z = 0;
         }
     }
 
-    /// <summary>リロード機能</summary>
-    void Reload()
-    {
-        //攻撃してなかろうとリロード機能は実施される
-        TurnManager.Instance.PlayerMoveVal--;
-        limitCounter = 0;
-    }
-
+    /// <summary>砲塔を敵に向ける機能</summary>
+    /// <param name="flag">trueなら向ける</param>
     void GunAccuracy(bool flag)
     {
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
             tankHead.LookAt(TurnManager.Instance.nearEnemy.transform,Vector3.up);
-            GameManager.Instance.ChengePop(true, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hitRateText.gameObject);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.turretCorrectionF);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hitRateText.gameObject);
         }
+        hitRateFalg = flag;
     }
 
     /// <summary>
-    /// 命中率を100にする
+    /// 命中率を100にするUIを表示させる
     /// </summary>
     void GunDirctionIsEnemy(bool flag)
     {
         if (flag)
         {
             TurnManager.Instance.PlayerMoveVal--;
-            GameManager.Instance.ChengePop(true,TurnManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(flag,TurnManager.Instance.hittingTargetR);
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.Fsfx);
-            TurnManager.Instance.MoveCounterText(TurnManager.Instance.text1);
+            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
         }
         else
         {
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
-            GameManager.Instance.ChengePop(false, TurnManager.Instance.hittingTargetR);
+            GameManager.Instance.ChengePop(flag, TurnManager.Instance.hittingTargetR);
         }
     }
     void Atack()
@@ -377,8 +424,11 @@ public class TankCon : PlayerBase
             {
                 if (RayStart(tankGunFire.transform.position))
                 {
-                    if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                    else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                    if (hitRateValue > Random.Range(0,50))
+                    {
+                        if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                        else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                    }
                 }
                 else Debug.Log("砲塔が向いているけど命中率を呼んだ結果、外した");
             }
@@ -387,8 +437,12 @@ public class TankCon : PlayerBase
         {
             if (RayStart(tankGunFire.transform.position))
             {
-                if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
-                else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                hitRateValue = Random.Range(0,100);
+                if (hitRateValue > Random.Range(0,100))
+                {
+                    if (HitCalculation()) hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
+                    else hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage / 2);
+                }
             }
         }
         GameManager.Instance.source.PlayOneShot(GameManager.Instance.atack);

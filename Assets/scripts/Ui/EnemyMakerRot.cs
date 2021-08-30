@@ -1,6 +1,7 @@
 using UnityEngine;
-using Cinemachine;
 
+
+/// <summary>敵の頭上に表示するアイコンを表示する</summary>
 public class EnemyMakerRot : MonoBehaviour
 {
     // Update is called once per frame

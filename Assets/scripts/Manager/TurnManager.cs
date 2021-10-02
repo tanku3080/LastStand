@@ -13,7 +13,7 @@ public class TurnManager : Singleton<TurnManager>
     }
     /// <summary>各陣営のTurnを判定</summary>
     public bool enemyTurn = false, playerTurn = false;
-    /// <summary>敵味方が移動しているか判定</summary>
+    /// <summary>敵味方が操作権を与えられても間違って移動しないようにするための判定</summary>
     public bool playerIsMove = false, enemyIsMove = false;
     /// <summary>全体の経過ターン数</summary>
     public int generalTurn = 1;
@@ -438,6 +438,7 @@ public class TurnManager : Singleton<TurnManager>
                 if (nowPayer.GetComponent<TankCon>().aimFlag)
                 {
                     nowPayer.GetComponent<TankCon>().aimFlag = false;
+                    nowPayer.GetComponent<TankCon>().playerMoveFlag = true;
                     nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
                 }
                 //現在のプレイヤーがplayers配列の最後にある時に限りターンエンドUIを表示する
@@ -674,7 +675,6 @@ public class TurnManager : Singleton<TurnManager>
         clickC = !clickC;
         playerIsMove = clickC;
         enemyIsMove = clickC;
-        nowPayer.GetComponent<TankCon>().tankHeadDontMove = false;
         GameManager.Instance.ChengePop(false,tankChengeObj);
         GameManager.Instance.ChengePop(false,endObj);
         GameManager.Instance.ChengePop(false,pauseObj);

@@ -19,11 +19,16 @@ public class LogoSection : MonoBehaviour
         if (SceneFadeManager.Instance.FadeStop && oneTimeFlag == false)
         {
             player.Play();
+
+            if (Input.anyKeyDown)
+            {
+                SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f, SceneFadeManager.SCENE_STATUS.START);
+            }
         }
     }
     private void PlayerStopSetting(VideoPlayer video)
     {
         oneTimeFlag = true;
-        SceneFadeManager.Instance.SceneOutAndChangeSystem(0.001f,SceneFadeManager.SCENE_STATUS.START);
+        SceneFadeManager.Instance.SceneOutAndChangeSystem(0.02f,SceneFadeManager.SCENE_STATUS.START);
     }
 }

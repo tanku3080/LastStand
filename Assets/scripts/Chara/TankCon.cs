@@ -41,7 +41,7 @@ public class TankCon : PlayerBase
     bool isMoveBGM_body = true;
     //砲塔旋回音を鳴らすために使う
     bool isMoveBGM_turret = true;
-    //プレイヤーの車体前後に動いているならTrue
+    //プレイヤーの車体前後に動いているなら音楽を鳴らすためにTrue
     bool isTankMove = false;
     /// <summary>プレイヤーの車体が曲がっているとTrue</summary>
     bool isTankRot = false;
@@ -49,13 +49,12 @@ public class TankCon : PlayerBase
     bool hitRateFalg = false;
     /// <summary>命中率</summary>
     int hitRateValue = 0;
+    /// <summary>プレイヤーの前後左右の動きを許可するためのFlag</summary>
+    [HideInInspector] public bool playerMoveFlag = true;
 
-    /// <summary>trueなら攻撃に関連する動作が出来なくなる</summary>
-    [HideInInspector] public bool tankHeadDontMove = true;
 
-    //Rayを使って敵を判別する為の機能の一つを作る
-    Ray playerRay;
-
+    /// <summary>エイム中に制限を儲けるため</summary>
+    private bool aimLimitedFalg = false;
     ///<summary>攻撃と索敵に必要なRayCast</summary>
     RaycastHit hit;
     void Start()
@@ -72,8 +71,6 @@ public class TankCon : PlayerBase
         borderLine = tankHead.GetComponent<BoxCollider>();
         borderLine.isTrigger = true;
 
-        //Rayを初期化する
-        playerRay = new Ray(tankHead.transform.position,Vector3.forward);
     }
 
     // Update is called once per frame
@@ -102,10 +99,11 @@ public class TankCon : PlayerBase
                     GameManager.Instance.ChengePop(true, aimCom.gameObject);
                     cameraActive = false;
                 }
-                var mouseVal = Input.GetAxis("Mouse X");
-                if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
+
+                if (playerMoveFlag)
                 {
-                    if (TurnManager.Instance.playerIsMove)
+                    var mouseVal = Input.GetAxis("Mouse X");
+                    if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.L) || mouseVal != 0)
                     {
                         Quaternion rotetion;
                         bool keySet = false;
@@ -119,16 +117,13 @@ public class TankCon : PlayerBase
                             TankMoveSFXPlay(true, BGMType.HEAD_MOVE);
                         }
                     }
-                }
-                if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
-                {
-                    isMoveBGM_turret = true;
-                    TankMoveSFXPlay(false, BGMType.HEAD_MOVE);
-                }
+                    if (Input.GetKeyUp(KeyCode.J) || Input.GetKeyUp(KeyCode.L) || mouseVal == 0)//砲塔旋回を辞めたら止まる
+                    {
+                        isMoveBGM_turret = true;
+                        TankMoveSFXPlay(false, BGMType.HEAD_MOVE);
+                    }
 
-                if (IsGranded)
-                {
-                    if (TurnManager.Instance.playerIsMove)
+                    if (IsGranded)
                     {
                         moveV = Input.GetAxis("Vertical");
                         moveH = Input.GetAxis("Horizontal");
@@ -181,7 +176,7 @@ public class TankCon : PlayerBase
             }
 
             //右クリックを押してエイムモードに移行する
-            if (Input.GetButtonDown("Fire2"))
+            if (Input.GetButtonDown("Fire2") && aimLimitedFalg == false)
             {
                 if (TurnManager.Instance.uiActive == false || TurnManager.Instance.uiActive)
                 {
@@ -261,29 +256,24 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
-            if (TurnManager.Instance.uiActive == false)
+
+            if (!TurnManager.Instance.uiActive || !playerMoveFlag && !TurnManager.Instance.uiActive
+                || playerMoveFlag && !turretCorrection && !perfectHit && !TurnManager.Instance.uiActive)
             {
                 if (Input.GetButtonDown("Fire1"))
                 {
                     //条件を満たした場合にのみ攻撃を行う
-                    if (tankHeadDontMove == false)
+                    if (atackCount > limitCounter)
                     {
-                        if (atackCount > limitCounter)
-                        {
-                            limitCounter++;
-                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                            Atack();
-                        }
-                        else
-                        {
-                            TurnManager.Instance.AnnounceStart("Atack Limit");
-                        }
+                        limitCounter++;
+                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                        Atack();
+                    }
+                    else
+                    {
+                        TurnManager.Instance.AnnounceStart("Atack Limit");
                     }
                 }
-            }
-            else
-            {
-                tankHeadDontMove = true;
             }
 
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))
@@ -293,19 +283,19 @@ public class TankCon : PlayerBase
                     if (turretCorrection)
                     {
                         turretCorrection = false;
-                        TurnManager.Instance.uiActive = false;
-                        TurnManager.Instance.playerIsMove = true;
                         GunAccuracy(turretCorrection);
+                        aimLimitedFalg = false;
+                        playerMoveFlag = true;
                     }
                     else
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                            TurnManager.Instance.uiActive = true;
                             turretCorrection = true;
-                            TurnManager.Instance.playerIsMove = false;
                             GunAccuracy(turretCorrection);
+                            aimLimitedFalg = true;
+                            playerMoveFlag = false;
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
 
@@ -336,21 +326,23 @@ public class TankCon : PlayerBase
                     if (perfectHit)
                     {
                         perfectHit = false;
-                        TurnManager.Instance.uiActive = false;
                         GunDirctionIsEnemy(perfectHit);
+                        aimLimitedFalg = false;
+                        playerMoveFlag = true;
                     }
                     else
                     {
                         if (TurnManager.Instance.FoundEnemy)
                         {
                             TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                            TurnManager.Instance.uiActive = true;
                             perfectHit = true;
                             GunDirctionIsEnemy(perfectHit);
                             if (hitRateFalg && turretCorrection)
                             {
                                 TurnManager.Instance.hitRateText.text = $"命中率100%";
+                                playerMoveFlag = false;
                             }
+                            aimLimitedFalg = true;
                         }
                         else TurnManager.Instance.AnnounceStart("Not Found Enemy");
                     }
@@ -364,7 +356,6 @@ public class TankCon : PlayerBase
         else
         {
             //エイムモードを解除する
-            TurnManager.Instance.playerIsMove = true;
             GameManager.Instance.ChengePop(true, moveLimitRangeBar.gameObject);
             GameManager.Instance.ChengePop(true,defaultCon.gameObject);
             GameManager.Instance.ChengePop(true, TurnManager.Instance.hpBar);
@@ -373,6 +364,8 @@ public class TankCon : PlayerBase
             var p = tankGun.transform.rotation;
             p.x = 0;
             p.z = 0;
+            aimLimitedFalg = false;
+            playerMoveFlag = true;
         }
     }
 
@@ -462,7 +455,8 @@ public class TankCon : PlayerBase
         GameManager.Instance.ChengePop(true,tankGunFire);
         GunDirctionIsEnemy(perfectHit = false);
         GunAccuracy(turretCorrection = false);
-        TurnManager.Instance.playerIsMove = true;
+        aimLimitedFalg = false;
+        playerMoveFlag = true;
     }
 
     /// <summary>ヒットか軽ダメージかどうか判定する</summary>

@@ -22,7 +22,7 @@ public class GameManager : Singleton<GameManager>
         Cursor.lockState = CursorLockMode.Confined;
     }
     /// <summary>
-    /// 確認メッセージやその他非表示オブジェクトを表示。第3引数がNUllの場合GameManagerで登録された全てのUIをチェックするので処理が重くなる
+    /// 確認メッセージやその他非表示オブジェクトを表示。
     /// </summary>
     public void ChengePop(bool isChenge = false, GameObject obj = null)
     {

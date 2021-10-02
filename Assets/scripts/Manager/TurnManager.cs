@@ -438,7 +438,6 @@ public class TurnManager : Singleton<TurnManager>
                 if (nowPayer.GetComponent<TankCon>().aimFlag)
                 {
                     nowPayer.GetComponent<TankCon>().aimFlag = false;
-                    nowPayer.GetComponent<TankCon>().playerMoveFlag = true;
                     nowPayer.GetComponent<TankCon>().AimMove(nowPayer.GetComponent<TankCon>().aimFlag);
                 }
                 //現在のプレイヤーがplayers配列の最後にある時に限りターンエンドUIを表示する
@@ -456,6 +455,7 @@ public class TurnManager : Singleton<TurnManager>
 
             //今操作しているプレイヤーのコントロール権をなくす
             nowPayer.GetComponent<TankCon>().controlAccess = false;
+            nowPayer.GetComponent<TankCon>().playerMoveFlag = false;
 
             //次の操作プレイヤーの為に特殊コマンドボタンのUIやカメラを非アクティブ化する
             GameManager.Instance.ChengePop(false,hittingTargetR);
@@ -470,6 +470,7 @@ public class TurnManager : Singleton<TurnManager>
 
             //次のプレイヤーのコントロールアクセス権をアクティブ化
             nowPayer.GetComponent<TankCon>().controlAccess = true;
+            nowPayer.GetComponent<TankCon>().playerMoveFlag = true;
             VcamChenge();
          
             playerNum++;

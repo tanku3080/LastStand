@@ -50,8 +50,8 @@ public class TankCon : PlayerBase
     /// <summary>命中率</summary>
     int hitRateValue = 0;
 
-    /// <summary>trueなら砲塔に関連する動作が出来なくなる</summary>
-    private bool tankHeadDontMove = true;
+    /// <summary>trueなら攻撃に関連する動作が出来なくなる</summary>
+    [HideInInspector] public bool tankHeadDontMove = true;
 
     //Rayを使って敵を判別する為の機能の一つを作る
     Ray playerRay;
@@ -261,29 +261,29 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false, defaultCon.gameObject);
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
-            if (Input.GetButtonUp("Fire1"))
+            if (TurnManager.Instance.uiActive == false)
             {
-                //条件を満たした場合にのみ攻撃を行う
-                if (tankHeadDontMove && !TurnManager.Instance.uiActive || !tankHeadDontMove && TurnManager.Instance.uiActive || 
-                    tankHeadDontMove && TurnManager.Instance.uiActive)
+                if (Input.GetButtonDown("Fire1"))
                 {
-                    tankHeadDontMove = false;
-                    if (atackCount > limitCounter)
+                    //条件を満たした場合にのみ攻撃を行う
+                    if (tankHeadDontMove == false)
                     {
-                        limitCounter++;
-                        TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
-                        Atack();
-                    }
-                    else
-                    {
-                        TurnManager.Instance.AnnounceStart("Atack Limit");
+                        if (atackCount > limitCounter)
+                        {
+                            limitCounter++;
+                            TurnManager.Instance.MoveCounterText(TurnManager.Instance.moveValue);
+                            Atack();
+                        }
+                        else
+                        {
+                            TurnManager.Instance.AnnounceStart("Atack Limit");
+                        }
                     }
                 }
-
-                if (TurnManager.Instance.anyPushButton)
-                {
-                    tankHeadDontMove = !TurnManager.Instance.uiActive;
-                }
+            }
+            else
+            {
+                tankHeadDontMove = true;
             }
 
             if (TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.F) || TurnManager.Instance.PlayerMoveVal != 0 && Input.GetKeyUp(KeyCode.R))

@@ -115,9 +115,6 @@ public class TurnManager : Singleton<TurnManager>
     private float tankVal = 1f;
 
 
-    public bool anyPushButton = false;
-
-
     /// <summary>playerが表示するUIが出ているか？</summary>
     [HideInInspector] public bool uiActive = false;
     void Start()
@@ -166,6 +163,7 @@ public class TurnManager : Singleton<TurnManager>
                 TaskTextSet();
             }
         }
+
     }
 
     /// <summary>対応するボタンのいずれかが押されたら処理を行う</summary>
@@ -176,7 +174,6 @@ public class TurnManager : Singleton<TurnManager>
         if (Input.GetKeyUp(KeyCode.P) && clickC)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             clickC = false;
@@ -184,7 +181,6 @@ public class TurnManager : Singleton<TurnManager>
         else if (Input.GetKeyUp(KeyCode.P) && clickC == false)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, pauseObj);
             GameManager.Instance.ChengePop(clickC, keyUI);
@@ -193,7 +189,6 @@ public class TurnManager : Singleton<TurnManager>
         if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
             clickC = false;
@@ -201,7 +196,6 @@ public class TurnManager : Singleton<TurnManager>
         else if (Input.GetKeyUp(KeyCode.Space) && playerTurn && clickC == false && tankChengeObj.activeSelf)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, tankChengeObj);
             clickC = true;
@@ -209,7 +203,6 @@ public class TurnManager : Singleton<TurnManager>
         if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
             GameManager.Instance.ChengePop(clickC, endObj);
             clickC = false;
@@ -217,7 +210,6 @@ public class TurnManager : Singleton<TurnManager>
         else if (Input.GetKeyUp(KeyCode.Return) && playerTurn && clickC == false && endObj.activeSelf == true)
         {
             uiActive = clickC;
-            anyPushButton = clickC;
             GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
             GameManager.Instance.ChengePop(clickC, endObj);
             clickC = true;
@@ -679,10 +671,10 @@ public class TurnManager : Singleton<TurnManager>
     public void Back()
     {
         uiActive = clickC;
-        anyPushButton = clickC;
         clickC = !clickC;
         playerIsMove = clickC;
         enemyIsMove = clickC;
+        nowPayer.GetComponent<TankCon>().tankHeadDontMove = false;
         GameManager.Instance.ChengePop(false,tankChengeObj);
         GameManager.Instance.ChengePop(false,endObj);
         GameManager.Instance.ChengePop(false,pauseObj);

@@ -36,8 +36,7 @@ public class TankCon : PlayerBase
     [HideInInspector] public Slider moveLimitRangeBar;
     /// <summary>HPバー</summary>
     [HideInInspector] public Slider tankHpBar;
-    //攻撃に必要なレイキャスト
-    RaycastHit hit;
+
     //移動音を鳴らすために使う
     bool isMoveBGM_body = true;
     //砲塔旋回音を鳴らすために使う
@@ -54,7 +53,11 @@ public class TankCon : PlayerBase
     /// <summary>trueなら砲塔に関連する動作が出来なくなる</summary>
     private bool tankHeadDontMove = true;
 
+    //Rayを使って敵を判別する為の機能の一つを作る
+    Ray playerRay;
 
+    ///<summary>攻撃と索敵に必要なRayCast</summary>
+    RaycastHit hit;
     void Start()
     {
         Rd = GetComponent<Rigidbody>();
@@ -68,6 +71,9 @@ public class TankCon : PlayerBase
         defaultCon = Trans.GetChild(2).GetChild(0).GetComponent<CinemachineVirtualCamera>();
         borderLine = tankHead.GetComponent<BoxCollider>();
         borderLine.isTrigger = true;
+
+        //Rayを初期化する
+        playerRay = new Ray(tankHead.transform.position,Vector3.forward);
     }
 
     // Update is called once per frame
@@ -79,6 +85,9 @@ public class TankCon : PlayerBase
             if (TurnManager.Instance.playerIsMove)
             {
                 Rd.isKinematic = false;
+
+                RayStart();
+
                 if (limitRangeFlag)
                 {
                     limitRangeFlag = false;
@@ -191,6 +200,7 @@ public class TankCon : PlayerBase
 
 
     }
+
     /// <summary>再生する音の種類</summary>
     [HideInInspector] public enum BGMType
     {
@@ -416,7 +426,7 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit && turretCorrection == false)//命中率のみ
             {
-                if (RayStart(tankGunFire.transform.position))
+                if (RayStart())
                 {
                     hit.collider.gameObject.GetComponent<Enemy>().Damage(tankDamage);
                 }
@@ -424,7 +434,7 @@ public class TankCon : PlayerBase
             }
             else if (perfectHit == false && turretCorrection)//砲塔が向いているだけの場合
             {
-                if (RayStart(tankGunFire.transform.position))
+                if (RayStart())
                 {
                     if (hitRateValue > Random.Range(0,50))
                     {
@@ -437,7 +447,7 @@ public class TankCon : PlayerBase
         }
         else
         {
-            if (RayStart(tankGunFire.transform.position))
+            if (RayStart())
             {
                 hitRateValue = Random.Range(0,100);
                 if (hitRateValue > Random.Range(0,100))
@@ -465,20 +475,16 @@ public class TankCon : PlayerBase
         return result;
     }
 
-    /// <summary>rayを飛ばして当たっているか判定</summary>
-    /// <param name="atackPoint">rayの発生地点</param>
+    /// <summary>攻撃をする際に一度だけ呼び出してrayが敵に通っているか判定</summary>
     /// <param name="num">当たっているか判定するオブジェクトのTag名。初期値はEnemy</param>
-    bool RayStart(Vector3 atackPoint, string num = "Enemy")
+    bool RayStart()
     {
-        bool f = false;
-        if (Physics.Raycast(atackPoint, tankGunFire.transform.forward, out hit,Mathf.Infinity))
+        Vector3 atackPoint = tankGunFire.transform.position;
+        if (Physics.Raycast(atackPoint, tankGunFire.transform.forward, out hit,Mathf.Infinity) && hit.collider.CompareTag("Enemy"))
         {
-            if (hit.collider.CompareTag(num))
-            {
-                f = true;
-            }
+            return true;
         }
-        return f;
+        return false;
     }
 
     /// <summary>
@@ -508,11 +514,12 @@ public class TankCon : PlayerBase
     //敵がコライダーと接触したら使う
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.FoundEnemy != true && TurnManager.Instance.playerTurn)
+        if (other.gameObject.CompareTag("Enemy") && RayStart() && TurnManager.Instance.playerTurn)
         {
             TurnManager.Instance.FoundEnemy = true;
-            if (other.gameObject.GetComponent<Enemy>().enemyAppearance != true && !TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
+            if (other.gameObject.GetComponent<Enemy>().enemyAppearance == false && !TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
             {
+                Debug.Log(other.gameObject + "を取得");
                 TurnManager.Instance.enemyDiscovery.Add(other.gameObject);
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
                 other.gameObject.GetComponent<Enemy>().enemyAppearance = true;
@@ -522,7 +529,8 @@ public class TankCon : PlayerBase
     //敵がコライダーから離れたら使う
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject) && TurnManager.Instance.playerTurn)
+        if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject)
+            && TurnManager.Instance.playerTurn && RayStart() == false)
         {
             TurnManager.Instance.enemyDiscovery.Remove(other.gameObject);
             TurnManager.Instance.FoundEnemy = false;

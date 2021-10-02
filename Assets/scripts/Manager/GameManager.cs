@@ -19,7 +19,6 @@ public class GameManager : Singleton<GameManager>
     {
         DontDestroyOnLoad(this.gameObject);
         source = gameObject.GetComponent<AudioSource>();
-        Cursor.lockState = CursorLockMode.Confined;
     }
     /// <summary>
     /// 確認メッセージやその他非表示オブジェクトを表示。

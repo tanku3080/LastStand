@@ -71,7 +71,6 @@ public class Enemy : EnemyBase
         //コントロールアクセス権の有無にかかわらず敵の表示はチェックする
         EnemyEnebled(enemyAppearance);
 
-
         if (controlAccess && SceneFadeManager.Instance.FadeStop)
         {
             if (TurnManager.Instance.enemyIsMove)

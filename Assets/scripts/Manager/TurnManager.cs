@@ -471,6 +471,7 @@ public class TurnManager : Singleton<TurnManager>
             //次のプレイヤーのコントロールアクセス権をアクティブ化
             nowPayer.GetComponent<TankCon>().controlAccess = true;
             nowPayer.GetComponent<TankCon>().playerMoveFlag = true;
+
             VcamChenge();
          
             playerNum++;
@@ -580,8 +581,10 @@ public class TurnManager : Singleton<TurnManager>
             GameManager.Instance.ChengePop(false,hitRateText.gameObject);
             MoveCharaSet(true, false, playerMoveValue);
         }
-        GameManager.Instance.ChengePop(false, tankChengeObj);
         clickC = true;
+        playerIsMove = clickC;
+        enemyIsMove = clickC;
+        GameManager.Instance.ChengePop(false, tankChengeObj);
     }
     /// <summary>PlayerMoveValに値を渡さない。UIのオンクリックに使われる</summary>
     public void NoTankChenge()

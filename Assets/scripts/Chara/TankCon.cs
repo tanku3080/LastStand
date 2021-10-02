@@ -76,7 +76,6 @@ public class TankCon : PlayerBase
     // Update is called once per frame
     void Update()
     {
-        Debug.Log($"control:{controlAccess},playerIsMove:{TurnManager.Instance.playerIsMove},moveFalg{playerMoveFlag}");
         if (controlAccess && TurnManager.Instance.timeLineEndFlag)
         {
             //playerIsMoveがtrueなら操作権を与えられた戦車が操作できるようになる

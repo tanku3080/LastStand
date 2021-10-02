@@ -101,7 +101,7 @@ public class TurnManager : Singleton<TurnManager>
     [HideInInspector] public bool isGameOvar = false;
 
 
-    /// <summary>敵を発見したらtrue</summary>
+    /// <summary>プレイヤーが敵を発見したらtrue</summary>
     [HideInInspector] public bool FoundEnemy = false;
 
 

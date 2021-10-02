@@ -519,7 +519,6 @@ public class TankCon : PlayerBase
             TurnManager.Instance.FoundEnemy = true;
             if (other.gameObject.GetComponent<Enemy>().enemyAppearance == false && !TurnManager.Instance.enemyDiscovery.Contains(other.gameObject))
             {
-                Debug.Log(other.gameObject + "を取得");
                 TurnManager.Instance.enemyDiscovery.Add(other.gameObject);
                 GameManager.Instance.source.PlayOneShot(GameManager.Instance.discoverySfx);
                 other.gameObject.GetComponent<Enemy>().enemyAppearance = true;
@@ -530,7 +529,7 @@ public class TankCon : PlayerBase
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy") && TurnManager.Instance.enemyDiscovery.Contains(other.gameObject)
-            && TurnManager.Instance.playerTurn && RayStart() == false)
+            && TurnManager.Instance.playerTurn)
         {
             TurnManager.Instance.enemyDiscovery.Remove(other.gameObject);
             TurnManager.Instance.FoundEnemy = false;

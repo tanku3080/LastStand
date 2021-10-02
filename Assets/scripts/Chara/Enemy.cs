@@ -68,7 +68,10 @@ public class Enemy : EnemyBase
     private bool timerFalg = false;
     private void Update()
     {
-        EnemyEnebled(TurnManager.Instance.FoundEnemy);
+        //コントロールアクセス権の有無にかかわらず敵の表示はチェックする
+        EnemyEnebled(enemyAppearance);
+
+
         if (controlAccess && SceneFadeManager.Instance.FadeStop)
         {
             if (TurnManager.Instance.enemyIsMove)
@@ -347,7 +350,7 @@ public class Enemy : EnemyBase
         }
     }
     /// <summary>
-    /// 見えなくする
+    /// 対象の敵を非アクティブ化するかアクティブにするか決める
     /// </summary>
     /// <param name="f">見えなくするための判定</param>
     public void EnemyEnebled(bool f)

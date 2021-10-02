@@ -253,7 +253,9 @@ public class TankCon : PlayerBase
 
             if (Input.GetButtonUp("Fire1"))
             {
-                if (tankHeadDontMove && !TurnManager.Instance.uiActive || !tankHeadDontMove && TurnManager.Instance.uiActive)
+                //条件を満たした場合にのみ攻撃を行う
+                if (tankHeadDontMove && !TurnManager.Instance.uiActive || !tankHeadDontMove && TurnManager.Instance.uiActive || 
+                    tankHeadDontMove && TurnManager.Instance.uiActive)
                 {
                     tankHeadDontMove = false;
                     if (atackCount > limitCounter)

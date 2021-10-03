@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
+
 public class TankCon : PlayerBase
 {
     //AddRelativeForceを使えば斜面での移動に最適かも
@@ -100,6 +101,7 @@ public class TankCon : PlayerBase
                     cameraActive = false;
                 }
 
+                //Playerの挙動を管理する条件式
                 if (playerMoveFlag)
                 {
                     var mouseVal = Input.GetAxis("Mouse X");
@@ -186,6 +188,8 @@ public class TankCon : PlayerBase
                 }
             }
             AimMove(aimFlag);
+
+            RadarSystem();
         }
         else
         {
@@ -194,6 +198,25 @@ public class TankCon : PlayerBase
         }
 
 
+    }
+
+    /// <summary>特定のキーが押されたらレーダーが作動する</summary>
+    private void RadarSystem()
+    {
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            if (TurnManager.Instance.radarActive == false)
+            {
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.click);
+                TurnManager.Instance.radarActive = true;
+            }
+            else
+            {
+                TurnManager.Instance.radarActive = false;
+                GameManager.Instance.source.PlayOneShot(GameManager.Instance.cancel);
+            }
+            GameManager.Instance.ChengePop(TurnManager.Instance.radarActive, TurnManager.Instance.radarObj);
+        }
     }
 
     /// <summary>再生する音の種類</summary>
@@ -230,12 +253,11 @@ public class TankCon : PlayerBase
         }
         else
         {
-            if (isMoveBGM_body)
+            if (isMoveBGM_body) t.Stop();
+            if (isMoveBGM_turret) t2.Stop();
+            if (type == BGMType.NONE)
             {
                 t.Stop();
-            }
-            if (isMoveBGM_turret)
-            {
                 t2.Stop();
             }
         }
@@ -257,8 +279,8 @@ public class TankCon : PlayerBase
             GameManager.Instance.ChengePop(false,TurnManager.Instance.hpBar);
 
 
-            if (!TurnManager.Instance.uiActive || !playerMoveFlag && !TurnManager.Instance.uiActive
-                || playerMoveFlag && !turretCorrection && !perfectHit && !TurnManager.Instance.uiActive)
+            if (TurnManager.Instance.uiActive == false || !playerMoveFlag && TurnManager.Instance.uiActive == false
+                || playerMoveFlag && !turretCorrection && !perfectHit && TurnManager.Instance.uiActive == false)
             {
                 if (Input.GetButtonDown("Fire1"))
                 {

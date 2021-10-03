@@ -3,21 +3,24 @@
 
 public class CompasRot : MonoBehaviour
 {
-    private float transR_Y;
+    TankCon thisTank;
+    float mousex_test = 0f;
+    bool activateFalg = true;
     void Update()
     {
-        if (TurnManager.Instance.playerTurn == true)
+        if (TurnManager.Instance.playerTurn)
         {
-            var player = TurnManager.Instance.nowPayer.GetComponent<TankCon>();
-            if (TurnManager.Instance.tankChangeFlag)
+            if (TurnManager.Instance.radarActive)
             {
-                Debug.Log("一度呼ばれた");
-                float val = player.transform.rotation.y;
-                transR_Y = transform.rotation.y;
-                transR_Y = val;
-                TurnManager.Instance.tankChangeFlag = false;
+                if (activateFalg)
+                {
+                    thisTank = TurnManager.Instance.nowPayer.GetComponent<TankCon>();
+                    float val = thisTank.transform.rotation.y;
+                    mousex_test = val;
+                }
             }
-            float mousex_test = player.moveH * player.tankTurn_Speed * Time.deltaTime;
+            else activateFalg = true;
+            mousex_test = thisTank.moveH * thisTank.tankTurn_Speed * Time.deltaTime;
             transform.Rotate(0, 0, mousex_test);
         }
     }

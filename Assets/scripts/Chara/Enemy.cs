@@ -277,7 +277,7 @@ public class Enemy : EnemyBase
             ParticleSystemEXP.Instance.StartParticle(tankGunFire.transform, ParticleSystemEXP.ParticleStatus.GUN_FIRE);
             nowCounter++;
             Debug.Log("攻撃を行った");
-            EnemyActionSet(EnemyState.IDOL);//
+            EnemyActionSet(EnemyState.IDOL);
         }
         return;
     }

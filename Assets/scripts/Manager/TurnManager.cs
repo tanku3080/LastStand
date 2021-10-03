@@ -463,7 +463,7 @@ public class TurnManager : Singleton<TurnManager>
         if (enemyTurn && enemy)
         {
             Debug.Log("EnemyCount: " + enemys.Count + "EnemyNumber: " + enemyNum);
-            if (enemyNum > enemys.Count)
+            if (enemyNum > enemys.Count || enemys.Count == enemyNum)
             {
                 enemyNum = 0;
                 nowEnemy.GetComponent<Enemy>().controlAccess = false;
@@ -478,7 +478,6 @@ public class TurnManager : Singleton<TurnManager>
                 enemyIsMove = true;
                 EnemyMoveVal--;
             }
-            enemyNum++;
         }
         PlayMusic();
 
@@ -524,8 +523,8 @@ public class TurnManager : Singleton<TurnManager>
         if (thisObj.CompareTag("Enemy"))
         {
             ParticleSystemEXP.Instance.StartParticle(thisObj.transform, ParticleSystemEXP.ParticleStatus.DESTROY);
-            enemyNum++;
-            if (0 >= enemys.Count) Invoke(nameof(DelayGameClear), 2f);
+            //enemyNum++;
+            if (0 == enemys.Count) Invoke(nameof(DelayGameClear), 2f);
             else
             {
                 enemys.Remove(thisObj.GetComponent<Enemy>());
@@ -741,7 +740,7 @@ public class TurnManager : Singleton<TurnManager>
         }
         else
         {
-            taskText.text = "<color=red>敵ターン</color>です。";
+            taskText.text = $"<color=red>敵ターン({nowEnemy.name})</color>です。";
             ButtonTips.enabled = false;
         }
     }

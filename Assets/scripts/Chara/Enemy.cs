@@ -75,7 +75,6 @@ public class Enemy : EnemyBase
         {
             if (TurnManager.Instance.enemyIsMove)
             {
-                Debug.Log("現在動いている敵" + gameObject.name);
                 if (enemyMove)
                 {
                     EnemyMoveLimit();
@@ -103,11 +102,6 @@ public class Enemy : EnemyBase
         {
             case EnemyState.IDOL:
 
-                timerFalg = true;
-
-                //指定時間待機する
-                WaitTimer(timerFalg);
-
                 //攻撃上限、移動回数、移動値が0か、巡回ポイントを一巡してもPlayerを発見できなかった場合
                 if (eAtackCount == nowCounter || TurnManager.Instance.EnemyMoveVal == 0 || enemyMoveNowValue <= 0 || playerNotFound)
                 {
@@ -123,6 +117,11 @@ public class Enemy : EnemyBase
                 {
                     if (isPlayer && eAtackCount > nowCounter)
                     {
+                        timerFalg = true;
+
+                        //指定時間待機する
+                        WaitTimer(timerFalg);
+
                         EnemyActionSet(EnemyState.ATACK);
                     }
                     else EnemyActionSet(EnemyState.MOVE);

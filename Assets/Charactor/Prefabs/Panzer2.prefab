@@ -866,7 +866,7 @@ MonoBehaviour:
   atackCheck: 0
   moveLimitRangeBar: {fileID: 0}
   tankHpBar: {fileID: 0}
-  m_lineRenderer: {fileID: 777767213104306770}
+  playerMoveFlag: 1
   limitCounter: 0
 --- !u!54 &438127125791958105
 Rigidbody:
@@ -882,7 +882,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &8353012376309034853
 BoxCollider:

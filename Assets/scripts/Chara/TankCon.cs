@@ -503,6 +503,9 @@ public class TankCon : PlayerBase
         return false;
     }
 
+
+    /// <summary>移動制限が掛かったらTrue</summary>
+    [HideInInspector] public bool isMoveLimit = false;
     /// <summary>
     /// 移動制限をつけるメソッド
     /// </summary>
@@ -511,11 +514,18 @@ public class TankCon : PlayerBase
         if (moveLimitRangeBar.value > moveLimitRangeBar.minValue)
         {
             moveLimitRangeBar.value -= 1;
+            isMoveLimit = false;
         }
         else
         {
             //このキャラの移動権が無くなる
-            controlAccess = false;
+            if (controlAccess)
+            {
+                TurnManager.Instance.AnnounceStart("Move Limited");
+                controlAccess = false;
+                isMoveLimit = true;
+
+            }
         }
     }
 

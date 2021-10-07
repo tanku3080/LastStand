@@ -718,9 +718,9 @@ public class TurnManager : Singleton<TurnManager>
             var playerNow = nowPayer.GetComponent<TankCon>();
            
             ButtonTips.enabled = true;
-            if (playerNow.limitCounter == playerNow.atackCount)
+            if (playerNow.limitCounter == playerNow.atackCount || playerNow.isMoveLimit)
             {
-                taskText.text = "<color=red>Enter</color>キーでターンエンドするか\nspaceキーで戦車を切り替えてください";
+                taskText.text = "<color=red>Enter</color>キーでターンエンド\nするか<color=red>>Space</color>キーで戦車を切り替えてください";
             }
             else if (playerNow.limitCounter != playerNow.atackCount)
             {
@@ -782,12 +782,12 @@ public class TurnManager : Singleton<TurnManager>
         {
             case TANK_CHOICE.Tiger:
                 charactorHp = 100;
-                charactorSpeed = 1000f;
-                tankHeadSpeed = 4f;
-                tankTurnSpeed = 5f;
+                charactorSpeed = 1500f;
+                tankHeadSpeed = 9f;
+                tankTurnSpeed = 10f;
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 10000f;
-                tankSearchRanges = 50f;
+                tankSearchRanges = 70f;
                 tankDamage = 35;
                 atackCounter = 1;
                 tankTypeName = "3_hevy";
@@ -806,12 +806,12 @@ public class TurnManager : Singleton<TurnManager>
                 break;
             case TANK_CHOICE.Shaman:
                 charactorHp = 80;
-                charactorSpeed = 21f;
-                tankHeadSpeed = 4f;
-                tankTurnSpeed = 5f;
+                charactorSpeed = 30f;
+                tankHeadSpeed = 9f;
+                tankTurnSpeed = 10f;
                 tankLimitedSpeed = 1000f;
                 tankLimitedRange = 1000f;
-                tankSearchRanges = 50f;
+                tankSearchRanges = 70f;
                 tankDamage = 35;
                 atackCounter = 1;
                 tankTypeName = "3_hevy";

@@ -1414,6 +1414,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5090992511560260204, guid: 03bd5e3ea2209eb49a5742f90b548d10,
         type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.076126754
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090992511560260204, guid: 03bd5e3ea2209eb49a5742f90b548d10,
+        type: 3}
       propertyPath: m_LocalRotation.y
       value: 0.000000043584546
       objectReference: {fileID: 0}
@@ -1889,21 +1894,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1059008528429857567, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1059008528429857567, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1059008528429857567, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2255831799914820423, guid: 8c591d7fe9b90f74fae5b80cb602b262,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2079,26 +2069,6 @@ PrefabInstance:
       propertyPath: enemyrHpBar
       value: 
       objectReference: {fileID: 8609190952474279468}
-    - target: {fileID: 6876459977728915446, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Text
-      value: "<color=red>W,S</color>:\u524D\u9032\u5F8C\u9032\n<color=red>A,D</color>:\u8ECA\u4F53\u65CB\u56DE\n<color=red>J,L</color>:\u7832\u5854\u65CB\u56DE\n<color=red>P</color>:\u30E1\u30CB\u30E5\u30FC\u753B\u9762"
-      objectReference: {fileID: 0}
-    - target: {fileID: 6876459977728915446, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6876459977728915446, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6876459977728915446, guid: 8c591d7fe9b90f74fae5b80cb602b262,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6955453949490048788, guid: 8c591d7fe9b90f74fae5b80cb602b262,
         type: 3}
       propertyPath: m_AnchorMax.y

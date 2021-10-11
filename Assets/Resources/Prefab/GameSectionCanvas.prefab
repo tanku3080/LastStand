@@ -2703,7 +2703,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 64653253609181175}
   m_HandleRect: {fileID: 0}
@@ -5530,14 +5530,13 @@ MonoBehaviour:
   ButtonTips: {fileID: 6876459977728915446}
   playerNum: 0
   enemyNum: 0
-  clickC: 1
-  dontShoot: 0
-  tankChangeFlag: 0
+  clickAction: 1
+  radarActive: 0
   isGameClear: 0
   isGameOvar: 0
   FoundEnemy: 0
   enemyDiscovery: []
-  turnEndUi: 0
+  uiActive: 0
   charactorHp: 0
   charactorSpeed: 0
   tankHeadSpeed: 0
@@ -6510,7 +6509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7247,7 +7246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7267,7 +7266,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "W,S:\u524D\u9032\u5F8C\u9032\nA,D:\u8ECA\u4F53\u65CB\u56DE\nJ,L:\u7832\u5854\u65CB\u56DE\nP:\u30E1\u30CB\u30E5\u30FC\u753B\u9762"
+  m_Text: "<color=red>W,S</color>:\u524D\u9032\u5F8C\u9032\n<color=red>A,D</color>:\u8ECA\u4F53\u65CB\u56DE\n<color=red>J,L</color>:\u7832\u5854\u65CB\u56DE\n<color=red>P</color>:\u30E1\u30CB\u30E5\u30FC\u753B\u9762"
 --- !u!1 &9137636611021116707
 GameObject:
   m_ObjectHideFlags: 0
